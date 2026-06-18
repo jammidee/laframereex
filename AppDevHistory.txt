@@ -12,4 +12,6 @@ Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
 06/18/2026      - Started the Lalulla Framework using ReactJS as frontend and ExpressJS as backend
+                - sync framework to Jammi's repo
+                - added a version updater in both client and server
                 - 

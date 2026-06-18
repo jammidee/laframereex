@@ -9,6 +9,175 @@ laframereex
 Node version: v22.21.1
 Npm version: 10.5.0
 
+CREATION PROCESS:
+1. Project initialization.
+
+	mkdir lakuboreex
+	cd lakuboreex
+	npm init -y
+
+2. Directory Structure
+
+	lakuboreex/
+	├── client/             # React Frontend
+	├── server/             # Express Backend
+	│   ├── src/
+	│   │   ├── config/     # Database/Env configurations
+	│   │   ├── controllers/# Route controllers (logic)
+	│   │   ├── models/     # Database models
+	│   │   ├── routes/     # Express route definitions
+	│   │   └── app.js      # Express application entry
+	│   └── package.json
+	└── package.json        # Root package.json
+
+3. Backend Setup (Express)
+
+	mkdir -p server/src/config server/src/controllers server/src/models server/src/routes
+	cd server
+	npm init -y
+	npm install express cors dotenv
+	npm install --save-dev nodemon
+
+	Create the Express Entry Point (server/src/app.js)
+
+		const express = require('express');
+		const cors = require('cors');
+		require('dotenv').config();
+
+		const app = express();
+		const PORT = process.env.PORT || 5000;
+
+		// Middleware
+		app.use(cors());
+		app.use(express.json());
+
+		// Sample Route
+		app.get('/api/health', (req, res) => {
+			res.json({ status: 'UP', message: 'Express backend is running smoothly.' });
+		});
+
+		app.listen(PORT, () => {
+			console.log(`Server running on port ${PORT}`);
+		});
+
+	Update server/package.json
+
+	Add a start script to use nodemon for auto-restarts during development:
+
+		"scripts": {
+		"start": "node src/app.js",
+		"dev": "nodemon src/app.js"
+		}
+
+
+4. Frontend Setup (React via Vite)
+
+	Navigate back to the root folder, then bootstrap a lightweight, fast React application using Vite:
+
+	cd ..
+	npm create vite@latest client -- --template react
+	cd client
+	npm install
+
+	Update client/src/App.jsx
+
+	Here is a quick example of how your React frontend will fetch data from your Express backend:
+
+		import { useEffect, useState } from 'react';
+
+		function App() {
+		const [backendStatus, setBackendStatus] = useState('Connecting...');
+
+		useEffect(() => {
+			fetch('http://localhost:5000/api/health')
+			.then((res) => res.json())
+			.then((data) => setBackendStatus(data.message))
+			.catch(() => setBackendStatus('Backend is offline'));
+		}, []);
+
+		return (
+			<div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+			<h1>Lakuboreex Application</h1>
+			<p><strong>Backend Status:</strong> {backendStatus}</p>
+			</div>
+		);
+		}
+
+		export default App;
+
+5. Root Orchestration (Optional but Recommended)
+	Go back to your root directory (lakuboreex/) and run:
+
+		cd ..
+		npm install concurrently --save-dev
+
+	Open the root package.json file and update the scripts section:
+		"scripts": {
+		"server": "npm run dev --prefix server",
+		"client": "npm run dev --prefix client",
+		"dev": "concurrently \"npm run server\" \"npm run client\""
+		}
+
+	How to Run the App
+	From the root lakuboreex directory, simply run:
+
+		npm run dev
+
+
+
+LIBRARIES
+
+**FS-EXTRA 06/18/2026 - installed both on client and server
+npm install fs-extra --save
+
+
+
+
+GIT - G1thUUb@!!M3
+---
+
+Create .gitignore on the app root folder
+# Ignore node_modules
+node_modules/
+
+git init           # Initialize a Git repository
+git add .          # Add all files in your project to the staging area
+git config --global user.email "jammi_dee@yahoo.com"
+git config --global user.name "Jammi Dee"
+git commit -m "Initial commit Lalulla Framework using ReactJS frontend and Express backend"  # Commit your changes
+git branch -M main  # Rename the default branch to 'main'
+git remote add origin https://github.com/jammidee/laframereex.git  # Replace with your GitHub repository URL
+git pull origin main  #if there is error in push
+git pull origin main --allow-unrelated-histories #if there are errors
+git push -u origin main  # Push your code to GitHub
+git rm -r --cached logs
+
+git status
+git log
+git log --all --graph
+
+* Creating a new branch
+git branch feature01
+git checkout feature01
+git add .
+git commit -m "Feature 01 initial commit"
+git push -u origin feature01
+
+* Create a pull request
+1. Login to github then click the 'Pull Request' menu.
+2. Click the Create A Pull Request. Then Confirm Merge.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -143,41 +312,6 @@ npm audit
 **If there is a fix run:
 npm audit fix 
 
-
-
-GIT - G1thUUb@!!M3
----
-
-Create .gitignore on the app root folder
-# Ignore node_modules
-node_modules/
-
-git init           # Initialize a Git repository
-git add .          # Add all files in your project to the staging area
-git config --global user.email "jammi_dee@yahoo.com"
-git config --global user.name "Jammi Dee"
-git commit -m "Initial commit Lalulla Framework Legacy"  # Commit your changes
-git branch -M main  # Rename the default branch to 'main'
-git remote add origin https://github.com/jammidee/cgboot2024.git  # Replace with your GitHub repository URL
-git pull origin main  #if there is error in push
-git pull origin main --allow-unrelated-histories #if there are errors
-git push -u origin main  # Push your code to GitHub
-git rm -r --cached logs
-
-git status
-git log
-git log --all --graph
-
-* Creating a new branch
-git branch feature01
-git checkout feature01
-git add .
-git commit -m "Feature 01 initial commit"
-git push -u origin feature01
-
-* Create a pull request
-1. Login to github then click the 'Pull Request' menu.
-2. Click the Create A Pull Request. Then Confirm Merge.
 
 
 
@@ -426,25 +560,3 @@ git push -u origin feature01
 * Create a pull request
 1. Login to github then click the 'Pull Request' menu.
 2. Click the Create A Pull Request. Then Confirm Merge.
-
-
-
-TABLE MIGRATION
-===============
-
-npx sequelize-cli db:migrate:undo:all
-npx sequelize-cli db:migrate
-npx sequelize-cli db:seed:all
-
-Updating Nodejs
-===============
-npm outdated
-npm update
-npm audit
-npm audit fix
-
-TODO:
-
-- add background service
-- Add lookup table Management
-- 
