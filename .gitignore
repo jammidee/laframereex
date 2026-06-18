@@ -1,0 +1,3 @@
+Create .gitignore on the app root folder
+# Ignore node_modules
+node_modules/

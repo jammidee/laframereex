@@ -1,0 +1,450 @@
+Created by Jammi Dee
+06/18/2026
+
+
+Create By: Joel M. Damaso
+Date: 06/1822/2026
+
+laframereex
+Node version: v22.21.1
+Npm version: 10.5.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Creation:
+1. https://expressjs.com/en/starter/installing.html
+   npx express-generator --view=pug cgboot2024
+   cd cgboot2024
+   npm install
+   npm install fs-extra --save
+   npm install express-session --save
+
+2. Create a build.js file
+
+	const { exec } = require('child_process');
+	const fs = require('fs-extra');
+	const path = require('path');
+
+	//const sourceDir = 'src/views';  // Source directory
+	//const outputDir = 'dist/views'; // Output directory
+
+	// Read the current version from package.json
+	const packageJsonPath = path.join(__dirname, 'package.json');
+	const packageJson = require(packageJsonPath);
+	let [major, minor, patch] = packageJson.version.split('.').map(Number);
+
+	// Logic to increment version parts
+	if (patch < 1000) {
+		patch += 1;
+	} else if (minor < 100) {
+		minor += 1;
+		patch = 0;
+	} else {
+		major += 1;
+		minor = 0;
+		patch = 0;
+	}
+
+	// Update the version in package.json
+	packageJson.version = `${major}.${minor}.${patch}`;
+	fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+	// Increment the version (e.g., by appending a build number)
+	const buildNumber = new Date().getTime();
+	const version = `${major}.${minor}.${patch}.${buildNumber}`;
+
+	console.log(`Increment framework version to ${version}.`);
+
+
+	// // Function to copy files
+	// const copyFiles = async () => {
+	//     try {
+	//         await fs.ensureDir(outputDir); // Create the output directory if it doesn't exist
+	//         await fs.copy(sourceDir, outputDir);
+	//         console.log('Assets copied successfully.');
+	//         console.log(`Build successful. Version: ${version}`); // Display version after assets are copied
+	//     } catch (error) {
+	//         console.error('Error copying assets:', error);
+	//     }
+	// };
+
+	// // Compile TypeScript files using tsc
+	// exec('tsc', (error, stdout, stderr) => {
+	//     if (error) {
+	//         console.error('Error during TypeScript compilation:', error);
+	//         return;
+	//     }
+	//     console.log('TypeScript compilation completed.');
+
+	//     // Run the copyFiles function after TypeScript compilation
+	//     copyFiles();
+	// });
+
+3. Create a batch file la.bat
+   node build.js
+   SET DEBUG=cgboot2024:* & npm start
+
+4. npm run build
+
+LIBRARIES
+
+**FS-EXTRA 10/22/2023
+npm install fs-extra --save
+**AdminLte 10/22/2023
+npm install admin-lte@^3.2 --save
+**Environment 10/22/2023
+npm install dotenv --save
+**ORM
+npm install sequelize --save
+03/06/2026
+npm install mysql2 --save
+npm install pg --save
+
+03/07/2026
+npm install bcrypt --save
+npm install pug --save
+
+03/10/2026
+npm install axios --save
+npm install axios-retry --save
+npm install https --save
+
+03/15/2026
+npm install sweetalert2 --save
+
+EXTENSIONS
+
+1. Rest Client - Huachao Mao
+2. Tabstop Whitespace Converter - Johnny Wong
+3. Prettier - Code Fomratter - Prettier
+4. MySQL - MySQL Management Tool - Jun Han
+5. Material Icon Theme - Philipp Kief
+6. dotEnv - MikeStead
+7. Markdown Preview Github Styling - Matt Bierner
+
+AUDIT
+**Run Audit for vulnerabilty
+npm audit
+**If there is a fix run:
+npm audit fix 
+
+
+
+GIT - G1thUUb@!!M3
+---
+
+Create .gitignore on the app root folder
+# Ignore node_modules
+node_modules/
+
+git init           # Initialize a Git repository
+git add .          # Add all files in your project to the staging area
+git config --global user.email "jammi_dee@yahoo.com"
+git config --global user.name "Jammi Dee"
+git commit -m "Initial commit Lalulla Framework Legacy"  # Commit your changes
+git branch -M main  # Rename the default branch to 'main'
+git remote add origin https://github.com/jammidee/cgboot2024.git  # Replace with your GitHub repository URL
+git pull origin main  #if there is error in push
+git pull origin main --allow-unrelated-histories #if there are errors
+git push -u origin main  # Push your code to GitHub
+git rm -r --cached logs
+
+git status
+git log
+git log --all --graph
+
+* Creating a new branch
+git branch feature01
+git checkout feature01
+git add .
+git commit -m "Feature 01 initial commit"
+git push -u origin feature01
+
+* Create a pull request
+1. Login to github then click the 'Pull Request' menu.
+2. Click the Create A Pull Request. Then Confirm Merge.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. npm init -y
+2. npm install express typescript @types/express
+3. Create tsconfig.json
+
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"experimentalDecorators": true,
+		"module": "CommonJS",
+		"sourceMap": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"strict": true,
+		"noImplicitAny": true,
+		"strictPropertyInitialization": false,
+		"alwaysStrict": true,
+		"esModuleInterop": true,
+		"types": ["node"]
+	},
+	"include": ["src/**/*.ts", "src/**/*.html", "src/test/**/*.ts" ],
+	"exclude": ["node_modules", "**/*.spec.ts"]
+}
+
+4. Create a folder src
+5. Create a file app.ts inside src
+   *Inside src folder create also 'views' folder
+
+import express from 'express';
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello, Express with TypeScript!');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
+6. inside package.json add inside scripts:
+
+  "scripts": {
+    "build": "tsc",
+    "custom": "node build.js",
+    "lakubots": "node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+7. Install TypeScript Globally:
+  npm install -g typescript
+
+8. npm run build
+9. node dist/app.js
+  
+10. Inside the app root folder run tsc --watch
+
+11. Install fs-extra:
+  npm install fs-extra --save-dev
+12. Create a File: build.js
+
+  -------------------------
+	const { exec } = require('child_process');
+	const fs = require('fs-extra');
+	const path = require('path');
+
+	const sourceDir = 'src/views';  // Source directory
+	const outputDir = 'dist/views'; // Output directory
+
+	// Read the current version from package.json
+	const packageJsonPath = path.join(__dirname, 'package.json');
+	const packageJson = require(packageJsonPath);
+	let [major, minor, patch] = packageJson.version.split('.').map(Number);
+
+	// Logic to increment version parts
+	if (patch < 1000) {
+		patch += 1;
+	} else if (minor < 100) {
+		minor += 1;
+		patch = 0;
+	} else {
+		major += 1;
+		minor = 0;
+		patch = 0;
+	}
+
+	// Update the version in package.json
+	packageJson.version = `${major}.${minor}.${patch}`;
+	fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+	// Increment the version (e.g., by appending a build number)
+	const buildNumber = new Date().getTime();
+	const version = `${major}.${minor}.${patch}.${buildNumber}`;
+
+	// Function to copy files
+	const copyFiles = async () => {
+		try {
+			await fs.ensureDir(outputDir); // Create the output directory if it doesn't exist
+			await fs.copy(sourceDir, outputDir);
+			console.log('Assets copied successfully.');
+			console.log(`Build successful. Version: ${version}`); // Display version after assets are copied
+		} catch (error) {
+			console.error('Error copying assets:', error);
+		}
+	};
+
+	// Compile TypeScript files using tsc
+	exec('tsc', (error, stdout, stderr) => {
+		if (error) {
+			console.error('Error during TypeScript compilation:', error);
+			return;
+		}
+		console.log('TypeScript compilation completed.');
+
+		// Run the copyFiles function after TypeScript compilation
+		copyFiles();
+	});
+  -------------------------
+
+
+13. node build.js
+14. node dist/app.js
+15. Create the file .gitignore. Place the following:
+
+	# Ignore node_modules
+	node_modules/
+	.env
+	logs/
+
+EXTENSIONS
+
+1. Rest Client - Huachao Mao
+2. Tabstop Whitespace Converter - Johnny Wong
+3. Prettier - Code Fomratter - Prettier
+4. MySQL - MySQL Management Tool - Jun Han
+5. Material Icon Theme - Philipp Kief
+6. dotEnv - MikeStead
+7. Markdown Preview Github Styling - Matt Bierner
+
+LIBRARIES
+
+**PUG 09/10/2023
+npm install express pug @types/express --save
+**Sequelize 09/11/2023
+npm install sequelize --save 
+**Sequelize TypeScript 09/26/2023
+npm install sequelize sequelize-typescript @types/sequelize --save
+**Winston logging module 09/11/2023
+npm install winston --save
+npm install winston-daily-rotate-file --save
+**Testing 09/12/2023
+npm install mocha chai ts-node @types/mocha @types/chai --save-dev
+npm install nyc --save-dev
+npm install chai chai-http --save-dev
+
+**Sequelize 09/22/2023
+npm install sequelize-cli --save
+**MySQL Driver 09/22/2023
+npm install mysql2 --save
+
+**Cross-Origin Resource Sharing 09/26/2023
+npm install cors @types/cors --save
+
+**Axios Module 09/28/2023
+npm install axios @types/axios --save
+
+**JSON Web Token
+npm install jsonwebtoken @types/jsonwebtoken --save
+
+**Http Proxy 10/08/2023
+npm install http-proxy-middleware @types/http-proxy-middleware --save
+
+**Cheerio 10/08/2023
+npm install cheerio @types/cheerio --save
+
+**Sequelized 03/28/2026
+npm install sequelize --save
+npm install --save-dev sequelize-cli
+
+**Mocha 04/04/2026
+npm install --save-dev mocha
+
+**BullMQ 05/30/2026
+npm install --save bullmq
+
+**Redis Server 06/02/2026
+**npm install redis-server --save
+npm install pariqua --save
+
+AUDIT
+**Run Audit for vulnerabilty
+npm audit
+**If there is a fix run:
+npm audit fix 
+
+** Update the dotenv 06/05/2026
+npm install dotenv@17.4.2
+npm install morgan@1.11.0
+npm install http-errors@2.0.1
+npm install debug@4.4.3
+
+GIT - G1thUUb@!!M3
+---
+
+Create .gitignore on the app root folder
+# Ignore node_modules
+node_modules/
+
+git init           # Initialize a Git repository
+git add .            # Add all files in your project to the staging area
+git config --global user.email "jammi_dee@yahoo.com"
+git config --global user.name "Jammi Dee"
+git commit -m "Initial commit Lalulla Framework Typescript"  # Commit your changes
+git branch -M main  # Rename the default branch to 'main'
+git remote add origin https://github.com/jammidee/laframets.git  # Replace with your GitHub repository URL
+git pull origin main  #if there is error in push
+git pull origin main --allow-unrelated-histories #if there are errors
+git push -u origin main  # Push your code to GitHub
+git rm -r --cached logs
+
+git status
+git log
+git log --all --graph
+
+* Creating a new branch
+git branch feature01
+git checkout feature01
+git add .
+git commit -m "Feature 01 initial commit"
+git push -u origin feature01
+
+* Create a pull request
+1. Login to github then click the 'Pull Request' menu.
+2. Click the Create A Pull Request. Then Confirm Merge.
+
+
+
+TABLE MIGRATION
+===============
+
+npx sequelize-cli db:migrate:undo:all
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
+
+Updating Nodejs
+===============
+npm outdated
+npm update
+npm audit
+npm audit fix
+
+TODO:
+
+- add background service
+- Add lookup table Management
+- 
