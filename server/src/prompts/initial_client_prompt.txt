@@ -1,0 +1,360 @@
+You are an expert react developer. 
+
+This is the tree inside client:
+
+C:\DEVS72\LAKUBOREEX\CLIENT
+├───public
+└───src
+    └───assets
+
+
+Server tree:
+
+C:\DEVS72\LAKUBOREEX\SERVER
+└───src
+    ├───config
+    ├───controllers
+    ├───database
+    ├───helpers
+    ├───middlewares
+    ├───models
+    ├───modules
+    ├───prompts
+    ├───routes
+    ├───services
+    └───utils
+
+I want you to create a client with login using reactjs.
+
+This is the existing authorization API that you can reference:
+
+app.use('/api/v1/systems/auth',  	  require('./src/routes/api/v1/systems/auth.routes'));
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : April 07, 2026 09:41 PM
+ * ------------------------------------------------------------------------
+ */
+
+const express          = require('express');
+const router           = express.Router();
+
+const AuthController   = require('../../../../controllers/api/v1/systems/auth.controller');
+const AuthService      = require('../../../../services/api/v1/systems/auth.service');
+const validateToken    = require('../../../../middlewares/jwt.middleware');
+
+const controller = new AuthController(new AuthService());
+
+/**
+ * POST /api/v1/systems/auth/token
+ * Generate JWT
+ */
+router.post('/token', controller.getAccessToken);
+
+/**
+ * GET /api/v1/systems/auth/validate
+ * Validate JWT
+ */
+router.get('/validate', validateToken, controller.validateToken);
+
+/**
+ * GET /api/v1/systems/auth/datetime
+ * Protected endpoint
+ */
+router.get('/datetime', validateToken, controller.getDateTime);
+
+module.exports = router;
+
+auth.controller.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : April 07, 2026 09:41 PM
+ * ------------------------------------------------------------------------
+ */
+
+class AuthController {
+
+  constructor(AuthService) {
+    this.authService = AuthService;
+  }
+
+  /**
+   * POST /token
+   * Uses Basic Authorization header
+   * Returns JWT access token
+   */
+  getAccessToken = async (req, res) => {
+
+    try {
+
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader || !authHeader.startsWith('Basic ')) {
+        return res.status(401).json({
+          success: false,
+          message: 'Missing Basic Authorization header'
+        });
+      }
+
+      const base64Credentials = authHeader.split(' ')[1];
+      const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+
+      const [username, password] = credentials.split(':');
+
+      const user = await this.authService.authenticateBasic(
+        username.trim(),
+        password.trim()
+      );
+
+      const token = this.authService.generateToken(user);
+
+      return res.json({
+        success: true,
+        token,
+        expires_in: 3600
+      });
+
+    } catch (err) {
+
+      return res.status(401).json({
+        success: false,
+        message: err.message
+      });
+
+    }
+  }
+
+  /**
+   * GET /validate
+   * Validate JWT
+   */
+  validateToken = async (req, res) => {
+
+    return res.json({
+      success: true,
+      user: req.user
+    });
+
+  }
+
+  /**
+   * GET /datetime
+   * Protected endpoint
+   */
+  getDateTime = async (req, res) => {
+
+    return res.json({
+      success: true,
+      datetime: new Date()
+    });
+
+  }
+}
+
+module.exports = AuthController;
+
+auth.service.js
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : CloudGate PHP Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 07, 2026 11:50 PM
+ * ------------------------------------------------------------------------
+ */
+
+const bcrypt  = require('bcrypt')
+const User    = require('../../models/user.model')
+
+/**
+ * LoginService
+ * Handles authentication logic only.
+ * No HTTP logic here.
+ */
+class AuthService {
+
+  /**
+   * Validate username & password
+   */
+  async authenticate(email, password) {
+
+    const user = await User.findOne({
+      where: { email }
+    })
+
+    if (!user) {
+      throw new Error('Invalid username or password')
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if (!match) {
+      throw new Error('Invalid username or password')
+    }
+
+    return user
+  }
+}
+
+module.exports = AuthService
+
+user.model.js
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * Lalulla System is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 07, 2026 11:30 PM
+ * ------------------------------------------------------------------------
+ */
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * CREATED DATE : March 28, 2026
+ * ------------------------------------------------------------------------
+ */
+
+const { DataTypes } = require('sequelize');
+const sequelize     = require('../config/db');
+
+const User          = sequelize.define('User', {
+
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+
+  username: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+    unique: true,
+  },
+
+  password: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+
+  email: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+    unique: true,
+  },
+
+  firstname: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+  },
+
+  lastname: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+  },
+
+  phone: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+  },
+
+  gender: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    comment: '1=Male, 2=Female, 3=Other'
+  },
+
+  store_id: {
+    type: DataTypes.BIGINT,
+    allowNull: true,
+  },
+
+  status: {
+    type: DataTypes.STRING(20),
+    allowNull: false,
+    defaultValue: 'ACTIVE',
+  },
+
+  entityid: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'GCONE',
+  },
+
+  last_login_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+
+  created_at: {
+    type: DataTypes.DATE,
+  },
+
+  updated_at: {
+    type: DataTypes.DATE,
+  },
+
+  deleted_at: {
+    type: DataTypes.DATE,
+  }
+
+}, {
+  tableName: 'users',
+
+  // Enable Sequelize timestamp handling
+  timestamps: true,
+
+  // Map to snake_case columns
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+
+  // Enable soft delete
+  paranoid: true,
+  deletedAt: 'deleted_at',
+});
+
+module.exports = User;
+
+Maintain the coding style
+Always add a comments header with timestamp of the creation of the code
+comment your code to be easily checked by others.
+

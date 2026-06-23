@@ -173,7 +173,7 @@ app.get('/api/health', (req, res) => {
 // app.use('/api/v1/hello',                 require('./src/routes/api/v1/hello/hello.routes'));
 // app.use('/auth',                         require('./src/routes/systems/auth.routes'));
 // app.use('/access-denied',                require('./src/routes/systems/access_denied.routes'));
-// app.use('/api/v1/systems/auth',          require('./src/routes/api/v1/systems/auth.routes'));
+app.use('/api/v1/systems/auth',          require('./routes/api/v1/systems/auth.routes'));
 // app.use('/api/v1/systems/config',        require('./src/routes/api/v1/systems/config.routes'));
 // app.use('/site',                         require('./src/modules/site/site.routes'));
 // app.use('/users',                        require('./src/modules/user/user.routes'));
@@ -220,31 +220,31 @@ app.use((err, req, res, next) => {
 // ==========================================
 // const cronLoader = require('./src/helpers/cron_loader.helper');
 
-// const bootstrapSystem = async () => {
-//     try {
-//         console.info('[System] Verifying database cluster connection state...');
+const bootstrapSystem = async () => {
+    try {
+        console.info('[System] Verifying database cluster connection state...');
         
-//         // Ensure Sequelize active cluster communication loops are functional before accepting traffic
-//         await sequelize.authenticate();
-//         console.info('[System] Database cluster handshakes verified.');
+        // Ensure Sequelize active cluster communication loops are functional before accepting traffic
+        await sequelize.authenticate();
+        console.info('[System] Database cluster handshakes verified.');
 
-//         // Initialize Native Service Worker Schedules Registry
-//         console.info('[System] Loading pure background service execution registry...');
-//         cronLoader();
+        // Initialize Native Service Worker Schedules Registry
+        console.info('[System] Loading pure background service execution registry...');
+        // cronLoader();
 
-//         // Boot application network execution engine context listener
-//         app.listen(PORT, () => {
-//             console.log(`[System] Server actively running on node network interface port ${PORT}`);
-//         });
+        // Boot application network execution engine context listener
+        app.listen(PORT, () => {
+            console.log(`[System] Server actively running on node network interface port ${PORT}`);
+        });
 
-//     } catch (err) {
-//         console.error('[Fatal System Error] Distributed environment failed to boot:', err.message);
-//         process.exit(1);
-//     }
-// };
+    } catch (err) {
+        console.error('[Fatal System Error] Distributed environment failed to boot:', err.message);
+        process.exit(1);
+    }
+};
 
-// // Ignite Database validations, Workers & Core Listener
-// bootstrapSystem();
+// Ignite Database validations, Workers & Core Listener
+bootstrapSystem();
 
 // ==========================================
 // 12. GRACEFUL APPARATUS TEARDOWN LIFECYCLES

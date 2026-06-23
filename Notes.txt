@@ -146,6 +146,7 @@ npm install bcrypt --save
 npm install cookie-parser --save
 npm install morgan --save
 npm install express-session --save
+npm install jsonwebtoken --save
 
 
 
