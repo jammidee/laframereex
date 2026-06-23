@@ -13,6 +13,7 @@ Tested / QA by:				Jammi Dee
 
 06/23/2026      - install NPM libraries
                 - dotenv, sequelize, mysql2, pg, bcrypt
+                - created an app.js that resembles the lalulla cgboot2024
                 -
 
 06/18/2026      - Started the Lalulla Framework using ReactJS as frontend and ExpressJS as backend

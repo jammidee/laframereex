@@ -143,6 +143,9 @@ npm install sequelize --save
 npm install mysql2 --save
 npm install pg --save
 npm install bcrypt --save
+npm install cookie-parser --save
+npm install morgan --save
+npm install express-session --save
 
 
 
