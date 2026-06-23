@@ -11,7 +11,11 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+06/23/2026      - install NPM libraries
+                - dotenv, sequelize, mysql2, pg, bcrypt
+                -
+
 06/18/2026      - Started the Lalulla Framework using ReactJS as frontend and ExpressJS as backend
                 - sync framework to Jammi's repo
                 - added a version updater in both client and server
-                - 
+                -
