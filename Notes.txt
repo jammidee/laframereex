@@ -186,6 +186,13 @@ git push -u origin feature01
 2. Click the Create A Pull Request. Then Confirm Merge.
 
 
+AUDIT
+**Run Audit for vulnerabilty
+npm audit
+**If there is a fix run:
+npm audit fix
+
+
 The GEMINI ASSIST
 
 cmd

@@ -2,8 +2,13 @@
  * ------------------------------------------------------------------------
  * Copyright (C) 2026 Lalulla OPC. All rights reserved.
  *
- * PRODUCT NAME : Lalulla React Client Framework
- * AUTHOR       : Gemini (AI Collaborator)
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
  * CREATED DATE : June 23, 2026 11:00 PM
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Controlled Login form component supporting user interactions

@@ -1,12 +1,19 @@
 /**
- * Copyright (C) 2012-2028 Lalulla OPC. All rights reserved.
- * Copyright (c) 2017 - Joel M. Damaso - mailto:jammi_dee@yahoo.com Manila/Philippines
- * This file is part of Lalulla OPC System.
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
  *
- * Framework Designed by: Jammi Dee (jammi_dee@yahoo.com)
- * 03/14/2026 09:59 AM
- *
-*/
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : 03/14/2026 09:59 AM
+ * ------------------------------------------------------------------------
+ * Lalulla Control Configuration
+ * ------------------------------------------------------------------------
+ */
 
 const crypto          = require('crypto');
 const lalullaConfig   = require('./app.lalulla');
