@@ -13,71 +13,122 @@
  * ------------------------------------------------------------------------
  *
  * ------------------------------------------------------------------------
- * DESCRIPTION  : Application orchestrator executing entry evaluation tasks
- * and conditionally managing component rendering.
+ * DESCRIPTION  : Core application orchestrator focused exclusively on secure
+ * session management, authentication, and internal Dashboard rendering.
  * ------------------------------------------------------------------------
  */
 
 import React, { useState, useEffect } from 'react';
-import LoginForm from './components/LoginForm';
-import authService from './services/auth.service';
+import LoginForm    from './views/systems/auth/LoginForm';
+import Dashboard    from './views/capp/Dashboard';
+import authService  from './services/auth.service';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const [user, setUser] = useState(null);
 
-  // Validate active tokens directly on mounts
-  useEffect(() => {
-    const verifySession = async () => {
-      try {
-        const data = await authService.validateToken();
+    //Setup session variables
+    const [isAuthenticated, setIsAuthenticated]     = useState(false);
+    const [checkingAuth, setCheckingAuth]           = useState(true);
+    const [user, setUser]                           = useState(null);
+
+    //===============================
+    // Inject the needed JS Libraries
+    //===============================
+    useEffect(() => {
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                // Prevent duplicate scripts if component re-renders
+                if (document.querySelector(`script[src="${src}"]`)) {
+                    return resolve();
+                }
+                const script = document.createElement('script');
+                script.src = src;
+                script.type = 'text/javascript';
+                script.async = false; // Maintained order execution for core bindings
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Script load failure: ${src}`));
+                document.body.appendChild(script);
+            });
+        };
+
+        const injectDependencies = async () => {
+            try {
+                // Sequential load required for jQuery plugins
+                await loadScript('/admin-lte/plugins/jquery/jquery.min.js');
+                await loadScript('/admin-lte/plugins/popper/popper.min.js');
+                await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
+                await loadScript('/admin-lte/dist/js/adminlte.min.js');
+                await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
+                console.log("Lalulla Core Core plugins initialized successfully.");
+            } catch (err) {
+                console.error("Infrastructure script injection failed:", err);
+            }
+        };
+
+        injectDependencies();
+    }, []);
+
+
+    // Validate active tokens directly on mounts,
+    // check if we are still authenticated.
+    useEffect(() => {
+
+        const verifySession = async () => {
+            try {
+
+                //Reads token from localstorage during validation
+                const data = await authService.validateToken();
+
+                setIsAuthenticated(true);
+                setUser(data.user);
+
+            } catch (err) {
+
+                setIsAuthenticated(false);
+
+            } finally {
+
+                setCheckingAuth(false);
+
+            }
+
+        };
+
+        verifySession();
+
+    }, []);
+
+    const handleLoginSuccess = (data) => {
+
         setIsAuthenticated(true);
-        setUser(data.user);
-      } catch (err) {
-        setIsAuthenticated(false);
-      } finally {
-        setCheckingAuth(false);
-      }
+        setUser(data.user || null);
+
     };
 
-    verifySession();
-  }, []);
+    const handleLogout = () => {
 
-  const handleLoginSuccess = (data) => {
-    setIsAuthenticated(true);
-    // Explicitly set structural user details if returned from verification state
-    setUser(data.user || null);
-  };
+        authService.logout();
+        setIsAuthenticated(false);
+        setUser(null);
 
-  const handleLogout = () => {
-    authService.logout();
-    setIsAuthenticated(false);
-    setUser(null);
-  };
+    };
 
-  if (checkingAuth) {
-    return <div style={{ textRendering: 'geometricPrecision', textAlign: 'center', marginTop: '20%' }}>Validating Session...</div>;
-  }
+    if (checkingAuth) {
 
-  return (
-    <div className="App">
-      {isAuthenticated ? (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h1>Welcome to Lalulla Secure Hub</h1>
-          <p>Authenticated Session Validated.</p>
-          <button 
-            onClick={handleLogout} 
-            style={{ padding: '0.5rem 1rem', background: '#dc3545', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            Logout
-          </button>
+        return <div style={{ textRendering: 'geometricPrecision', textAlign: 'center', marginTop: '20%' }}>Validating Session...</div>;
+
+    }
+
+    // 1. If authenticated, bypass authentication interfaces and route directly to secure panel
+    if (isAuthenticated) {
+        return <Dashboard onLogout={handleLogout} user={user} />;
+    }
+
+    // 2. Unauthenticated State: Anchor user entirely to the login boundary
+    return (
+        <div className="App">
+            <LoginForm onLoginSuccess={handleLoginSuccess} />
         </div>
-      ) : (
-        <LoginForm onLoginSuccess={handleLoginSuccess} />
-      )}
-    </div>
-  );
+    );
 }
 
 export default App;

@@ -28,7 +28,7 @@ class ClientAuthService {
   async login(username, password) {
     // Generate Base64 encoded string: btoa("username:password")
     const credentials = btoa(`${username.trim()}:${password.trim()}`);
-    
+
     const response = await fetch(`${API_BASE_URL}/token`, {
       method: 'POST',
       headers: {

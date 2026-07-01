@@ -1,0 +1,534 @@
+06/24/2026
+Jammi Dee
+
+You are an expert in nodejs / react.
+I am developing a framework or a boilderplate for my reactjs/Nodejs/ExpressJS framework.
+
+This is my react client directory:
+
+C:\DEVS72\LAKUBOREEX\CLIENT
+├───public
+└───src
+    ├───assets
+    ├───components
+    ├───Prompts
+    └───services
+
+This is my server directory:
+
+C:\DEVS72\LAKUBOREEX\SERVER
+└───src
+    ├───config
+    ├───controllers
+    │   ├───api
+    │   │   └───v1
+    │   │       └───systems
+    │   └───systems
+    ├───database
+    │   ├───migrations
+    │   └───seeders
+    ├───helpers
+    ├───middlewares
+    ├───models
+    │   └───systems
+    ├───modules
+    ├───prompts
+    ├───routes
+    │   └───api
+    │       └───v1
+    │           └───systems
+    ├───services
+    │   ├───api
+    │   │   └───v1
+    │   │       └───systems
+    │   └───systems
+    └───utils
+
+Your task is to create a landing page like below in react/bootstrap/AdminLte:
+
+doctype html
+html
+    head
+        meta(charset="utf-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        title Lalulla System | Enterprise Software Solutions
+        include ../../layout/cgHeader.pug
+
+    body(class="hold-transition layout-top-nav")
+        .wrapper
+
+            //- include ../../layout/cgNavigation-no-session.pug
+            //- include ../../layout/laSideBar.pug
+            //- include ../../layout/laRightBar.pug
+
+            div.content-wrapper
+                div.content
+                    div.container-fluid#container-wrapper
+
+                        // Embedded CSS
+                        style.
+                            html { scroll-behavior: smooth; }
+                            .service-card { t	ransition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 12px; }
+                            .service-card:hover { transform: scale(1.05); box-shadow: 0 12px 24px rgba(0,0,0,0.2); z-index: 10; }
+                            .about-section { background: #fff; color: #444; font-family: 'Open Sans','Roboto',Arial,sans-serif; }
+                            .about-section .tagline { text-transform: uppercase; letter-spacing: 3px; font-size: 12px; color: #999; margin-bottom: 10px; }
+                            .about-section .main-heading { font-size: 42px; font-weight: 300; margin-bottom: 20px; color: #222; }
+                            .about-section .lead-text { font-size: 17px; line-height: 1.7; color: #555; }
+                            .video-section { position: relative; width: 100%; height: 700px; overflow: hidden; color: #fff; }
+                            .video-section .nectar-video-wrap { position: absolute; width: 100%; height: 100%; }
+                            .video-section video { width: 100%; height: 100%; object-fit: cover; }
+                            .video-section .video-color-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 1; }
+                            .video-section .video-content { position: relative; z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; }
+                            .counter { font-size: 2.5rem; font-weight: 700; }
+                            .tech-icon { height: 50px; margin: 10px; filter: grayscale(0.2); transition: transform 0.3s ease; }
+                            .tech-icon:hover { transform: scale(1.2); }
+
+                        // Navigation
+                        nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.mb-4.rounded.shadow-sm
+                            div.container
+                                a.navbar-brand.d-flex.align-items-center(href="#")
+                                    img(src="/resources/images/logos/logo160.png" style="height:30px;margin-right:10px;")
+                                    span Lalulla System
+
+                                button.navbar-toggler(type="button", data-toggle="collapse", data-target="#mainNavbar", aria-controls="mainNavbar", aria-expanded="false", aria-label="Toggle navigation")
+                                    span.navbar-toggler-icon
+
+                                div#mainNavbar.collapse.navbar-collapse.justify-content-end
+                                    ul.navbar-nav
+                                        li.nav-item
+                                            a.nav-link(href="#who") Who We Are
+                                        li.nav-item
+                                            a.nav-link(href="#expertise") Our Expertise
+                                        li.nav-item
+                                            a.nav-link(href="#core-values") Core Values
+                                        li.nav-item
+                                            a.nav-link(href="#services") Services
+                                        li.nav-item
+                                            a.nav-link(href="#showcase") Show Case
+                                        li.nav-item
+                                            a.nav-link(href="/auth/login") Client Login
+
+                        // Hero Section with Updated Video
+                        section.video-section
+                            div.video-color-overlay
+                            div.nectar-video-wrap
+                                video(autoplay loop muted playsinline)
+                                    //- source(type="video/mp4" src="https://cdn.coverr.co/videos/coverr-programming-at-night-5176/1080p.mp4")
+                                    source(type="video/mp4" src="https://www.w3schools.com/html/mov_bbb.mp4")
+                            div.video-content
+                                h1 Engineering Enterprise-Grade Systems
+                                span Delivering scalable, secure and mission-critical software solutions
+                                br
+                                br
+                                a.btn.btn-primary.btn-lg(href="#services") Discover Our Capabilities
+
+                        // Who We Are
+                        section#who.about-section.py-5
+                            div.container
+                                div.row.align-items-center
+                                    div.col-lg-6
+                                        p.tagline BUILDING DIGITAL INFRASTRUCTURE
+                                        h2.main-heading Who We Are
+                                        p.lead-text
+                                            | Lalulla System is a technology-driven software development company 
+                                            | specializing in enterprise systems, financial platforms, workflow automation, 
+                                            | API integrations, and high-volume data processing environments.
+                                            | Our solutions are designed for scalability, maintainability, and long-term operational stability.
+                                    div.col-lg-6.text-center
+                                        img.img-fluid.rounded.shadow-sm(
+                                            src="https://images.unsplash.com/photo-1551434678-e076c223a692"
+                                            style="max-height:350px;object-fit:cover;width:100%;"
+                                        )
+
+                        // Our Expertise
+                        section#expertise.about-section.py-5(style="background:#f8f9fa;")
+                            div.container
+                                div.row.align-items-center
+                                    div.col-lg-6.text-center
+                                        img.img-fluid.rounded.shadow-sm(
+                                            src="https://images.unsplash.com/photo-1519389950473-47ba0277781c"
+                                            style="max-height:350px;object-fit:cover;width:100%;"
+                                        )
+                                    div.col-lg-6
+                                        p.tagline ENTERPRISE SPECIALIZATION
+                                        h2.main-heading Our Expertise
+                                        p.lead-text
+                                            | We architect and develop:
+                                            br
+                                            | • Large-scale multi-tenant systems
+                                            br
+                                            | • Workflow and BPM-driven platforms
+                                            br
+                                            | • Data streaming and event-driven architectures
+                                            br
+                                            | • Secure API ecosystems
+                                            br
+                                            | • Government and financial enterprise applications
+                                            br
+                                            | Our team leverages modern stacks including Node.js, Java, MySQL,
+                                            | Kafka, cloud-native technologies, and containerized deployments.
+
+                                // Animated Demographics / Counters
+                                div.row.text-center.mt-4
+                                    div.col-md-3.mb-3
+                                        div.counter(data-target="150") 0
+                                        p Projects Delivered
+                                    div.col-md-3.mb-3
+                                        div.counter(data-target="95") 0
+                                        p Satisfied Clients
+                                    div.col-md-3.mb-3
+                                        div.counter(data-target="50") 0
+                                        p Ongoing Projects
+                                    div.col-md-3.mb-3
+                                        div.counter(data-target="10") 0
+                                        p Years of Experience
+
+                        // Core Values
+                        div#core-values.row.justify-content-center.mb-5.bg-white.p-4.rounded.shadow-sm
+                            div.col-lg-10.text-center
+                                p.tagline OUR FOUNDATION
+                                h2.main-heading Our Core Values
+                                div.row.mt-4
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Custom Software Development
+                                            div.card-body(style="text-align:left;")
+                                                p
+                                                    | We design and build scalable enterprise applications 
+                                                    | tailored to complex business environments, ensuring 
+                                                    | long-term stability, security, and maintainability.
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 System Integration
+                                            div.card-body(style="text-align:left;")
+                                                p
+                                                    | We integrate platforms, APIs, and distributed systems 
+                                                    | into unified digital ecosystems that streamline 
+                                                    | operations and improve data-driven decision making.
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Data Engineering
+                                            div.card-body(style="text-align:left;")
+                                                p
+                                                    | We architect high-performance data pipelines and 
+                                                    | real-time processing environments designed to handle 
+                                                    | enterprise-scale analytics and reporting workloads.
+
+
+
+                        // Services
+                        div#services.row.justify-content-center.mb-5
+                            div.col-lg-10.text-center
+                                h2.main-heading Our Services
+                                div.row.mt-4
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Custom Software Development
+                                            div.card-body.p-4(style="text-align:left;")
+                                                p
+                                                    | We design and develop scalable enterprise applications tailored 
+                                                    | to your business processes and operational requirements.
+                                                ul
+                                                    li Multi-tenant SaaS platforms
+                                                    li Enterprise web & mobile applications
+                                                    li Secure authentication & authorization systems
+                                                    li Long-term maintainable architectures
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 System Integration
+                                            div.card-body.p-4(style="text-align:left;")
+                                                p
+                                                    | We integrate complex systems into unified digital ecosystems 
+                                                    | ensuring seamless data flow and operational efficiency.
+                                                ul
+                                                    li RESTful & secure API ecosystems
+                                                    li Microservices architecture
+                                                    li Workflow & BPM automation
+                                                    li Legacy system modernization
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Data Engineering
+                                            div.card-body.p-4(style="text-align:left;")
+                                                p
+                                                    | We build robust data pipelines and analytics platforms 
+                                                    | capable of handling high-volume enterprise workloads.
+                                                ul
+                                                    li Real-time streaming (Kafka-based architectures)
+                                                    li Reporting & BI dashboards
+                                                    li Data warehousing solutions
+                                                    li Event-driven distributed systems
+                        // Show Case
+                        div#showcase.row.justify-content-center.mb-5
+                            div.col-lg-10.text-center
+                                h2.main-heading Showcase
+                                div.row.mt-4
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Admin Portal
+                                            div.card-body.p-4(style="text-align:left;")
+
+                                                center
+                                                    a.btn.btn-primary.btn-lg(href="/auth/login") Get Started - Login
+                                                br
+                                                br
+                                                p
+                                                    | This page allows the user to login to the main Admin compoment 
+                                                    | of the framework.
+                                                //- ul
+                                                //- 	li Multi-tenant SaaS platforms
+                                                //- 	li Enterprise web & mobile applications
+                                                //- 	li Secure authentication & authorization systems
+                                                //- 	li Long-term maintainable architectures
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Client Portal
+                                            div.card-body.p-4(style="text-align:left;")
+
+                                                center
+                                                    a.btn.btn-primary.btn-lg(href="/auth/login") Get Started - Login as Client
+                                                br
+                                                br
+
+                                                p
+                                                    | This page allows a client user to login to the client pages 
+                                                    | of the system, giving a separate pages for client.
+                                                //- ul
+                                                //- 	li RESTful & secure API ecosystems
+                                                //- 	li Microservices architecture
+                                                //- 	li Workflow & BPM automation
+                                                //- 	li Legacy system modernization
+
+                                    div.col-md-4.mb-3
+                                        div.card.shadow-sm.h-100.service-card
+                                            div.card-header.text-white.bg-primary
+                                                h5.mb-0 Framework Features
+                                            div.card-body.p-4(style="text-align:left;")
+
+                                                center
+                                                    a.btn.btn-primary.btn-lg(href="/site/features") Get Started - Visit Site
+                                                br
+                                                br
+
+                                                p
+                                                    | This pages is a showcase page allowing user to appreciate some of
+                                                    | the framework capabilities.
+                                                //- ul
+                                                //- 	li Real-time streaming (Kafka-based architectures)
+                                                //- 	li Reporting & BI dashboards
+                                                //- 	li Data warehousing solutions
+                                                //- 	li Event-driven distributed systems
+
+                        // Latest Framework from Jammi Dee as of 06/12/2026
+                        div#showcase.row.justify-content-center.mb-5
+                            div.col-lg-10.text-center
+                                h2.main-heading Latest Framework from Lalulla
+                                div.row
+                                    div.col-md-12.mb-12
+                                        div.card.shadow-sm.h-100.service-card
+                                            //- div.card-header.text-white.bg-primary
+                                            //- 	h5.mb-0 Admin Portal
+                                            div.card-body.p-4(style="text-align:left;")
+
+                                                p
+                                                    | Experience the next generation of enterprise development. Engineered by Jammi Dee on a 
+                                                    | cutting-edge Node.js and Express.js core, this framework delivers production-ready security, 
+                                                    | structured architecture, and predictable scalability out of the box. Combined with a highly 
+                                                    | intuitive AdminLTE-driven dashboard, it bridges the gap between rapid business deployment 
+                                                    | and developer efficiency.
+
+                                                p.mb-4
+                                                    | The definitive enterprise application blueprint by Jammi Dee. Built on modern Node.js and 
+                                                    | Express.js, this framework eliminates boilerplate setup by embedding robust architecture and 
+                                                    | ironclad security directly into its core, wrapped in a polished AdminLTE interface.
+
+                                                div.row
+                                                    div.col-6
+                                                        strong Executive Value
+                                                        ul.small.text-muted.mt-2
+                                                            li Faster time-to-market with ready-made architecture
+                                                            li Reduced compliance risk via built-in enterprise security
+                                                            li Lower total cost of ownership (TCO) and long-term maintainability
+                                                    div.col-6
+                                                        strong Developer Experience
+                                                        ul.small.text-muted.mt-2
+                                                            li Clean, decoupled Node.js & Express.js module ecosystem
+                                                            li Zero-turnkey setup for enterprise routing and middleware
+                                                            li Fully customizable, responsive AdminLTE administration UI
+
+                        // Footer
+                        div#contact
+                            footer.p-4.text-white(style="background-color:#000;")
+                                div.row.text-center
+                                    div.col-md-4
+                                        h5 Lalulla System
+                                        p Engineering secure and scalable enterprise systems.
+                                    div.col-md-4
+                                        h5 Contact
+                                        ul.list-unstyled
+                                            li Email: info@lalulla.com
+                                            li Philippines
+                                    div.col-md-4
+                                        h5 Connect
+                                        a.btn.btn-sm.m-1(style="background-color:#3b5998;") Facebook
+                                        a.btn.btn-sm.m-1(style="background-color:#0e76a8;") LinkedIn
+
+            include ../../layout/cgFooter-no-session.pug
+            include ../../layout/cgJs.pug
+            script.
+                // Counter Animation
+                $('.counter').each(function() {
+                    var $this = $(this), countTo = $this.attr('data-target');
+                    $({ countNum: $this.text() }).animate({ countNum: countTo }, {
+                        duration: 2000,
+                        easing:'swing',
+                        step: function() { $this.text(Math.floor(this.countNum)); },
+                        complete: function() { $this.text(this.countNum); }
+                    });
+                });
+                
+The supporting docs:
+
+cgHeader:
+
+title Lalulla
+link(rel='icon', href='/resources/images/logos/favicon.ico')
+
+//AdminLTE 3.2
+link(rel='stylesheet' href='/admin-lte/css/adminlte.css')
+
+//Font Awesome Free
+link(rel='stylesheet' href='/admin-lte/plugins/fontawesome-free/css/all.css')
+
+//iCheck-Bootstrap
+link(rel='stylesheet' href='/admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css')
+
+//Sweet Alert - 03/15/2026
+link(rel='stylesheet' href='/plugins/sweetalert2/sweetalert2.min.css')
+
+
+cgFooter:
+
+// Navbar
+nav.main-header.navbar.navbar-expand.navbar-white.navbar-light
+	// Left navbar links
+	ul.navbar-nav
+		li.nav-item
+			a.nav-link(data-widget="pushmenu", href="#", role="button")
+				i.fas.fa-bars
+		li.nav-item.d-none.d-sm-inline-block
+			a.nav-link(href="index3.html") Home
+		li.nav-item.d-none.d-sm-inline-block
+			a.nav-link Contact
+		li.nav-item.dropdown
+			a.nav-link.dropdown-toggle(href="#", id="navbarDropdown2", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false") Help
+			.dropdown-menu(aria-labelledby="navbarDropdown2")
+				a.dropdown-item FAQ
+				a.dropdown-item Support
+				.dropdown-divider
+				a.dropdown-item Contact
+
+	// SEARCH FORM
+	form.form-inline.ml-3
+		.input-group.input-group-sm
+			input.form-control.form-control-navbar(type="search", placeholder="Search", aria-label="Search")
+			.input-group-append
+				button.btn.btn-navbar(type="submit")
+					i.fas.fa-search
+
+	// Right navbar links
+	//- ul.navbar-nav.ml-auto
+	//- 	// Messages Dropdown Menu
+	//- 	li.nav-item.dropdown
+	//- 		a.nav-link(data-toggle="dropdown", href="#")
+	//- 			i.far.fa-comments
+	//- 			span.badge.badge-danger.navbar-badge 3
+	//- 		.dropdown-menu.dropdown-menu-lg.dropdown-menu-right
+	//- 			a.dropdown-item
+	//- 				// Message Start
+	//- 				.media
+	//- 					img.img-size-50.mr-3.img-circle(src="/resources/images/logos/logo160.png", alt="User Avatar")
+	//- 					.media-body
+	//- 						h3.dropdown-item-title
+	//- 							| Brad Diesel
+	//- 							span.float-right.text-sm.text-danger
+	//- 								i.fas.fa-star
+	//- 						p.text-sm Call me whenever you can...
+	//- 						p.text-sm.text-muted
+	//- 							i.far.fa-clock.mr-1 4 Hours Ago
+	//- 			.dropdown-divider
+	//- 			a.dropdown-item
+	//- 				// Message Start
+	//- 				.media
+	//- 					img.img-size-50.img-circle.mr-3(src="/resources/images/logos/logo160.png", alt="User Avatar")
+	//- 					.media-body
+	//- 						h3.dropdown-item-title
+	//- 							| John Pierce
+	//- 							span.float-right.text-sm.text-muted
+	//- 								i.fas.fa-star
+	//- 						p.text-sm I got your message bro
+	//- 						p.text-sm.text-muted
+	//- 							i.far.fa-clock.mr-1 4 Hours Ago
+	//- 			.dropdown-divider
+	//- 			a.dropdown-item
+	//- 				// Message Start
+	//- 				.media
+	//- 					img.img-size-50.img-circle.mr-3(src="/resources/images/logos/logo160.png", alt="User Avatar")
+	//- 					.media-body
+	//- 						h3.dropdown-item-title
+	//- 							| Nora Silvester
+	//- 							span.float-right.text-sm.text-warning
+	//- 								i.fas.fa-star
+	//- 						p.text-sm The subject goes here
+	//- 						p.text-sm.text-muted
+	//- 							i.far.fa-clock.mr-1 4 Hours Ago
+	//- 			.dropdown-divider
+	//- 			a.dropdown-item.dropdown-footer See All Messages
+
+		// Notifications Dropdown Menu
+		//- li.nav-item.dropdown
+		//- 	a.nav-link(data-toggle="dropdown", href="#")
+		//- 		i.far.fa-bell
+		//- 		span.badge.badge-warning.navbar-badge 15
+		//- 	.dropdown-menu.dropdown-menu-lg.dropdown-menu-right
+		//- 		span.dropdown-header 15 Notifications
+		//- 		.dropdown-divider
+		//- 		a.dropdown-item
+		//- 			i.fas.fa-envelope.mr-2 4 new messages
+		//- 			span.float-right.text-muted.text-sm 3 mins
+		//- 		.dropdown-divider
+		//- 		a.dropdown-item
+		//- 			i.fas.fa-users.mr-2 8 friend requests
+		//- 			span.float-right.text-muted.text-sm 12 hours
+		//- 		.dropdown-divider
+		//- 		a.dropdown-item
+		//- 			i.fas.fa-file.mr-2 3 new reports
+		//- 			span.float-right.text-muted.text-sm 2 days
+		//- 		.dropdown-divider
+		//- 		a.dropdown-item.dropdown-footer See All Notifications
+		//- li.nav-item
+		//- 	a.nav-link(data-widget="fullscreen", href="#", role="button")
+		//- 		i.fas.fa-expand-arrows-alt
+		//- li.nav-item
+		//- 	a.nav-link(data-widget="control-sidebar", data-slide="true", href="#", role="button")
+		//- 		i.fas.fa-th-large
+
+
+I want you to create the structure in react style
+Maintain header comment if possible with time stamp.
+Maintain coding indent of 4 spaces.
+Add comment to your work so devs can understand.
+Im developing an enterprize framework, so I want the codes well organized and modular.
+The landing page also is one of the pages where an entry points to the login page.

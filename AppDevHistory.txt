@@ -11,6 +11,14 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+07/01/2026      - added site.html/ allowing multiple html in react.
+                - added index.html to focus on the main application
+                - fixed the login form
+                - 
+
+06/24/2026      - added landing page using react.
+                -
+
 06/23/2026      - install NPM libraries
                 - dotenv, sequelize, mysql2, pg, bcrypt
                 - created an app.js that resembles the lalulla cgboot2024

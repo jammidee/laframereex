@@ -1,0 +1,4 @@
+LIBRARIES
+
+**@types/node 06/26/2026 - For path shortcuts
+npm install -D @types/node

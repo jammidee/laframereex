@@ -1,0 +1,133 @@
+/**
+ * ============================================================================
+ * Lalulla System - Enterprise Software Solutions Boilerplate
+ * Custom Stylesheet for Main Landing Component
+ * * @author    Joel M. Damaso (Jammi Dee)
+ * @company   Lalulla OPC
+ * @updated   2026-06-24 13:50:00 PST
+ * ============================================================================
+ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Service Card Interactive Scales */
+.service-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+}
+
+.service-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+/* Typography & Section Wrappers */
+.about-section {
+    background: #fff;
+    color: #444;
+    font-family: 'Open Sans', 'Roboto', Arial, sans-serif;
+}
+
+.about-section .tagline {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.about-section .main-heading {
+    font-size: 42px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.about-section .lead-text {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Hero Section Video Background Adjustments */
+.video-section {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
+    color: #fff;
+}
+
+.video-section .nectar-video-wrap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.video-section video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-section .video-color-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
+
+.video-section .video-content {
+    position: relative;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+}
+
+.counter {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.tech-icon {
+    height: 50px;
+    margin: 10px;
+    filter: grayscale(0.2);
+    transition: transform 0.3s ease;
+}
+
+.tech-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Strip default list styling and align menu items horizontally */
+nav ul {
+  list-style-type: none; /* Removes the bullet dots */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2rem;            /* Spacing between the options */
+  justify-content: flex-end; /* Pushes the menu to the right side */
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+nav ul li a:hover {
+  color: #007bff; /* Highlight color on hover */
+}
