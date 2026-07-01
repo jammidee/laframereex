@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "0.0.40",
+  "version": "0.0.44",
   "type": "module",
   "scripts": {
     "predev": "node client-build.cjs",
@@ -12,7 +12,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "fs-extra": "^11.3.5",
+    "ini": "^6.0.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },

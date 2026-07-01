@@ -20,6 +20,7 @@ import React, { useEffect } from 'react';
 
 import LaNavigation from '../layout/laNavigation';
 import LaSideBar    from '../layout/laSideBar';
+import LaFooter     from '../layout/laFooter';
 
 
 /**
@@ -161,7 +162,12 @@ function Dashboard({ onLogout }) {
         {/* /.content */}
       </div>
       {/* /.content-wrapper */}
+
+      {/* Dynamic layout mounting */}
+      <LaFooter />
+
     </div>
+
   );
 }
 

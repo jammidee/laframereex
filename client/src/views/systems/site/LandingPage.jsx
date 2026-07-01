@@ -16,7 +16,12 @@ import Footer from '../../../components/site/Footer';
 
 import '../../../assets/css/site/LandingPage.css';
 
-export default function LandingPage({ onNavigateToLogin }) {
+export default function LandingPage() {
+    // Internal function to handle redirecting to the /index route
+    const handleLoginRedirect = () => {
+        window.location.href = '/index';
+    };
+
     return (
         // <div className="hold-transition layout-top-nav adminlte-wrapper">
             // <div className="wrapper">
@@ -43,7 +48,8 @@ export default function LandingPage({ onNavigateToLogin }) {
                                 .tech-icon:hover { transform: scale(1.2); }
                             `}} />
 
-                            <Navbar onNavigateToLogin={onNavigateToLogin} />
+                            {/* Pass the internal redirection handler instead of the parent prop */}
+                            <Navbar onNavigateToLogin={handleLoginRedirect} />
 
                             <Hero />
 

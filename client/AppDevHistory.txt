@@ -11,6 +11,13 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+07/02/2026      - installed npm install @iarna/toml
+                - created config.toml
+                - modified the vite.config.js
+                - successfully added a global variable via toml
+                - successfully added footer for the framework page.
+                -
+
 06/30/2026      - successfully created a working landing page.
                 -
 

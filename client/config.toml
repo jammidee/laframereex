@@ -1,0 +1,6 @@
+[globalvariables]
+VITE_API_URL = "https://api.example.com"
+VITE_APP_TITLE = "Lalulla System"
+VITE_ENTITYID = "CGONE"
+VITE_APPID = "LALULLA"
+VITE_APPVERSION = "1.0.0"

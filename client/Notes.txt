@@ -2,3 +2,8 @@ LIBRARIES
 
 **@types/node 06/26/2026 - For path shortcuts
 npm install -D @types/node
+
+**07/02/2026
+npm install @iarna/toml --save
+npm install ini --save
+
