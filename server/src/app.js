@@ -174,6 +174,7 @@ app.get('/api/health', (req, res) => {
 // app.use('/auth',                         require('./src/routes/systems/auth.routes'));
 // app.use('/access-denied',                require('./src/routes/systems/access_denied.routes'));
 app.use('/api/v1/systems/auth',          require('./routes/api/v1/systems/auth.routes'));
+app.use('/api/v1/systems/rbac',          require('./routes/api/v1/systems/rbac.routes'));
 // app.use('/api/v1/systems/config',        require('./src/routes/api/v1/systems/config.routes'));
 // app.use('/site',                         require('./src/modules/site/site.routes'));
 // app.use('/users',                        require('./src/modules/user/user.routes'));

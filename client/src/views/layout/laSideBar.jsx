@@ -17,6 +17,8 @@
 
 import React, { useState } from 'react';
 
+import Swal from 'sweetalert2';
+
 function LaSideBar({ user, activePage, can, onLogout }) {
   // Toggle state for the expandable AdminLTE menu dropdowns
   const [isStarterOpen, setIsStarterOpen] = useState(false);
@@ -27,14 +29,37 @@ function LaSideBar({ user, activePage, can, onLogout }) {
     window.location.href = url;
   };
 
+  // const handleLogoutClick = (e) => {
+  //   e.preventDefault();
+  //   if (onLogout) {
+  //     onLogout();
+  //   } else {
+  //     window.location.href = '/auth/logout';
+  //   }
+  // };
+  
   const handleLogoutClick = (e) => {
-    e.preventDefault();
-    if (onLogout) {
-      onLogout();
-    } else {
-      window.location.href = '/auth/logout';
-    }
+      e.preventDefault();
+
+      Swal.fire({
+          title: 'Logout?',
+          text: 'You are about to be signed out.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: 'Yes, logout'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              if (onLogout) {
+                  onLogout();
+              } else {
+                  window.location.href = '/auth/logout';
+              }
+          }
+      });
   };
+
 
   // Fallback function in case the security framework utility isn't passed down
   const hasPermission = (permission, currentUser) => {

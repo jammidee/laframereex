@@ -1,0 +1,1186 @@
+07/02/2027
+Jammi Dee
+
+You are a reactjs developer expert. Im migrating my monolith expressjs application to reactjs client with expressjs as the
+backend.
+
+In my old framework I have this helper:
+
+app.access.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : June 23, 2026 11:00 PM
+ * ------------------------------------------------------------------------
+ * Lalulla Access Control Configuration
+ * ------------------------------------------------------------------------
+ */
+
+const accessConfig = {}
+
+// -------------------------------------------------------------
+// Define group that can be accessed by roles.
+// -------------------------------------------------------------
+accessConfig['cg-roles'] = {
+  'super-group'      : ['Superadmin'],
+  'admin-group'      : ['Superadmin', 'Admin'],
+  'support-group'    : ['Superadmin', 'Admin', 'Support'],
+  'business-group'   : ['Superadmin', 'Admin', 'Manager', 'User', 'Client'],
+  'user-group'       : ['Superadmin', 'Admin', 'Support', 'Manager', 'Guest', 'Visitor'],
+  'guest-group'      : ['Superadmin', 'Admin', 'Support', 'Manager', 'Guest', 'Visitor']
+}
+
+// -------------------------------------------------------------
+// Define menu that can be access by a group
+// -------------------------------------------------------------
+accessConfig['menu-access'] = {
+
+  // Dashboard Right controls
+  'dashboard_access'      : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_manage'      : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_create'      : ['admin-group','support-group'],
+  'dashboard_read'        : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_update'      : ['admin-group','support-group'],
+  'dashboard_delete'      : ['admin-group','support-group'],
+  'dashboard_report'      : ['admin-group','support-group'],
+  
+    // Template Right controls
+  'template_access'      : ['admin-group','support-group','business-group','user-group'],
+  'template_manage'      : ['admin-group','support-group','business-group','user-group'],
+  'template_create'      : ['admin-group','support-group'],
+  'template_read'        : ['admin-group','support-group','business-group','user-group'],
+  'template_update'      : ['admin-group','support-group'],
+  'template_delete'      : ['admin-group','support-group'],
+  'template_report'      : ['admin-group','support-group'],
+
+  // Top Menu controls
+  'topmenu_manage'       : ['admin-group','support-group','business-group','user-group'],
+  'topmenu_create'       : ['admin-group','support-group'],
+  'topmenu_read'         : ['admin-group','support-group','business-group','user-group'],
+  'topmenu_update'       : ['admin-group','support-group'],
+  'topmenu_delete'       : ['admin-group','support-group'],
+
+  // Lookup right controls
+  'lookup_manage'        : ['admin-group','support-group','business-group','user-group'],
+  'lookup_create'        : ['admin-group','support-group'],
+  'lookup_read'          : ['admin-group','support-group','business-group','user-group'],
+  'lookup_update'        : ['admin-group','support-group'],
+  'lookup_delete'        : ['admin-group','support-group'],
+
+  // User right controls
+  'user_manage'          : ['super-group','admin-group'],
+  'user_create'          : ['super-group','admin-group'],
+  'user_read'            : ['super-group','admin-group'],
+  'user_update'          : ['super-group','admin-group'],
+  'user_delete'          : ['super-group','admin-group'],
+  'user_report'          : ['super-group','admin-group'],
+  
+  // Map Marker right controls
+  'mapmarker_manage'     : ['super-group','admin-group'],
+  'mapmarker_create'     : ['super-group','admin-group'],
+  'mapmarker_read'       : ['super-group','admin-group'],
+  'mapmarker_update'     : ['super-group','admin-group'],
+  'mapmarker_delete'     : ['super-group','admin-group'],
+  'mapmarker_report'     : ['super-group','admin-group'],
+
+  // Map Boundaries right controls
+  'mapboundaries_manage' : ['super-group','admin-group'],
+  'mapboundaries_create' : ['super-group','admin-group'],
+  'mapboundaries_read'   : ['super-group','admin-group'],
+  'mapboundaries_update' : ['super-group','admin-group'],
+  'mapboundaries_delete' : ['super-group','admin-group'],
+  'mapboundaries_report' : ['super-group','admin-group'],
+
+  // Calendar right controls
+  'calendar_manage'      : ['super-group','admin-group'],
+  'calendar_create'      : ['super-group','admin-group'],
+  'calendar_read'        : ['super-group','admin-group'],
+  'calendar_update'      : ['super-group','admin-group'],
+  'calendar_delete'      : ['super-group','admin-group'],
+  'calendar_report'      : ['super-group','admin-group'],
+
+  // Setting right controls
+  'setting_manage'       : ['super-group','admin-group'],
+  'setting_create'       : ['super-group','admin-group'],
+  'setting_read'         : ['super-group','admin-group'],
+  'setting_update'       : ['super-group','admin-group'],
+  'setting_delete'       : ['super-group','admin-group'],
+  'setting_report'       : ['super-group','admin-group'],
+
+  // Superadmin right controls
+  'superadmin_manage'    : ['super-group'],
+  'superadmin_create'    : ['super-group'],
+  'superadmin_read'      : ['super-group'],
+  'superadmin_update'    : ['super-group'],
+  'superadmin_delete'    : ['super-group'],
+  'superadmin_report'    : ['super-group'],
+
+  'settings_manage'      : ['super-group','admin-group','support-group'],
+
+  'support_dashboard'    : ['super-group','support-group'],
+  'page_test'            : ['super-group','admin-group','support-group','business-group','user-group'],
+}
+
+module.exports = accessConfig
+
+app.config.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : 03/14/2026 09:59 AM
+ * ------------------------------------------------------------------------
+ * Lalulla Control Configuration
+ * ------------------------------------------------------------------------
+ */
+
+const crypto          = require('crypto');
+const lalullaConfig   = require('./app.lalulla');
+const accessConfig    = require('./app.access');
+
+// ---------------------------------------------
+// Helper
+// ---------------------------------------------
+function md5(value) {
+  return crypto.createHash('md5').update(value).digest('hex');
+}
+
+// ---------------------------------------------
+// Local Config (Superadmins)
+// ---------------------------------------------
+const localConfig = {
+  superadmins: [
+    {
+      email: 'superadmin@cgone.com',
+      password: md5('supersecret123')
+    },
+    {
+      email: 'root@cgone.com',
+      password: md5('toor')
+    }
+  ]
+}
+
+// ---------------------------------------------
+// Merge configs
+// ---------------------------------------------
+module.exports = {
+  ...lalullaConfig,
+  ...localConfig,
+  ...accessConfig
+}
+
+app.lalulla.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : 03/14/2026 09:59 AM
+ * ------------------------------------------------------------------------
+ * Lalulla Control Configuration
+ * ------------------------------------------------------------------------
+ */
+
+const config = {}
+
+// ---------------------------------------------------------------------
+// Application Info
+// ---------------------------------------------------------------------
+
+config.appid            = 'CGONE'
+config.appname          = 'Lalulla System'
+config.appdesc          = 'Lalulla Application Template'
+config.appprefix        = 'FEA'
+config.appversion       = '1.07.1972'
+config.appcopyright     = 'Lalulla OPC'
+config.appentity        = 'LALULLA'
+
+config.cg_version       = '1.19.72'
+config.allowlogin       = true
+config.autoreg          = false
+config.cg_landingpage   = true
+
+config.cfgName          = 'Jammi Dee'
+config.cfgPhone         = '0917-580-9483'
+config.cfgEmail         = 'jammi_dee@yahoo.com'
+
+// ---------------------------------------------------------------------
+// Business
+// ---------------------------------------------------------------------
+
+config.max_user_cap = 50
+
+// ---------------------------------------------------------------------
+// Mail Notification Settings
+// ---------------------------------------------------------------------
+
+config.mail = {
+  api_key:    '111-ae6d6fbf53f804bbb7b753e58ed66970-xyz',
+  api_secret: '222-8cf78ed0415e57bf03ef953fa655fba2-xyz',
+  url:        'https://api.mailjet.com/v3.1/send',
+  from:       'jammi_dee@yahoo.com',
+  app_name:   'Cloudgate One'
+}
+
+// ---------------------------------------------------------------------
+// Client Config
+// ---------------------------------------------------------------------
+
+config.client = {
+  parent_api_url: 'http://localhost:8340'
+}
+
+module.exports = config
+
+This is the helper that controls user access:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 15, 2026 03:34 PM
+ * ------------------------------------------------------------------------
+ */
+
+/**
+ * ------------------------------------------------------------------------
+ * Lalulla Access Helper
+ * ------------------------------------------------------------------------
+ * Detects if a user role has access to a specific menu permission
+ * ------------------------------------------------------------------------
+ */
+
+const config = require('../config/app.config')   // merged config
+// or directly: require('../config/app.access')
+
+/**
+ * ------------------------------------------------------------------------
+ * Check if role can access a specific menu
+ * ------------------------------------------------------------------------
+ * This function evaluates whether a given user role is allowed
+ * to access a specific menu permission based on:
+ * 
+ * 1. menu-access   -> maps menuId to allowed groups
+ * 2. cg-roles      -> maps group to actual user roles
+ *
+ * Flow:
+ * menuId → group(s) → role(s) → match userRole
+ *
+ * @param {String} menuId   - Permission key (ex: 'user_create')
+ * @param {String} userRole - Actual user role (ex: 'Admin')
+ * @returns {Boolean}       - true if allowed, false otherwise
+ * ------------------------------------------------------------------------
+ */
+function canAccessMenu(menuId, userRole) {
+
+  // Get configuration references
+  const menuAccess = config['menu-access']   // permission → groups
+  const roleGroups = config['cg-roles']      // group → roles
+
+  // -------------------------------------------------------------
+  // Validate menuId
+  // If invalid or not defined in config, deny access immediately
+  // -------------------------------------------------------------
+  if (typeof menuId !== 'string' || !menuAccess?.[menuId]) {
+    return false
+  }
+
+  // -------------------------------------------------------------
+  // Ensure groups is always treated as an array
+  // Even if config accidentally stores a single string
+  // -------------------------------------------------------------
+  const groups = Array.isArray(menuAccess[menuId])
+    ? menuAccess[menuId]
+    : [menuAccess[menuId]]
+
+  // -------------------------------------------------------------
+  // Loop through allowed groups for this menu
+  // Check if the userRole exists inside that group
+  // -------------------------------------------------------------
+  for (const group of groups) {
+
+    // If group exists and contains the userRole → grant access
+    if (
+      roleGroups?.[group] &&
+      roleGroups[group].includes(userRole)
+    ) {
+      return true
+    }
+  }
+
+  // -------------------------------------------------------------
+  // If no match found → deny access
+  // -------------------------------------------------------------
+  return false
+}
+
+/**
+ * ------------------------------------------------------------------------
+ * Shortcut Helper
+ * ------------------------------------------------------------------------
+ * Cleaner wrapper that accepts full user object instead of raw role.
+ *
+ * Usage:
+ *   can('user_create', req.user)
+ *
+ * @param {String} menuId
+ * @param {Object} user
+ * @returns {Boolean}
+ * ------------------------------------------------------------------------
+ */
+function can(menuId, user) {
+
+  // console.log(menuId);
+  // console.log(user);
+  // console.log(user?.role);
+  // console.log(canAccessMenu(menuId, user?.role));
+  return canAccessMenu(menuId, user?.role);
+
+}
+
+/**
+ * ------------------------------------------------------------------------
+ * Inverse Shortcut Helper
+ * ------------------------------------------------------------------------
+ * Returns true if user DOES NOT have access.
+ *
+ * Usage:
+ *   if (cannot('user_delete', req.user)) { ... }
+ *
+ * @param {String} menuId
+ * @param {Object} user
+ * @returns {Boolean}
+ * ------------------------------------------------------------------------
+ */
+function cannot(menuId, user) {
+  return !can(menuId, user)
+}
+
+/**
+ * Middleware wrapper
+ */
+// function authorize(menuId) {
+//   return (req, res, next) => {
+
+//     const userRole = req.user?.role;
+
+//     if (!canAccessMenu(menuId, userRole)) {
+//       return res.status(403).json({
+//         success: false,
+//         message: 'Access Denied'
+//       })
+//     }
+
+//     next()
+//   }
+// }
+
+function authorize(menuId) {
+  return (req, res, next) => {
+
+    const userRole = req.user?.role || req.session?.user_role
+
+    if (!canAccessMenu(menuId, userRole)) {
+
+      // Option 1: Simple redirect
+      return res.redirect('/access-denied')
+
+    }
+
+    next()
+  }
+}
+
+module.exports = {
+  canAccessMenu,
+  can,
+  cannot,
+  authorize
+}
+
+My problem is that react client is a separate application and I need to use API to call has permission.
+Design the most efficient way so that every time I use a menu I dont ebd up having to call too many APIs calls
+that would slow down my system and eat my bandwidth.
+
+in my react application, it will be used here:
+
+It will be passed in my Dashboard.jsx
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : June 30, 2026 2:00 AM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Core Dashboard layout orchestration with dynamic body class 
+ *                injection to match native AdminLTE body configuration.
+ * ------------------------------------------------------------------------
+ */
+
+import React, { useEffect } from 'react';
+
+import LaNavigation from '../layout/laNavigation';
+import LaSideBar    from '../layout/laSideBar';
+import LaFooter     from '../layout/laFooter';
+
+
+/**
+ * STUB COMPONENTS
+ * Replace these placeholder sub-components with your actual layout files
+ */
+// function CgNavigation({ onLogout }) {
+//   return (
+//     <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+//       <ul className="navbar-nav">
+//         <li className="nav-item">
+//           <a className="nav-link" data-widget="pushmenu" href="#" role="button">
+//             <i className="fas fa-bars"></i>
+//           </a>
+//         </li>
+//       </ul>
+//       <ul className="navbar-nav ml-auto">
+//         <li className="nav-item">
+//           <button onClick={onLogout} className="btn btn-sm btn-danger">
+//             Logout
+//           </button>
+//         </li>
+//       </ul>
+//     </nav>
+//   );
+// }
+
+// function LaSideBar() {
+//   return (
+//     <aside className="main-sidebar sidebar-dark-primary elevation-4">
+//       <a href="#" className="brand-link">
+//         <span className="brand-text font-weight-light">Lalulla System</span>
+//       </a>
+//       <div className="sidebar">
+//         <nav className="mt-2">
+//           <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+//             <li className="nav-item">
+//               <a href="#" className="nav-link active">
+//                 <i className="nav-icon fas fa-tachometer-alt"></i>
+//                 <p>Dashboard</p>
+//               </a>
+//             </li>
+//           </ul>
+//         </nav>
+//       </div>
+//     </aside>
+//   );
+// }
+
+function LaRightBar() {
+  return (
+    <aside className="control-sidebar control-sidebar-dark">
+      <div className="p-3">
+        <h5>Control Sidebar</h5>
+        <p>Sidebar content</p>
+      </div>
+    </aside>
+  );
+}
+
+/**
+ * MAIN DASHBOARD COMPONENT
+ */
+function Dashboard({ onLogout }) {
+
+  return (
+
+    <div className="wrapper">
+
+      {/* Navigation Top Bar */}
+      <LaNavigation onLogout={onLogout} />
+
+      {/* Left Main Sidebar Menu */}
+      <LaSideBar />
+
+      {/* Right Secondary Control Sidebar */}
+      {/* <LaRightBar /> */}
+
+      {/* Content Wrapper. Contains page content */}
+      <div className="content-wrapper">
+        {/* Content Header (Page header) */}
+        <div className="content-header">
+          <div className="container-fluid">
+            <div className="row mb-2">
+              <div className="col-sm-6">
+                <h6 className="m-0">Dashboard</h6>
+              </div>
+              <div className="col-sm-6">
+                <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
+                  <li className="breadcrumb-item list-inline-item">
+                    <a href="#">Home</a>
+                  </li>
+                  <li className="breadcrumb-item active list-inline-item">Dashboard</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Viewport */}
+        <div className="content">
+          <div className="container-fluid">
+            
+            <div className="row">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-body">
+                    Welcome to Lalulla Secure Hub. Authenticated Session Validated.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {/* /.content */}
+      </div>
+      {/* /.content-wrapper */}
+
+      {/* Dynamic layout mounting */}
+      <LaFooter />
+
+    </div>
+
+  );
+}
+
+export default Dashboard;
+
+and will be used by my LaSideBar.jsx
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : June 30, 2026 2:15 AM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Refactored AdminLTE Sidebar Navigation Component.
+ * ------------------------------------------------------------------------
+ */
+
+import React, { useState } from 'react';
+
+import Swal from 'sweetalert2';
+
+function LaSideBar({ user, activePage, can, onLogout }) {
+  // Toggle state for the expandable AdminLTE menu dropdowns
+  const [isStarterOpen, setIsStarterOpen] = useState(false);
+
+  // Helper function to handle link navigation safely
+  const handleNavigation = (e, url) => {
+    e.preventDefault();
+    window.location.href = url;
+  };
+
+  // const handleLogoutClick = (e) => {
+  //   e.preventDefault();
+  //   if (onLogout) {
+  //     onLogout();
+  //   } else {
+  //     window.location.href = '/auth/logout';
+  //   }
+  // };
+  
+  const handleLogoutClick = (e) => {
+      e.preventDefault();
+
+      Swal.fire({
+          title: 'Logout?',
+          text: 'You are about to be signed out.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: 'Yes, logout'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              if (onLogout) {
+                  onLogout();
+              } else {
+                  window.location.href = '/auth/logout';
+              }
+          }
+      });
+  };
+
+
+  // Fallback function in case the security framework utility isn't passed down
+  const hasPermission = (permission, currentUser) => {
+    if (typeof can === 'function') {
+      return can(permission, currentUser);
+    }
+    return true; // Default fallback if no constraint rules are attached
+  };
+
+  return (
+    <aside className="main-sidebar sidebar-light-yellow elevation-2">
+      {/* Brand Logo */}
+      <a href="/dashboard" className="brand-link" onClick={(e) => handleNavigation(e, '/dashboard')}>
+        <img 
+          src="/resources/images/logos/logo160.png" 
+          alt="AdminLTE Logo" 
+          className="brand-image img-circle elevation-1" 
+          style={{ opacity: 0.8 }} 
+        />
+        <span className="brand-text font-weight-light">Lalulla</span>
+      </a>
+
+      {/* Sidebar Content */}
+      <div className="sidebar">
+        {/* Sidebar user panel */}
+        {/* <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div className="image">
+            <img src="/resources/images/logos/logo160.png" className="img-circle elevation-2" alt="User Image" />
+          </div>
+          <div className="info">
+            <a href="#" className="d-block" onClick={(e) => e.preventDefault()}>
+              {user?.fullname || 'Alexander Pierce'}
+            </a>
+          </div>
+        </div> */}
+
+        {/* Sidebar Menu */}
+        <nav className="mt-2">
+          <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+            
+            {hasPermission('dashboard_manage', user) && (
+              <li className="nav-item">
+                <a 
+                  href="#" 
+                  className={`nav-link ${activePage === 'dashboard' ? 'active' : ''}`}
+                  onClick={(e) => handleNavigation(e, '/dashboard')}
+                >
+                  <i className="nav-icon fas fa-th" />
+                  <p>Dashboard</p>
+                </a>
+              </li>
+            )}
+
+            {hasPermission('template_manage', user) && (
+              <li className="nav-item">
+                <a 
+                  href="#" 
+                  className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                  onClick={(e) => handleNavigation(e, '/module/template')}
+                >
+                  <i className="nav-icon fas fa-columns" />
+                  <p>Template</p>
+                </a>
+              </li>
+            )}
+
+            {/* Treeview Menu: Starter Pages */}
+            <li className={`nav-item ${isStarterOpen ? 'menu-open' : 'menu-close'}`}>
+              <a 
+                href="#" 
+                className="nav-link" 
+                onClick={(e) => { e.preventDefault(); setIsStarterOpen(!isStarterOpen); }}
+              >
+                <i className="nav-icon fas fa-tachometer-alt" />
+                <p>
+                  Starter Pages
+                  <i className="right fas fa-angle-left" />
+                </p>
+              </a>
+              <ul className="nav nav-treeview" style={{ display: isStarterOpen ? 'block' : 'none' }}>
+                <li className="nav-item">
+                  <a href="#" className="nav-link active" onClick={(e) => e.preventDefault()}>
+                    <i className="far fa-circle nav-icon" />
+                    <p>Active Page</p>
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a href="#" className="nav-link" onClick={(e) => e.preventDefault()}>
+                    <i className="far fa-circle nav-icon" />
+                    <p>Inactive Page</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            {hasPermission('dashboard_manage', user) && (
+              <li className="nav-item">
+                <a href="#" className="nav-link" onClick={(e) => e.preventDefault()}>
+                  <i className="nav-icon fas fa-file-alt" />
+                  <p>
+                    Simple Link
+                    <span className="right badge badge-danger">New</span>
+                  </p>
+                </a>
+              </li>
+            )}
+
+            <li className="nav-header">Administration</li>
+
+            {hasPermission('template_manage', user) && (
+              <li className="nav-item">
+                <a 
+                  href="#" 
+                  className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                  onClick={(e) => handleNavigation(e, '/system/entity')}
+                >
+                  <i className="nav-icon fas fa-building" />
+                  <p>Entity</p>
+                </a>
+              </li>
+            )}
+
+            {hasPermission('template_manage', user) && (
+              <li className="nav-item">
+                <a 
+                  href="#" 
+                  className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                  onClick={(e) => handleNavigation(e, '/module/template')}
+                >
+                  <i className="nav-icon fas fa-list-ul" />
+                  <p>Lookup</p>
+                </a>
+              </li>
+            )}
+
+            {hasPermission('template_manage', user) && (
+              <li className="nav-item">
+                <a 
+                  href="#" 
+                  className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                  onClick={(e) => handleNavigation(e, '/system/hello')}
+                >
+                  <i className="nav-icon fas fa-info-circle" />
+                  <p>About</p>
+                </a>
+              </li>
+            )}
+
+            <li className="nav-item">
+              <hr className="sidebar-divider" style={{ borderTop: '1px solid rgba(0,0,0,.1)' }} />
+            </li>
+
+            <li className="nav-header">System</li>
+
+            <li className="nav-item">
+              <a 
+                href="#" 
+                className="nav-link logout-btn" 
+                data-href="/auth/logout" 
+                onClick={handleLogoutClick}
+              >
+                <i className="nav-icon fas fa-sign-out-alt" />
+                <p>Logout</p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+      </div>
+    </aside>
+  );
+}
+
+export default LaSideBar;
+
+make your indention use 4 spaces
+comment you code so I can review it.
+Make sure use my standard header comment.
+
+Here is how I create my API as your reference:
+
+app.js
+app.use('/api/v1/systems/auth',          require('./routes/api/v1/systems/auth.routes'));
+
+auth.route.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : April 07, 2026 09:41 PM
+ * ------------------------------------------------------------------------
+ */
+
+const express          = require('express');
+const router           = express.Router();
+
+const AuthController   = require('../../../../controllers/api/v1/systems/auth.controller');
+const AuthService      = require('../../../../services/api/v1/systems/auth.service');
+const validateToken    = require('../../../../middlewares/jwt.middleware');
+
+const controller = new AuthController(new AuthService());
+
+/**
+ * POST /api/v1/systems/auth/token
+ * Generate JWT
+ */
+router.post('/token', controller.getAccessToken);
+
+/**
+ * GET /api/v1/systems/auth/validate
+ * Validate JWT
+ */
+router.get('/validate', validateToken, controller.validateToken);
+
+/**
+ * GET /api/v1/systems/auth/datetime
+ * Protected endpoint
+ */
+router.get('/datetime', validateToken, controller.getDateTime);
+
+module.exports = router;
+
+auth.controller.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : CloudGate PHP Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 07, 2026 11:50 PM
+ * ------------------------------------------------------------------------
+ */
+
+const crypto          = require('crypto');
+const config          = require('../../config/app.config');
+const logAction       = require('../../utils/logAction');
+const { isLogged }    = require('../../helpers/auth.helper');
+
+
+class AuthController {
+
+  constructor(AuthService) {
+    this.authService = AuthService; // Passed parameter
+  }
+
+  /**
+   * Render Login Page
+   * Uses Pug template from /views/login/index.pug
+   */
+  showLoginPage = async (req, res) => {
+
+    // Just redirect to secured page because we are
+    // still authenticated.
+    if (isLogged(req)) {
+
+      return res.redirect('/dashboard');
+
+    }
+
+    // Get redirect URL from query parameter
+    // (e.g., /auth/login?redirect=/dashboard)
+    const redirectUrl = req.query.redirect || '';
+
+    res.render('systems/auth/login', {
+        error: null,
+        redirect_url: redirectUrl  // pass to the view
+    });
+
+  }
+
+  /**
+   * Handle Login POST
+   * - Calls service
+   * - Creates session
+   */
+  login = async (req, res) => {
+
+    const { username, password, redirect_url } = req.body
+
+    try {
+
+      // -------------------------------------------------
+      // 1️⃣ Check SUPERADMINS from config first
+      // -------------------------------------------------
+
+      const hashedInput = crypto.createHash('md5').update(password).digest('hex');
+
+      // 03/14/2026 Get the matching data in the config.
+      const superadmin = config.superadmins.find(admin =>admin.email === username && admin.password === hashedInput);
+
+      if (superadmin) {
+
+        req.session.user = {
+          id: 'SUPERADMIN', username: superadmin.email, role: 'SUPERADMIN'
+        }
+
+        // ✅ Set Lalulla-style session data
+        req.session.user_id     = 0;
+        req.session.user_name   = 'Superadmin';
+        req.session.user_email  = superadmin.email;
+        req.session.user_role   = 'Superadmin';
+        req.session.user_entity = config.appentity;
+        req.session.user_appid  = config.appid;
+        req.session.logged_in   = true;
+
+        // Optional: update your main app session flag
+        if (req.session.app) {
+          req.session.app.logged = 'YES';
+        }
+
+        // In the app.js, user information is normalized
+        // and loaded to be access by pug like below. The function 'can'
+        // is also published.
+
+        //--------------------------------------------------------
+        // // Globalize req.user
+        // const { can } = require('./src/helpers/access.helper');
+        // app.use((req, res, next) => {
+
+        //   if (req.session?.logged_in) {
+
+        //     req.user = {
+        //       id:     req.session.user_id,
+        //       name:   req.session.user_name,
+        //       email:  req.session.user_email,
+        //       role:   req.session.user_role,
+        //       entity: req.session.user_entity,
+        //       appid:  req.session.user_appid
+        //     }
+
+        //     // expose to pug automatically
+        //     res.locals.user = req.user;
+        //   // Expose can in the pages
+        //   res.locals.can = can;
+
+        //   }
+
+        //   next()
+
+        // })
+        //--------------------------------------------------
+
+        // Redirect back if redirect_url exists
+        if (redirect_url) {
+            return res.redirect(redirect_url);
+        }
+
+        return res.redirect('/dashboard');
+
+      }
+
+      // -------------------------------------------------
+      // 2️⃣ Otherwise check database
+      // -------------------------------------------------
+
+
+      const user = await this.authService.authenticate(username, password)
+
+      // Store minimal session info
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        store_id: user.store_id
+      }
+
+      // ✅ Set Lalulla-style session data
+      req.session.user_id     = user.id;
+      req.session.user_name   = user.username;
+      req.session.user_email  = user.email;
+      req.session.user_role   = user.roleid ?? 'Superadmin';
+      req.session.user_entity = user.entityid;
+      req.session.user_appid  = config.appid;
+      req.session.logged_in   = true;
+
+      // Optional: update your main app session flag
+      if (req.session.app) {
+        req.session.app.logged = 'YES';
+      }
+
+      if (redirect_url) {
+          return res.redirect(redirect_url);
+      }
+
+      // Redirect after successful login
+      res.redirect('/dashboard')
+
+    } catch (err) {
+
+      console.log(`There is an error --------> ${err}.`);
+      res.redirect('/auth/login')
+
+      // Re-render login page with error message
+      // res.render('systems/auth/login', {
+      //   error: err.message
+      // })
+
+    }
+  }
+
+  /**
+   * Logout
+   */
+  // logout = async (req, res) => {
+  //   req.session.destroy(() => {
+  //     res.redirect('/auth/login')
+  //   })
+  // }
+
+logout = async (req, res) => {
+
+  try {
+    await logAction( req,'logout', 'User logged out', 'INFO', false );
+  } catch (err) {
+    console.error(err);
+  }
+
+  req.session.destroy((err) => {
+
+    if (err) {
+      console.error('Session destroy error:', err);
+    }
+
+    res.clearCookie('connect.sid');
+    res.redirect('/auth/login?t=' + Date.now());
+
+  });
+
+};
+
+//Added by Jammi Dee 06/12/2026
+forgot = async (req, res) => {
+
+  try {
+    await logAction( req,'forgot', 'User forgot password invoked', 'INFO', false );
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.render('systems/auth/forgot', {
+    error: null
+  });
+
+};
+
+//Added by Jammi Dee 06/12/2026
+help = async (req, res) => {
+
+  try {
+    await logAction( req,'help', 'User invoked help page.', 'INFO', false );
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.render('systems/auth/help', {
+    error: null
+  });
+
+};
+
+
+
+}
+
+module.exports = AuthController
+
+auth.service.js
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : CloudGate PHP Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 07, 2026 11:50 PM
+ * ------------------------------------------------------------------------
+ */
+
+const bcrypt  = require('bcrypt')
+const User    = require('../../models/user.model')
+
+/**
+ * LoginService
+ * Handles authentication logic only.
+ * No HTTP logic here.
+ */
+class AuthService {
+
+  /**
+   * Validate username & password
+   */
+  async authenticate(email, password) {
+
+    const user = await User.findOne({
+      where: { email }
+    })
+
+    if (!user) {
+      throw new Error('Invalid username or password')
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if (!match) {
+      throw new Error('Invalid username or password')
+    }
+
+    return user
+  }
+}
+
+module.exports = AuthService
+
+place the api under the /api/v1/systems/rbac
+

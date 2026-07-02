@@ -19,6 +19,7 @@ Tested / QA by:				Jammi Dee
                 - Added a customized CSS index.css in the layout
                 - Added sweetalert 2
                 - use of the sweetalert2 to NPM package integration
+                - add a component that will call an API to request for user access - RBAC.
                 -
 
 
