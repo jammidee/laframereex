@@ -16,7 +16,9 @@ Tested / QA by:				Jammi Dee
                 - modified the vite.config.js
                 - successfully added a global variable via toml
                 - successfully added footer for the framework page.
+                - Added a customized CSS index.css in the layout
                 -
+
 
 06/30/2026      - successfully created a working landing page.
                 -

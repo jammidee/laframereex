@@ -50,6 +50,7 @@ function App() {
             });
         };
 
+        //LIbrary dependencies injection
         const injectDependencies = async () => {
             try {
                 // Sequential load required for jQuery plugins

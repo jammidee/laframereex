@@ -86,31 +86,8 @@ function LaRightBar() {
  */
 function Dashboard({ onLogout }) {
 
-    // useEffect(() => {
-    //     // 1. Ensure the layout engine has its state markers on the root document body
-    //     document.body.classList.add('hold-transition', 'sidebar-mini');
-
-    //     // 2. Programmatically force AdminLTE to bind event handlers to the dynamic React elements
-    //     if (window.$ && window.$.fn.PushMenu) {
-    //     window.$('[data-widget="pushmenu"]').PushMenu();
-    //     }
-
-    //     if (window.$ && window.$.fn.Treeview) {
-    //     window.$('[data-widget="treeview"]').Treeview('init');
-    //     }
-
-    //     if (window.$ && window.$.fn.ControlSidebar) {
-    //     window.$('[data-widget="control-sidebar"]').ControlSidebar();
-    //     }
-
-    //     // Cleanup when unmounting or switching to a full-screen layout (e.g., Login)
-    //     return () => {
-    //     document.body.classList.remove('hold-transition', 'sidebar-mini', 'layout-fixed', 'sidebar-collapse');
-    //     };
-    // }, []);
-
   return (
-    
+
     <div className="wrapper">
 
       {/* Navigation Top Bar */}

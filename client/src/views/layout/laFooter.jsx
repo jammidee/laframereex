@@ -23,7 +23,7 @@ export default function LaFooter() {
         <footer className="main-footer">
             <strong>
                 Copyright &copy; 2014-2021 &nbsp;
-                <a href="http://lalulla.com" target="_blank" rel="noopener noreferrer">Lalulla OPC.</a>
+                <a href={CONFIG?.VITE_APPWEBSITE || 'https://wwww.lalulla.com'} target="_blank" rel="noopener noreferrer">Lalulla OPC.</a>
             </strong>
             &nbsp; All rights reserved.
             <div className="float-right d-none d-sm-inline-block">

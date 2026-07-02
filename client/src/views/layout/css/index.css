@@ -1,117 +1,94 @@
-:root {
-    --text: #6b6375;
-    --text-h: #08060d;
-    --bg: #fff;
-    --border: #e5e4e7;
-    --code-bg: #f4f3ec;
-    --accent: #aa3bff;
-    --accent-bg: rgba(170, 59, 255, 0.1);
-    --accent-border: rgba(170, 59, 255, 0.5);
-    --social-bg: rgba(244, 243, 236, 0.5);
-    --shadow:
-        rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
-        rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : July 2, 2026 03:17 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Main App Interface & AdminLTE Layout Override Stylesheet.
+ * ------------------------------------------------------------------------
+ */
 
-    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-    --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-    --mono: ui-monospace, Consolas, monospace;
-
-    font: 18px/145% var(--sans);
-    letter-spacing: 0.18px;
-    color-scheme: light dark;
-    color: var(--text);
-    background: var(--bg);
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    @media (max-width: 1024px) {
-        font-size: 16px;
-    }
+/* Core Work Surface Modifications */
+.content-wrapper {
+    background-color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --text: #9ca3af;
-        --text-h: #f3f4f6;
-        --bg: #16171d;
-        --border: #2e303a;
-        --code-bg: #1f2028;
-        --accent: #c084fc;
-        --accent-bg: rgba(192, 132, 252, 0.15);
-        --accent-border: rgba(192, 132, 252, 0.5);
-        --social-bg: rgba(47, 48, 58, 0.5);
-        --shadow:
-            rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
-            rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-    }
-
-    #social .button-icon {
-        filter: invert(1) brightness(2);
-    }
+/* Dashboard Core Hub Grid Configuration */
+.dashboard-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 100px;
+    margin-top: 40px;
+    justify-content: center;
 }
 
-body {
-    margin: 0;
-}
-
-#root {
-    width: 1126px;
-    max-width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    border-inline: 1px solid var(--border);
-    min-height: 100svh;
+/* Dynamic Hub Buttons Style Rules */
+.dashboard-btn {
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
+    align-items: center;
+    width: 100px;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-h1,
-h2 {
-    font-family: var(--heading);
-    font-weight: 500;
-    color: var(--text-h);
+.dashboard-btn img {
+    width: 120px;
+    height: 120px;
+    border-radius: 20%;
+    margin-bottom: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e1e1e1; /* subtle grey border */
+    padding: 10px;             /* space inside the border */
+    background-color: #f9f9f9; /* optional, to make border stand out */
 }
 
-h1 {
-    font-size: 56px;
-    letter-spacing: -1.68px;
-    margin: 32px 0;
-
-    @media (max-width: 1024px) {
-        font-size: 36px;
-        margin: 20px 0;
-    }
+/* Interaction State Mechanics */
+.dashboard-btn:hover img {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
 }
 
-h2 {
-    font-size: 24px;
-    line-height: 118%;
-    letter-spacing: -0.24px;
-    margin: 0 0 8px;
-
-    @media (max-width: 1024px) {
-        font-size: 20px;
-    }
-}
-
-p {
+.dashboard-btn p {
     margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    color: #303030; /* standard dark text color */
 }
 
-code,
-.counter {
-    font-family: var(--mono);
-    display: inline-flex;
-    border-radius: 4px;
-    color: var(--text-h);
+/* 1. Sidebar Background & Shadow Removal Overrides */
+aside.main-sidebar {
+    background-color: #f8f9fa !important; /* Super light grey (Bootstrap light) */
+    box-shadow: none !important;           /* Removes the elevation shadow */
+    border-right: 1px solid #dee2e6;       /* Subtle border instead of shadow */
 }
 
-code {
-    font-size: 15px;
-    line-height: 135%;
-    padding: 4px 8px;
-    background: var(--code-bg);
+/* 2. Active Sidebar Link Style (The Yellow Accent Line) */
+.nav-sidebar .nav-link.active {
+    background-color: #edebeb !important; /* Matte grey background for active item */
+    color: #212529 !important;
+    border-left: 4px solid #ffc107 !important;
+    border-radius: 0 !important;
+    padding-left: calc(1rem - 4px) !important;
+    box-shadow: none !important;          /* Ensure no inner shadows */
+}
+
+/* 3. Active Sidebar FontAwesome Icon Color Accent */
+.nav-sidebar .nav-link.active i {
+    color: #ffc107 !important;
+}
+
+/* 4. Navigation Menu Global Element Hover Mechanics */
+.nav-sidebar .nav-link:hover {
+    background-color: #e9ecef !important; /* Slightly darker grey hover track */
+    color: #000 !important;
 }
