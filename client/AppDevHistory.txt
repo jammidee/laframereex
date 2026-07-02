@@ -17,6 +17,8 @@ Tested / QA by:				Jammi Dee
                 - successfully added a global variable via toml
                 - successfully added footer for the framework page.
                 - Added a customized CSS index.css in the layout
+                - Added sweetalert 2
+                - use of the sweetalert2 to NPM package integration
                 -
 
 

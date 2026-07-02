@@ -50,7 +50,7 @@ function AppSite() {
                 await loadScript('/admin-lte/plugins/popper/popper.min.js');
                 await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
                 await loadScript('/admin-lte/dist/js/adminlte.min.js');
-                await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
+                // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
                 console.log("Lalulla Core Core plugins initialized successfully.");
             } catch (err) {
                 console.error("Infrastructure script injection failed:", err);

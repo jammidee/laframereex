@@ -6,4 +6,5 @@ npm install -D @types/node
 **07/02/2026
 npm install @iarna/toml --save
 npm install ini --save
+npm install sweetalert2 --save
 

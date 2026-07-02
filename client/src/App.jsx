@@ -23,6 +23,8 @@ import LoginForm    from './views/systems/auth/LoginForm';
 import Dashboard    from './views/capp/Dashboard';
 import authService  from './services/auth.service';
 
+import Swal from 'sweetalert2';
+
 function App() {
 
     //Setup session variables
@@ -58,7 +60,7 @@ function App() {
                 await loadScript('/admin-lte/plugins/popper/popper.min.js');
                 await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
                 await loadScript('/admin-lte/dist/js/adminlte.min.js');
-                await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
+                // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
                 console.log("Lalulla Core Core plugins initialized successfully.");
             } catch (err) {
                 console.error("Infrastructure script injection failed:", err);
@@ -105,12 +107,37 @@ function App() {
 
     };
 
+    // const handleLogout = () => {
+
+    //     authService.logout();
+    //     setIsAuthenticated(false);
+    //     setUser(null);
+
+    // };
+    
     const handleLogout = () => {
+        Swal.fire({
+            title: 'Logout?',
+            text: 'You are about to be signed out.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Yes, logout'
+        }).then((result) => {
 
-        authService.logout();
-        setIsAuthenticated(false);
-        setUser(null);
+            if (result.isConfirmed) {
+                // 1. Execute back-end clean up routine
+                authService.logout();
 
+                // 2. Clear out application context memory nodes
+                setIsAuthenticated(false);
+                setUser(null);
+
+                // Optional: Show a brief toast or notification if redirecting via browser
+                // window.location.href = '/login';
+            }
+        });
     };
 
     if (checkingAuth) {
