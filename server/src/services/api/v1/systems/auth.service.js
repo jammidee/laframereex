@@ -16,7 +16,7 @@ const User   = require('../../../../models/user.model');
 
 require('dotenv').config();
 
-const { JWT_SECRET = 'secret' } = process.env;
+const { JWT_SECRET = 'sic-itur-adastra' } = process.env;
 
 /**
  * AuthService
@@ -56,6 +56,7 @@ class AuthService {
       id:        user.id,
       username:  user.username,
       email:     user.email,
+      roleid:    user.roleid,
       entityid:  user.entityid,
       status:    user.status
     };

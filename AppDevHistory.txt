@@ -11,6 +11,13 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+07/04/2026      - Updated the app.config.js to complete user information.
+                - added roleid in the user seeder
+                - added roleid in the JWT generation
+                - set the JWT secret to SIC-ITUR...
+                - Fixed the gettoken issue
+                -
+
 07/02/2026      - added an API that will return the permission of a user - RBAC.
                 -
 

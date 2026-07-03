@@ -61,6 +61,17 @@ export default defineConfig(() => {
     return {
         plugins: [react()],
         define: defineEnv, // Inject custom config variables globally
+        server: {
+            port: 5173, // Core application frontend listener context
+            proxy: {
+                // Catches local browser calls starting with /api and transparently pipes them down to Express
+                '/api': {
+                    target: 'http://localhost:5000',
+                    changeOrigin: true,
+                    secure: false,
+                }
+            }
+        },
         build: {
             rollupOptions: {
                 input: {

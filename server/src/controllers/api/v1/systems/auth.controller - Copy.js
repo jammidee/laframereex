@@ -13,9 +13,6 @@
  * ------------------------------------------------------------------------
  */
 
-const crypto = require('crypto');
-const config = require('../../../../config/app.config'); // Adjust this path to where your merged config file lives
-
 class AuthController {
 
   constructor(AuthService) {
@@ -26,7 +23,6 @@ class AuthController {
    * POST /token
    * Uses Basic Authorization header
    * Returns JWT access token
-   * Checks config superadmins first before falling back to database
    */
   getAccessToken = async (req, res) => {
 
@@ -45,41 +41,11 @@ class AuthController {
       const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
 
       const [username, password] = credentials.split(':');
-      
-      const cleanUsername = username.trim();
-      const cleanPassword = password.trim();
 
-      let user = null;
-
-      // 1. Check local configuration for superadmins first
-      const superadmins = config.superadmins || [];
-      const inputPasswordMd5 = crypto.createHash('md5').update(cleanPassword).digest('hex');
-
-      const matchedSuperadmin = superadmins.find(
-        admin => admin.email.toLowerCase() === cleanUsername.toLowerCase() && admin.password === inputPasswordMd5
+      const user = await this.authService.authenticateBasic(
+        username.trim(),
+        password.trim()
       );
-
-      if (matchedSuperadmin) {
-        // Construct a mock user object representing the hardcoded superadmin
-        user = {
-
-          id: '0',
-          username: 'Superadmin',
-          email: matchedSuperadmin.email,
-          roleid: 'Superadmin',
-          entityid: config.appentity,
-          appid: config.appid,
-          logged_in: true,
-          is_local_config: true
-        };
-
-      } else {
-        // 2. Fallback to standard database verification via AuthService
-        user = await this.authService.authenticateBasic(
-          cleanUsername,
-          cleanPassword
-        );
-      }
 
       const token = this.authService.generateToken(user);
 

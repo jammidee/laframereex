@@ -19,6 +19,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
+
+import { RbacProvider } from './context/RbacContext';
+
 import LoginForm    from './views/systems/auth/LoginForm';
 import Dashboard    from './views/capp/Dashboard';
 import authService  from './services/auth.service';
@@ -55,13 +58,18 @@ function App() {
         //LIbrary dependencies injection
         const injectDependencies = async () => {
             try {
+
+                //==================================================
                 // Sequential load required for jQuery plugins
+                // Load supporting scripts for libraries being used.
+                //==================================================
                 await loadScript('/admin-lte/plugins/jquery/jquery.min.js');
-                await loadScript('/admin-lte/plugins/popper/popper.min.js');
+                // await loadScript('/admin-lte/plugins/popper/umd/popper.min.js');
                 await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
                 await loadScript('/admin-lte/dist/js/adminlte.min.js');
                 // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
                 console.log("Lalulla Core Core plugins initialized successfully.");
+
             } catch (err) {
                 console.error("Infrastructure script injection failed:", err);
             }
@@ -104,6 +112,7 @@ function App() {
 
         setIsAuthenticated(true);
         setUser(data.user || null);
+        // console.log("User on success...." + JSON.stringify(data) );
 
     };
 
@@ -146,16 +155,18 @@ function App() {
 
     }
 
-    // 1. If authenticated, bypass authentication interfaces and route directly to secure panel
-    if (isAuthenticated) {
-        return <Dashboard onLogout={handleLogout} user={user} />;
-    }
-
-    // 2. Unauthenticated State: Anchor user entirely to the login boundary
     return (
-        <div className="App">
-            <LoginForm onLoginSuccess={handleLoginSuccess} />
-        </div>
+        <RbacProvider isAuthenticated={isAuthenticated}>
+            {isAuthenticated ? (
+                /* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */
+                <Dashboard onLogout={handleLogout} user={user} />
+            ) : (
+                /* 2. Unauthenticated State: Anchor user entirely to the login boundary */
+                <div className="App">
+                    <LoginForm onLoginSuccess={handleLoginSuccess} />
+                </div>
+            )}
+        </RbacProvider>
     );
 }
 

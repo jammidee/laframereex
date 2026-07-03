@@ -84,17 +84,21 @@ function LaRightBar() {
 /**
  * MAIN DASHBOARD COMPONENT
  */
-function Dashboard({ onLogout }) {
+function Dashboard({ user, onLogout }) {
 
+  // console.log("User inside dashboard...." + JSON.stringify(user) );
+  
   return (
 
+    
     <div className="wrapper">
 
       {/* Navigation Top Bar */}
-      <LaNavigation onLogout={onLogout} />
+      <LaNavigation user={user} onLogout={onLogout} />
 
       {/* Left Main Sidebar Menu */}
-      <LaSideBar />
+      {/* <LaSideBar /> */}
+      <LaSideBar user={user} activePage="dashboard" onLogout={onLogout} />
 
       {/* Right Secondary Control Sidebar */}
       {/* <LaRightBar /> */}

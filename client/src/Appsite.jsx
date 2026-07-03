@@ -47,7 +47,7 @@ function AppSite() {
             try {
                 // Sequential load required for jQuery plugins
                 await loadScript('/admin-lte/plugins/jquery/jquery.min.js');
-                await loadScript('/admin-lte/plugins/popper/popper.min.js');
+                // await loadScript('/admin-lte/plugins/popper/popper.min.js');
                 await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
                 await loadScript('/admin-lte/dist/js/adminlte.min.js');
                 // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');

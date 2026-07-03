@@ -16,7 +16,7 @@
  * ------------------------------------------------------------------------
  */
 
-const API_BASE_URL = 'http://localhost:5000/api/v1/systems/auth'; // Adjust your port/domain as needed
+const API_BASE_URL = `${CONFIG?.VITE_BASE_URL || 'http://localhost:5000'}/api/v1/systems/auth`; // Adjust your port/domain as needed
 
 class ClientAuthService {
   /**
@@ -26,17 +26,21 @@ class ClientAuthService {
    * @returns {Promise<object>} response data containing JWT token
    */
   async login(username, password) {
+    
     // Generate Base64 encoded string: btoa("username:password")
     const credentials = btoa(`${username.trim()}:${password.trim()}`);
 
+    //Call login API
     const response = await fetch(`${API_BASE_URL}/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Basic ${credentials}`
       }
+
     });
 
+    //Structured user info
     const data = await response.json();
 
     if (!response.ok || !data.success) {
@@ -49,6 +53,7 @@ class ClientAuthService {
     }
 
     return data;
+    
   }
 
   /**
@@ -59,6 +64,7 @@ class ClientAuthService {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
+    //Call API to vaalidate the token here
     const response = await fetch(`${API_BASE_URL}/validate`, {
       method: 'GET',
       headers: {
@@ -72,6 +78,7 @@ class ClientAuthService {
       throw new Error(data.message || 'Session expired');
     }
 
+    //Return the descypted data from token
     return data;
   }
 

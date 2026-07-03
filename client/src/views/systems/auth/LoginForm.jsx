@@ -20,10 +20,12 @@ import React, { useState } from 'react';
 import authService from '../../../services/auth.service';
 
 const LoginForm = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  //Declare variables to be used.
+  const [username,  setUsername]  = useState('');
+  const [password,  setPassword]  = useState('');
+  const [error,     setError]     = useState('');
+  const [loading,   setLoading]   = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,8 +34,10 @@ const LoginForm = ({ onLoginSuccess }) => {
 
     try {
       const data = await authService.login(username, password);
+      
       // Pass data/token upwards on successful resolution
       onLoginSuccess(data);
+      
     } catch (err) {
       // Capture and display contextual error string from backend response
       setError(err.message);
@@ -46,9 +50,9 @@ const LoginForm = ({ onLoginSuccess }) => {
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <h2 style={styles.title}>Lalulla System Login</h2>
-        
+
         {error && <div style={styles.error}>{error}</div>}
-        
+
         <div style={styles.inputGroup}>
           <label htmlFor="username">Username or Email</label>
           <input

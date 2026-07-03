@@ -13,7 +13,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const { JWT_SECRET = 'secret' } = process.env;
+const { JWT_SECRET = 'sic-itur-adastra' } = process.env;
 
 /**
  * JWT Validation Middleware

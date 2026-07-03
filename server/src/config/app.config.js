@@ -32,12 +32,20 @@ function md5(value) {
 const localConfig = {
   superadmins: [
     {
+      id: '0',
+      username: 'Superadmin',
       email: 'superadmin@cgone.com',
-      password: md5('supersecret123')
+      password: md5('supersecret123'),
+      roleid: 'Superadmin',
+      entityid: 'CGONE'
     },
     {
+      id: '1',
+      username: 'root',
       email: 'root@cgone.com',
-      password: md5('toor')
+      password: md5('toor'),
+      roleid: 'Superadmin',
+      entityid: 'CGONE'
     }
   ]
 }

@@ -11,6 +11,8 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+07/03/2026      -
+
 07/02/2026      - installed npm install @iarna/toml
                 - created config.toml
                 - modified the vite.config.js
@@ -20,7 +22,7 @@ Tested / QA by:				Jammi Dee
                 - Added sweetalert 2
                 - use of the sweetalert2 to NPM package integration
                 - add a component that will call an API to request for user access - RBAC.
-                -
+                - adjusted the favicon.
 
 
 06/30/2026      - successfully created a working landing page.
