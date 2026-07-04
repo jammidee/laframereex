@@ -12,7 +12,9 @@ Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
 07/03/2026      - added routing on the framework
-                - 
+                - added Hello page as a sample page
+                - Todo: Make the nav fixed at the top for m0dules
+                -
 
 07/02/2026      - installed npm install @iarna/toml
                 - created config.toml

@@ -27,6 +27,9 @@ import LoginForm    from './views/systems/auth/LoginForm';
 import Dashboard    from './views/capp/Dashboard';
 import authService  from './services/auth.service';
 
+import Hello        from '../src/views/modules/hello/Hello';
+
+
 import Swal from 'sweetalert2';
 
 function App() {
@@ -174,13 +177,16 @@ function App() {
                             {/* Root path automatically moves to dashboard router context */}
                             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
+
                             {/* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */}
                             <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} user={user} activePage="dashboard" />} />
 
                             {/* Additional secured routing destinations match your layout paths */}
                             <Route path="/system/entity" element={<Dashboard onLogout={handleLogout} user={user} activePage="entity" />} />
                             <Route path="/module/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />
-                            <Route path="/system/hello" element={<Dashboard onLogout={handleLogout} user={user} activePage="hello" />} />
+
+                            {/* Modules */}
+                            <Route path="/modules/hello" element={<Hello onLogout={handleLogout} user={user} activePage="hello" />} />
 
                             {/* Catchall safely keeps signed in context on dashboard */}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />

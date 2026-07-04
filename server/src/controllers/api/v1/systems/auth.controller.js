@@ -73,6 +73,7 @@ class AuthController {
           appid:      config.appid,
           logged_in:  true,
           is_local_config: true
+          
         };
 
       } else {
