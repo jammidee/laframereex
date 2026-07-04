@@ -17,10 +17,12 @@
 
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+
 // Maintained original path since file lives in src/views/layout/laSideBar.jsx
 import { useRbac } from '../../context/RbacContext';
 
 function LaSideBar({ user, activePage, onLogout }) {
+    
     // 1. SAFELY acquire the context object
     const rbac = useRbac();
 
@@ -35,14 +37,14 @@ function LaSideBar({ user, activePage, onLogout }) {
         e.preventDefault();
         window.location.href = url;
     };
-    
+
     const handleLogoutClick = (e) => {
-        
+
         e.preventDefault();
         if (onLogout) {
             onLogout();
         }
-        
+
     };
 
     // Helper function supporting the hook structure with standard fallback safety

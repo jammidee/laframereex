@@ -34,6 +34,8 @@ const localConfig = {
     {
       id: '0',
       username: 'Superadmin',
+      firstname: 'Superadmin',
+      lastname: 'User',
       email: 'superadmin@cgone.com',
       password: md5('supersecret123'),
       roleid: 'Superadmin',
@@ -42,6 +44,8 @@ const localConfig = {
     {
       id: '1',
       username: 'root',
+      firstname: 'Root',
+      lastname: 'User',
       email: 'root@cgone.com',
       password: md5('toor'),
       roleid: 'Superadmin',

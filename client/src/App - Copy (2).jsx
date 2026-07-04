@@ -19,7 +19,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import { RbacProvider } from './context/RbacContext';
 
@@ -166,41 +165,17 @@ function App() {
     }
 
     return (
-        <Router>
-            <RbacProvider isAuthenticated={isAuthenticated}>
-                <Routes>
-                    {isAuthenticated ? (
-                        <>
-                            {/* Root path automatically moves to dashboard router context */}
-                            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-                            {/* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */}
-                            <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} user={user} activePage="dashboard" />} />
-
-                            {/* Additional secured routing destinations match your layout paths */}
-                            <Route path="/system/entity" element={<Dashboard onLogout={handleLogout} user={user} activePage="entity" />} />
-                            <Route path="/module/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />
-                            <Route path="/system/hello" element={<Dashboard onLogout={handleLogout} user={user} activePage="hello" />} />
-
-                            {/* Catchall safely keeps signed in context on dashboard */}
-                            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                        </>
-                    ) : (
-                        <>
-                            {/* 2. Unauthenticated State: Anchor user entirely to the login boundary */}
-                            <Route path="/login" element={
-                                <div className="App">
-                                    <LoginForm onLoginSuccess={handleLoginSuccess} />
-                                </div>
-                            } />
-
-                            {/* Fallback pattern redirects missing URLs back into login terminal */}
-                            <Route path="*" element={<Navigate to="/login" replace />} />
-                        </>
-                    )}
-                </Routes>
-            </RbacProvider>
-        </Router>
+        <RbacProvider isAuthenticated={isAuthenticated}>
+            {isAuthenticated ? (
+                /* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */
+                <Dashboard onLogout={handleLogout} user={user} />
+            ) : (
+                /* 2. Unauthenticated State: Anchor user entirely to the login boundary */
+                <div className="App">
+                    <LoginForm onLoginSuccess={handleLoginSuccess} />
+                </div>
+            )}
+        </RbacProvider>
     );
 }
 

@@ -45,7 +45,7 @@ class AuthController {
       const credentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
 
       const [username, password] = credentials.split(':');
-      
+
       const cleanUsername = username.trim();
       const cleanPassword = password.trim();
 
@@ -63,13 +63,15 @@ class AuthController {
         // Construct a mock user object representing the hardcoded superadmin
         user = {
 
-          id: '0',
-          username: 'Superadmin',
-          email: matchedSuperadmin.email,
-          roleid: 'Superadmin',
-          entityid: config.appentity,
-          appid: config.appid,
-          logged_in: true,
+          id:         matchedSuperadmin.id,
+          username:   matchedSuperadmin.username,
+          firstname:  matchedSuperadmin.firstname,
+          lastname:   matchedSuperadmin.lastname,
+          email:      matchedSuperadmin.email,
+          roleid:     matchedSuperadmin.roleid,
+          entityid:   matchedSuperadmin.entityid,
+          appid:      config.appid,
+          logged_in:  true,
           is_local_config: true
         };
 

@@ -18,9 +18,14 @@
 import React from 'react';
 
 function LaNavigation({ user, onLogout }) {
+
+    // console.log("User inside LaNavigation...." + JSON.stringify(user?.firstname) );
+    
     const handleLogoutClick = (e) => {
+
         e.preventDefault();
         if (onLogout) onLogout();
+
     };
 
     return (
@@ -194,7 +199,7 @@ function LaNavigation({ user, onLogout }) {
                             style={{ width: '32px', height: '32px', objectFit: 'cover' }} 
                         />
                         <span className="d-none d-md-inline ml-2">
-                            {user?.username || 'User'}
+                            {user?.firstname || 'User'}
                         </span>
                     </a>
                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">

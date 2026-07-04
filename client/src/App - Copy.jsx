@@ -19,7 +19,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import { RbacProvider } from './context/RbacContext';
 
@@ -89,10 +88,10 @@ function App() {
 
                 //Reads token from localstorage during validation
                 const data = await authService.validateToken();
-                console.log("verifySession...." + JSON.stringify(data.user) );
 
                 setIsAuthenticated(true);
                 setUser(data.user);
+                console.log("verifySession...." + JSON.stringify(data.user) );
 
             } catch (err) {
 
@@ -110,29 +109,22 @@ function App() {
 
     }, []);
 
-    const handleLoginSuccess = async (loginData) => {
-        try {
+    const handleLoginSuccess = (data) => {
 
-            // 1. Ensure the token is in localStorage first
-            if (loginData && loginData.token) {
-                localStorage.setItem('token', loginData.token);
-            }
+        setIsAuthenticated(true);
+        setUser(data.user || null);
+        console.log("User on success...." + JSON.stringify(data) );
 
-            // 2. Run your verification service immediately to fetch the clean user profile
-            const verifiedData = await authService.validateToken();
-            // console.log("User profile fetched successfully post-login:", verifiedData.user);
-
-            // 3. Commit fully validated data to state
-            setUser(verifiedData.user);
-            setIsAuthenticated(true);
-
-        } catch (err) {
-            console.error("Failed to safely establish session flow:", err);
-            setIsAuthenticated(false);
-            setUser(null);
-        }
     };
 
+    // const handleLogout = () => {
+
+    //     authService.logout();
+    //     setIsAuthenticated(false);
+    //     setUser(null);
+
+    // };
+    
     const handleLogout = () => {
         Swal.fire({
             title: 'Logout?',
@@ -145,7 +137,6 @@ function App() {
         }).then((result) => {
 
             if (result.isConfirmed) {
-
                 // 1. Execute back-end clean up routine
                 authService.logout();
 
@@ -166,41 +157,17 @@ function App() {
     }
 
     return (
-        <Router>
-            <RbacProvider isAuthenticated={isAuthenticated}>
-                <Routes>
-                    {isAuthenticated ? (
-                        <>
-                            {/* Root path automatically moves to dashboard router context */}
-                            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-                            {/* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */}
-                            <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} user={user} activePage="dashboard" />} />
-
-                            {/* Additional secured routing destinations match your layout paths */}
-                            <Route path="/system/entity" element={<Dashboard onLogout={handleLogout} user={user} activePage="entity" />} />
-                            <Route path="/module/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />
-                            <Route path="/system/hello" element={<Dashboard onLogout={handleLogout} user={user} activePage="hello" />} />
-
-                            {/* Catchall safely keeps signed in context on dashboard */}
-                            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                        </>
-                    ) : (
-                        <>
-                            {/* 2. Unauthenticated State: Anchor user entirely to the login boundary */}
-                            <Route path="/login" element={
-                                <div className="App">
-                                    <LoginForm onLoginSuccess={handleLoginSuccess} />
-                                </div>
-                            } />
-
-                            {/* Fallback pattern redirects missing URLs back into login terminal */}
-                            <Route path="*" element={<Navigate to="/login" replace />} />
-                        </>
-                    )}
-                </Routes>
-            </RbacProvider>
-        </Router>
+        <RbacProvider isAuthenticated={isAuthenticated}>
+            {isAuthenticated ? (
+                /* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */
+                <Dashboard onLogout={handleLogout} user={user} />
+            ) : (
+                /* 2. Unauthenticated State: Anchor user entirely to the login boundary */
+                <div className="App">
+                    <LoginForm onLoginSuccess={handleLoginSuccess} />
+                </div>
+            )}
+        </RbacProvider>
     );
 }
 

@@ -12,7 +12,7 @@
  * CREATED DATE : June 30, 2026 2:00 AM
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Core Dashboard layout orchestration with dynamic body class 
- *                injection to match native AdminLTE body configuration.
+ * injection to match native AdminLTE body configuration.
  * ------------------------------------------------------------------------
  */
 
@@ -71,14 +71,14 @@ import LaFooter     from '../layout/laFooter';
 // }
 
 function LaRightBar() {
-  return (
-    <aside className="control-sidebar control-sidebar-dark">
-      <div className="p-3">
-        <h5>Control Sidebar</h5>
-        <p>Sidebar content</p>
-      </div>
-    </aside>
-  );
+    return (
+        <aside className="control-sidebar control-sidebar-dark">
+            <div className="p-3">
+                <h5>Control Sidebar</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+    );
 }
 
 /**
@@ -86,70 +86,69 @@ function LaRightBar() {
  */
 function Dashboard({ user, onLogout }) {
 
-  // console.log("User inside dashboard...." + JSON.stringify(user) );
+    console.log("User inside dashboard...." + JSON.stringify(user) );
   
-  return (
+    return (
 
-    
-    <div className="wrapper">
+        <div className="wrapper">
 
-      {/* Navigation Top Bar */}
-      <LaNavigation user={user} onLogout={onLogout} />
+            {/* Navigation Top Bar */}
+            <LaNavigation user={user} onLogout={onLogout} />
 
-      {/* Left Main Sidebar Menu */}
-      {/* <LaSideBar /> */}
-      <LaSideBar user={user} activePage="dashboard" onLogout={onLogout} />
+            {/* Left Main Sidebar Menu */}
+            {/* <LaSideBar /> */}
+            <LaSideBar user={user} activePage="dashboard" onLogout={onLogout} />
 
-      {/* Right Secondary Control Sidebar */}
-      {/* <LaRightBar /> */}
+            {/* Right Secondary Control Sidebar */}
+            {/* <LaRightBar /> */}
 
-      {/* Content Wrapper. Contains page content */}
-      <div className="content-wrapper">
-        {/* Content Header (Page header) */}
-        <div className="content-header">
-          <div className="container-fluid">
-            <div className="row mb-2">
-              <div className="col-sm-6">
-                <h6 className="m-0">Dashboard</h6>
-              </div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
-                  <li className="breadcrumb-item list-inline-item">
-                    <a href="#">Home</a>
-                  </li>
-                  <li className="breadcrumb-item active list-inline-item">Dashboard</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Viewport */}
-        <div className="content">
-          <div className="container-fluid">
-            
-            <div className="row">
-              <div className="col-12">
-                <div className="card">
-                  <div className="card-body">
-                    Welcome to Lalulla Secure Hub. Authenticated Session Validated.
-                  </div>
+            {/* Content Wrapper. Contains page content */}
+            <div className="content-wrapper">
+                {/* Content Header (Page header) */}
+                <div className="content-header">
+                    <div className="container-fluid">
+                        <div className="row mb-2">
+                            <div className="col-sm-6">
+                                <h6 className="m-0">Dashboard</h6>
+                            </div>
+                            <div className="col-sm-6">
+                                <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
+                                    <li className="breadcrumb-item list-inline-item">
+                                        <a href="#">Home</a>
+                                    </li>
+                                    <li className="breadcrumb-item active list-inline-item">Dashboard</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+
+                {/* Main Content Viewport */}
+                <div className="content">
+                    <div className="container-fluid">
+                
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-body">
+                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {/* /.content */}
             </div>
+            {/* /.content-wrapper */}
 
-          </div>
+            {/* Dynamic layout mounting */}
+            <LaFooter />
+
         </div>
-        {/* /.content */}
-      </div>
-      {/* /.content-wrapper */}
 
-      {/* Dynamic layout mounting */}
-      <LaFooter />
-
-    </div>
-
-  );
+    );
 }
 
 export default Dashboard;

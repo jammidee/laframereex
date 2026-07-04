@@ -53,12 +53,14 @@ class AuthService {
   generateToken(user) {
 
     const payload = {
-      id:        user.id,
-      username:  user.username,
-      email:     user.email,
-      roleid:    user.roleid,
-      entityid:  user.entityid,
-      status:    user.status
+      id:         user.id,
+      username:   user.username,
+      firstname:  user.firstname,
+      lastname:   user.lastname,
+      email:      user.email,
+      roleid:     user.roleid,
+      entityid:   user.entityid,
+      status:     user.status
     };
 
     return jwt.sign(payload, JWT_SECRET, {
