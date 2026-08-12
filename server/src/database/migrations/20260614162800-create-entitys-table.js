@@ -159,7 +159,7 @@ module.exports = {
       },
 
       is_deleted: {
-        type: Sequelize.TINYINT(1),
+        type: Sequelize.SMALLINT(1),
         allowNull: false,
         defaultValue: 0
       },
@@ -173,7 +173,7 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
 
     });

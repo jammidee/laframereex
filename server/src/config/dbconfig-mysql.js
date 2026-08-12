@@ -17,27 +17,19 @@
 
 module.exports = {
   development: {
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_NAME || 'cloudgateone',
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
+    username: 'root',
+    password: 'password',
+    database: 'cloudgateone',
+    host: 'localhost',
+    dialect: 'mysql',
     logging: false
   },
   production: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false // Required if using managed cloud providers like Heroku/AWS RDS
-      }
-    }
+    username: 'root',
+    password: 'password',
+    database: 'cloudgateone',
+    host: 'localhost',
+    dialect: 'mysql',
+    logging: false
   }
 };

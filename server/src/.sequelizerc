@@ -1,0 +1,38 @@
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla NodeJS Framework
+ * CREATED DATE : March 28, 2026 05:19 PM
+ * ------------------------------------------------------------------------
+ */
+
+// npx sequelize-cli db:migrate
+
+// Reference table: select * from sequelizemeta;
+
+// Creating the user table:
+// npx sequelize-cli migration:generate --name create-users-table
+// npx sequelize-cli migration:generate --name create-systemlogs-table
+
+// Undoing the migration
+// npx sequelize-cli db:migrate:undo:all
+
+// Running the migrate
+// npx sequelize-cli db:migrate
+
+// Running the migrate
+// npx sequelize-cli db:migrate
+
+// Running seeds
+// npx sequelize-cli db:seed:all
+
+const path = require('path');
+
+module.exports = {
+  'config':             path.resolve('config/dbconfig.js'),
+  'models-path':        path.resolve('models'),
+  'seeders-path':       path.resolve('database/seeders'),
+  'migrations-path':    path.resolve('database/migrations'),
+};

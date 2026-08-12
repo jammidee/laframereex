@@ -32,6 +32,31 @@ import Hello        from '../src/views/modules/hello/Hello';
 
 import Swal from 'sweetalert2';
 
+    // =========================================================================
+    // AUTO-REGISTRATION ENGINE (Vite Glob Import Engine)
+    // Matches files inside: src/views/modules/{folder}/{file}.jsx
+    // Maps to URL path: /modules/{folder}/{file}
+    // =========================================================================
+    const modulesGlob = import.meta.glob('./views/modules/*/*.jsx', { eager: true });
+    const autoRegisteredRoutes = Object.keys(modulesGlob).map((filePath) => {
+        // filePath example: "./views/modules/hello/Hello.jsx"
+        const cleanedPath   = filePath.replace('./views/modules/', ''); // -> "hello/Hello.jsx"
+        const segments      = cleanedPath.split('/');
+
+        const folder        = segments[0]; // -> "hello"
+        const fileName      = segments[1].replace('.jsx', '').toLowerCase(); // -> "hello"
+
+        // Target Route URL schema requested: /modules/folder/xxxx
+        const routePath     = `/modules/${folder}/${fileName}`;
+        const Component     = modulesGlob[filePath].default;
+
+        return {
+            path:       routePath,
+            Component:  Component,
+            activePage: folder // Dynamic active state indicator context for layouts
+        };
+    });
+
 function App() {
 
     //Setup session variables

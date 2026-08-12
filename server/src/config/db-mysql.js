@@ -13,14 +13,13 @@
  * ------------------------------------------------------------------------
  */
 
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require('sequelize')
 
-// connect to PostgreSQL
-const sequelize = new Sequelize('cloudgateone', 'postgres', 'password', {
+// connect to MySQL
+const sequelize = new Sequelize('cloudgateone', 'root', 'password', {
   host: 'localhost',
-  port: 5432,
-  dialect: 'postgres',
+  dialect: 'mysql',
   logging: false, // true for SQL logging
-});
+})
 
-module.exports = sequelize;
+module.exports = sequelize
