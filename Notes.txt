@@ -126,7 +126,11 @@ CREATION PROCESS:
 		or la.bat
 		
 
+6. Running the migrate and the seeder
 
+	- make sure you are inside the scr folder. Run the script below:
+		- npx sequelize-cli db:migrate
+		- npx sequelize-cli db:seed:all
 
 LIBRARIES
 
