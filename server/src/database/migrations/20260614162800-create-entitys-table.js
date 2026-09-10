@@ -30,7 +30,7 @@ module.exports = {
       
       // Database internal primary auto-incrementing key for optimization
       id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.BIGINT,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
@@ -124,7 +124,7 @@ module.exports = {
 
       // Numerical Configuration (Replacing raw doubles with specific, safe types)
       max_users: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.BIGINT,
         allowNull: true,
         defaultValue: 0
       },
@@ -159,7 +159,7 @@ module.exports = {
       },
 
       is_deleted: {
-        type: Sequelize.SMALLINT(1),
+        type: Sequelize.SMALLINT,
         allowNull: false,
         defaultValue: 0
       },

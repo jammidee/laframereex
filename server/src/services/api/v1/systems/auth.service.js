@@ -60,7 +60,15 @@ class AuthService {
       email:      user.email,
       roleid:     user.roleid,
       entityid:   user.entityid,
-      status:     user.status
+      status:     user.status,
+
+      //Extended data
+      storeid:    user.store_id   ?? 0,
+      phone:      user.phone      ?? '',
+      region:     user.region     ?? '',
+      province:   user.province   ?? '',
+      municipal:  user.municipal  ?? ''
+
     };
 
     return jwt.sign(payload, JWT_SECRET, {
