@@ -17,13 +17,39 @@
  * EMAIL        : jammi_dee@yahoo.com
  * CREATED DATE : March 28, 2026 05:31 PM
  * ------------------------------------------------------------------------
+ * npx sequelize-cli db:migrate:undo:all
+ * npx sequelize-cli db:migrate --to 20260328092358-create-users-table.js
+ * npx sequelize-cli db:seed --seed 20260328095233-seed-users.js
+ * 
+ * # 1. Drop all tables and re-run all migrations from scratch:
+ * npx sequelize-cli db:migrate:undo:all
+  npx sequelize-cli db:migrate:refresh
+
+  # 2. Re-run all migrations AND re-populate all seeders at once:
+  npx sequelize-cli db:migrate:refresh && npx sequelize-cli db:seed:all
+  
  */
+
 
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+
+
+
+    const dialect = queryInterface.sequelize.getDialect();
+
+    // Enable Postgres Extensions (e.g., pgcrypto, uuid-ossp)
+    // Execute extension creation ONLY if running on PostgreSQL
+    if (dialect === 'postgres') {
+
+      await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto";');
+      await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
+    }
+
     await queryInterface.createTable('users', {
 
       id: {
@@ -80,6 +106,46 @@ module.exports = {
       store_id: {
         type: Sequelize.BIGINT,
         allowNull: true
+      },
+
+      region: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+      
+      regiondesc: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+
+      province: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+      
+      provincedesc: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+
+      municipal: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+
+      municipaldesc: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+
+      brgy: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+
+      brgydesc: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
 
       status: {

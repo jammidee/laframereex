@@ -173,14 +173,14 @@ app.get('/api/health', (req, res) => {
 // app.use('/api/v1/hello',                 require('./src/routes/api/v1/hello/hello.routes'));
 // app.use('/auth',                         require('./src/routes/systems/auth.routes'));
 // app.use('/access-denied',                require('./src/routes/systems/access_denied.routes'));
-app.use('/api/v1/systems/auth',          require('./routes/api/v1/systems/auth.routes'));
-app.use('/api/v1/systems/rbac',          require('./routes/api/v1/systems/rbac.routes'));
+app.use('/api/v1/systems/auth',             require('./routes/api/v1/systems/auth.routes'));
+app.use('/api/v1/systems/rbac',             require('./routes/api/v1/systems/rbac.routes'));
 // app.use('/api/v1/systems/config',        require('./src/routes/api/v1/systems/config.routes'));
 // app.use('/site',                         require('./src/modules/site/site.routes'));
 // app.use('/users',                        require('./src/modules/user/user.routes'));
 // app.use('/welcome',                      require('./src/modules/welcome/welcome.routes'));
 // app.use('/system/hello',                 require('./src/routes/systems/hello.routes'));
-// app.use('/system/entity',                require('./src/routes/systems/entity.routes'));
+app.use('/api/v1/systems/entity',           require('./routes/api/v1/systems/entity.routes'));
 // app.use('/dashboard',                    require('./src/routes/capp/dashboard/dashboard.routes'));
 // app.use('/module/template',              require('./src/modules/tmpl/tmpl.routes'));
 
@@ -224,7 +224,7 @@ app.use((err, req, res, next) => {
 const bootstrapSystem = async () => {
     try {
         console.info('[System] Verifying database cluster connection state...');
-        
+
         // Ensure Sequelize active cluster communication loops are functional before accepting traffic
         await sequelize.authenticate();
         console.info('[System] Database cluster handshakes verified.');

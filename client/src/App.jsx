@@ -27,7 +27,15 @@ import LoginForm    from './views/systems/auth/LoginForm';
 import Dashboard    from './views/capp/Dashboard';
 import authService  from './services/auth.service';
 
+//Other System Module Pages
+import EntityAll    from './views/systems/entity/EntityAll';
+
+//================================
+// Other User Modules Declaration
+//================================
 import Hello        from '../src/views/modules/hello/Hello';
+import BaseMap      from '../src/views/modules/basemap/BaseMap';
+
 
 
 import Swal from 'sweetalert2';
@@ -206,12 +214,20 @@ function App() {
                             {/* 1. If authenticated, bypass authentication interfaces and route directly to secure panel */}
                             <Route path="/dashboard" element={<Dashboard onLogout={handleLogout} user={user} activePage="dashboard" />} />
 
+
+                            {/* =========== System Modules =========== */}
                             {/* Additional secured routing destinations match your layout paths */}
-                            <Route path="/system/entity" element={<Dashboard onLogout={handleLogout} user={user} activePage="entity" />} />
-                            <Route path="/module/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />
+                            <Route path="/system/entity" element={<EntityAll onLogout={handleLogout} user={user} activePage="entity" />} />
+
+                            <Route path="/modules/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />
+                            {/* =========== System Modules =========== */}
+
+
+
 
                             {/* Modules */}
                             <Route path="/modules/hello" element={<Hello onLogout={handleLogout} user={user} activePage="hello" />} />
+                            <Route path="/modules/basemap" element={<BaseMap onLogout={handleLogout} user={user} activePage="basemap" />} />
 
                             {/* Catchall safely keeps signed in context on dashboard */}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />

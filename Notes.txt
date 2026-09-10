@@ -262,6 +262,11 @@ npm install https --save
 03/15/2026
 npm install sweetalert2 --save
 
+08/25/2026 - Map Support
+npm install leaflet react-leaflet
+npm install --save-dev @types/leaflet
+
+
 EXTENSIONS
 
 1. Rest Client - Huachao Mao

@@ -1,0 +1,122 @@
+08/25/2026
+
+You are an expert in react / nodejs monorepo development.
+
+Create a module in reactjs / nodejs to create a page of a map.
+
+Here is the main page BaseMap.jsx
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 25, 2026 02:17 AM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : About page and represents how to create page in a single 
+ * folder.
+ * ------------------------------------------------------------------------
+ */
+
+import React, { useEffect } from 'react';
+
+import LaNavigation from './layout/laNavigation';
+import LaSideBar    from './layout/laSideBar';
+import LaFooter     from './layout/laFooter';
+
+
+/**
+ * STUB COMPONENTS
+ * Replace these placeholder sub-components with your actual layout files
+ */
+
+function LaRightBar() {
+    return (
+        <aside className="control-sidebar control-sidebar-dark">
+            <div className="p-3">
+                <h5>Control Sidebar</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+    );
+}
+
+/**
+ * HELLO COMPONENT
+ */
+function Hello({ user, onLogout }) {
+  
+    return (
+
+        <div className="wrapper">
+
+            {/* Navigation Top Bar */}
+            <LaNavigation user={user} onLogout={onLogout} />
+
+            {/* Left Main Sidebar Menu */}
+            {/* <LaSideBar /> */}
+            <LaSideBar user={user} activePage="dashboard" onLogout={onLogout} />
+
+            {/* Right Secondary Control Sidebar */}
+            {/* <LaRightBar /> */}
+
+            {/* Content Wrapper. Contains page content */}
+            <div className="content-wrapper">
+                {/* Content Header (Page header) */}
+                <div className="content-header">
+                    <div className="container-fluid">
+                        <div className="row mb-2">
+                            <div className="col-sm-6">
+                                <h6 className="m-0">Hello</h6>
+                            </div>
+                            <div className="col-sm-6">
+                                <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
+                                    <li className="breadcrumb-item list-inline-item">
+                                        <a href="#">Home</a>
+                                    </li>
+                                    <li className="breadcrumb-item active list-inline-item">Hello</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content Viewport */}
+                <div className="content">
+                    <div className="container-fluid">
+
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-body">
+                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. Hello page.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {/* /.content */}
+            </div>
+            {/* /.content-wrapper */}
+
+            {/* Dynamic layout mounting */}
+            <LaFooter />
+
+        </div>
+
+    );
+}
+
+export default Hello;
+
+Maintain the coding style, with header comments.
+The script is just a template.
+
