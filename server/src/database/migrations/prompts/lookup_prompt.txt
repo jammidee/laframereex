@@ -1,3 +1,59 @@
+// Create by Jammi Dee
+// 09/11/2026
+
+Your task to create a migrate script for table lookup. The migrate script uses sequelize in a nodejs environment.
+The table lookup is used as reference table for all modules.
+Call the table 'lookups' and the name convention is similar to this '20260328092358-create-users-table.js'.
+if the columns below are not present, always add them:
+
+| juid        | char(36)     | YES  |     |                |       |
+| entityid    | varchar(20)  | YES  |     | NULL           |       |
+| appid       | varchar(36)  | YES  |     | NULL           |       |
+
+// Place here the columns that are new...
+
+| sstatus     | varchar(20)  | YES  |     | ACTIVE         |       |
+| pid         | varchar(36)  | YES  |     | 000000         |       |
+| userid      | varchar(20)  | YES  |     | _NA_           |       |
+| deleted     | int          | YES  |     | 0              |       |
+
+Here is the lookup table definition:
+
++-------------+--------------+------+-----+----------------+-------+
+| Field       | Type         | Null | Key | Default        | Extra |
++-------------+--------------+------+-----+----------------+-------+
+| id          | BIGINT       | NO   | PRI |                | auto_increment      |
+| juid        | char(36)     | YES  |     |                |       |
+| entityid    | varchar(20)  | YES  |     | NULL           |       |
+| appid       | varchar(36)  | YES  |     | NULL           |       |
+| keyid       | varchar(20)  | YES  |     | NULL           |       |
+| itemid      | varchar(20)  | YES  |     | NULL           |       |
+| description | varchar(200) | YES  |     | NULL           |       |
+| colstr01    | varchar(20)  | YES  |     | _NA_           |       |
+| colstr02    | varchar(20)  | YES  |     | _NA_           |       |
+| colstr03    | varchar(20)  | YES  |     | _NA_           |       |
+| colnum01    | double       | YES  |     | 0              |       |
+| colnum02    | double       | YES  |     | 0              |       |
+| coldate01   | date         | YES  |     | NULL           |       |
+| coldate02   | date         | YES  |     | NULL           |       |
+| coltime01   | time         | YES  |     | NULL           |       |
+| coltime02   | time         | YES  |     | NULL           |       |
+| contact     | varchar(200) | YES  |     | _NA_           |       |
+| address     | varchar(200) | YES  |     | _NA_           |       |
+| city        | varchar(200) | YES  |     | _NA_           |       |
+| postal      | varchar(200) | YES  |     | _NA_           |       |
+| markerdate  | date         | YES  |     | NULL           |       |
+| phone       | varchar(20)  | YES  |     | (000) 000-0000 |       |
+| fax         | varchar(20)  | YES  |     | (000) 000-0000 |       |
+| telex       | varchar(20)  | YES  |     | (000) 000-0000 |       |
+| sstatus     | varchar(20)  | YES  |     | ACTIVE         |       |
+| pid         | varchar(36)  | YES  |     | 000000         |       |
+| userid      | varchar(20)  | YES  |     | _NA_           |       |
+| deleted     | int          | YES  |     | 0              |       |
++-------------+--------------+------+-----+----------------+-------+
+
+Use the script below as reference:
+
 /**
  * ------------------------------------------------------------------------
  * Copyright (C) 2026 Lalulla OPC. All rights reserved.
@@ -16,18 +72,7 @@
  * LOCATION     : Manila, Philippines
  * EMAIL        : jammi_dee@yahoo.com
  * CREATED DATE : March 28, 2026 05:31 PM
- * ------------------------------------------------------------------------
- * npx sequelize-cli db:migrate:undo:all
- * npx sequelize-cli db:migrate --to 20260328092358-create-users-table.js
- * npx sequelize-cli db:seed --seed 20260328095233-seed-users.js
- * 
- * # 1. Drop all tables and re-run all migrations from scratch:
- * npx sequelize-cli db:migrate:undo:all
-  npx sequelize-cli db:migrate:refresh
-
-  # 2. Re-run all migrations AND re-populate all seeders at once:
-  npx sequelize-cli db:migrate:refresh && npx sequelize-cli db:seed:all
-  
+ * ------------------------------------------------------------------------  
  */
 
 
@@ -45,23 +90,10 @@ module.exports = {
     // Execute extension creation ONLY if running on PostgreSQL
     if (dialect === 'postgres') {
 
-      // Query installed extensions from PostgreSQL system catalog
-        const [results] = await queryInterface.sequelize.query(
-          `SELECT extname FROM pg_extension WHERE extname IN ('pgcrypto', 'uuid-ossp');`
-        );
-
-        const installedExtensions = results.map(row => row.extname);
-
-        if (!installedExtensions.includes('pgcrypto')) {
-          await queryInterface.sequelize.query('CREATE EXTENSION "pgcrypto";');
-        }
-
-        if (!installedExtensions.includes('uuid-ossp')) {
-          await queryInterface.sequelize.query('CREATE EXTENSION "uuid-ossp";');
-        }
+      await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto";');
+      await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
     }
-
 
     await queryInterface.createTable('users', {
 
@@ -135,7 +167,7 @@ module.exports = {
         type: Sequelize.STRING(20),
         allowNull: true,
       },
-      
+
       provincedesc: {
         type: Sequelize.TEXT,
         allowNull: true,
@@ -214,3 +246,7 @@ module.exports = {
     await queryInterface.dropTable('users');
   }
 };
+
+Maintain the coding style, including comments
+Adjust the timestamp in the header comment
+Make that the script supports postgres and mysql based on the dialect

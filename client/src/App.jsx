@@ -224,10 +224,10 @@ function App() {
 
 
 
-
                             {/* Modules */}
                             <Route path="/modules/hello" element={<Hello onLogout={handleLogout} user={user} activePage="hello" />} />
                             <Route path="/modules/basemap" element={<BaseMap onLogout={handleLogout} user={user} activePage="basemap" />} />
+
 
                             {/* Catchall safely keeps signed in context on dashboard */}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />

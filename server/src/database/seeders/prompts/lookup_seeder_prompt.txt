@@ -1,0 +1,510 @@
+// Create by Jammi Dee
+// 09/11/2026
+
+Your task is to create a seeder for a sequelized generated table. The seeder script uses sequelize in a nodejs environment.
+The target table is lookups that will be reference by different modules.
+The table 'lookups' and the name convention is similar to this '20260328092358-seed-users.js'.
+
+The columns below are system columns. I specify their initial seeder data:
+
+| juid        | char(36)     | YES  |     |                |       | -> auto increment
+| entityid    | varchar(20)  | YES  |     | NULL           |       | -> LALULLA 
+| appid       | varchar(36)  | YES  |     | NULL           |       | -> CGONE
+
+// Place here the columns that are new...
+
+| sstatus     | varchar(20)  | YES  |     | ACTIVE         |       |
+| pid         | varchar(36)  | YES  |     | 000000         |       |
+| userid      | varchar(20)  | YES  |     | _NA_           |       |
+| deleted     | int          | YES  |     | 0              |       |
+
+Below is the migrate script:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * Lalulla System is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 11, 2026 01:18 AM
+ * ------------------------------------------------------------------------
+ * npx sequelize-cli migration:generate --name create-lookups-table
+ */
+
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+
+    const dialect = queryInterface.sequelize.getDialect();
+
+    // Enable Postgres Extensions (e.g., pgcrypto, uuid-ossp)
+    // Execute extension creation ONLY if running on PostgreSQL
+    if (dialect === 'postgres') {
+
+      // Query installed extensions from PostgreSQL system catalog
+        const [results] = await queryInterface.sequelize.query(
+          `SELECT extname FROM pg_extension WHERE extname IN ('pgcrypto', 'uuid-ossp');`
+        );
+
+        const installedExtensions = results.map(row => row.extname);
+
+        if (!installedExtensions.includes('pgcrypto')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "pgcrypto";');
+        }
+
+        if (!installedExtensions.includes('uuid-ossp')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "uuid-ossp";');
+        }
+
+    }
+
+    await queryInterface.createTable('lookups', {
+
+      id: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+      },
+
+      juid: {
+        type: Sequelize.CHAR(36),
+        allowNull: true
+      },
+
+      entityid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      appid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      keyid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      itemid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      description: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      colstr01: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr02: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr03: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colnum01: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      colnum02: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      coldate01: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coldate02: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime01: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime02: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      contact: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      address: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      city: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      postal: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      markerdate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      phone: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      fax: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      telex: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      sstatus: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: 'ACTIVE'
+      },
+
+      pid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: '000000'
+      },
+
+      userid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      deleted: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+      }
+
+    });
+
+    // Indexes
+    await queryInterface.addIndex('lookups', ['entityid']);
+    await queryInterface.addIndex('lookups', ['appid']);
+    await queryInterface.addIndex('lookups', ['keyid']);
+    await queryInterface.addIndex('lookups', ['itemid']);
+    await queryInterface.addIndex('lookups', ['sstatus']);
+    await queryInterface.addIndex('lookups', ['pid']);
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('lookups');
+  }
+};
+
+Below is the seeder reference script:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * Lalulla System is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : March 28, 2026 05:57 PM
+ * ------------------------------------------------------------------------
+ */
+
+'use strict';
+
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+
+    const passwordHash     = await bcrypt.hash('P@55w0rd!Admin', 10);
+    const userPasswordHash = await bcrypt.hash('P@55w0rd!User', 10);
+
+    await queryInterface.bulkInsert('users', [
+      {
+        juid: crypto.randomUUID(),
+        username: 'superadmin',
+        password: passwordHash,
+        email: 'superadmin@lalulla.com',
+        firstname: 'Super',
+        lastname: 'Admin',
+        phone: '09170000001',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Superadmin',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'admin',
+        password: userPasswordHash,
+        email: 'admin@lalulla.com',
+        firstname: 'Admin',
+        lastname: 'User',
+        phone: '09170000003',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Admin',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'manager',
+        password: userPasswordHash,
+        email: 'manager@lalulla.com',
+        firstname: 'Manager',
+        lastname: 'User',
+        phone: '09170000004',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Manager',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'approver',
+        password: userPasswordHash,
+        email: 'approver@lalulla.com',
+        firstname: 'Approver',
+        lastname: 'User',
+        phone: '09170000005',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Approver',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'reviewer',
+        password: userPasswordHash,
+        email: 'reviewer@lalulla.com',
+        firstname: 'Reviewer',
+        lastname: 'User',
+        phone: '09170000006',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Reviewer',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'support',
+        password: userPasswordHash,
+        email: 'support@lalulla.com',
+        firstname: 'Support',
+        lastname: 'User',
+        phone: '09170000007',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Support',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      },
+      {
+        juid: crypto.randomUUID(),
+        username: 'testuser',
+        password: userPasswordHash,
+        email: 'testuser@lalulla.com',
+        firstname: 'Testuser',
+        lastname: 'User',
+        phone: '09170000008',
+        gender: 1,
+        store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
+        status: 'ACTIVE',
+        roleid: 'Testuser',
+        entityid: 'GCONE',
+        last_login_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
+      }
+    ], {});
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete('users', {
+      username: ['superadmin', 'admin', 'manager', 'approver', 'reviewer', 'support', 'testuser']
+    }, {});
+  }
+};
+
+Maintain the coding style, including comments
+Adjust the timestamp in the header comment
+Make that the script supports postgres and mysql based on the dialect
+
+For the initial data example:
+
+Keyid = "GENDER"
+itemid = "MALE"
+description = "Male"
+Keyid = "GENDER"
+itemid = "FEMALE"
+description = "Female"
+
+Leave the rest by default or NULL.
+
+Now create the following:
+GENDER
+MARITAL-STATUS
+EDUCATION - limit to Philippines educatonal attainment
+CURRENCY - peso, usd, yen, euro
+LANGUAGE - english, filipino, Spanish french
+DEPARTMENT - hr, purchasing, operations, development, finance, executive
+
