@@ -12,6 +12,8 @@ Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
 09/10/2026      - Added script in the database migrate user table to include postgres extension.
+                - Added table lookup and its migrate and seeder with model
+                - Added configdb model, controller and routes
 
 09/09/2026      - create a note on undoing all the migrations
                 -
