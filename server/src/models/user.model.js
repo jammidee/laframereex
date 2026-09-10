@@ -1,6 +1,6 @@
 /**
  * ------------------------------------------------------------------------
- * Copyright (C) 2025 Lalulla OPC. All rights reserved.
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
  *
  * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
  * This file is part of the Lalulla System.
@@ -15,17 +15,7 @@
  * AUTHOR       : Jammi Dee (Joel M. Damaso)
  * LOCATION     : Manila, Philippines
  * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : March 07, 2026 11:30 PM
- * ------------------------------------------------------------------------
- */
-
-/**
- * ------------------------------------------------------------------------
- * Copyright (C) 2026 Lalulla OPC. All rights reserved.
- *
- * PRODUCT NAME : Lalulla Nodejs Framework
- * AUTHOR       : Jammi Dee (Joel M. Damaso)
- * CREATED DATE : March 28, 2026
+ * CREATED DATE : March 28, 2026 05:31 PM
  * ------------------------------------------------------------------------
  */
 
@@ -38,6 +28,12 @@ const User          = sequelize.define('User', {
     type: DataTypes.BIGINT,
     primaryKey: true,
     autoIncrement: true,
+  },
+
+  juid: {
+    type: DataTypes.CHAR(36),
+    allowNull: false,
+    unique: true,
   },
 
   username: {
@@ -83,10 +79,56 @@ const User          = sequelize.define('User', {
     allowNull: true,
   },
 
+  region: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+  },
+
+  regiondesc: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
+  province: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+  },
+
+  provincedesc: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
+  municipal: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+  },
+
+  municipaldesc: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
+  brgy: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+  },
+
+  brgydesc: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
   status: {
     type: DataTypes.STRING(20),
     allowNull: false,
     defaultValue: 'ACTIVE',
+  },
+
+  roleid: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'USER',
   },
 
   entityid: {

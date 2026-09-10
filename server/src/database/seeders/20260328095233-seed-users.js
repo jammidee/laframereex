@@ -17,18 +17,29 @@
  * EMAIL        : jammi_dee@yahoo.com
  * CREATED DATE : March 28, 2026 05:57 PM
  * ------------------------------------------------------------------------
+ * npx sequelize-cli db:migrate:undo:all
+ * npx sequelize-cli db:migrate --to 20260328092358-create-users-table.js
+ * npx sequelize-cli db:seed --seed 20260328095233-seed-users.js
+ * 
+ * # 1. Drop all tables and re-run all migrations from scratch:
+ * npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate
+ *
+ * # 2. Re-run all migrations AND re-populate all seeders at once:
+ * npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all
+ * 
  */
 
 'use strict';
 
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    const passwordHash      = await bcrypt.hash('P@55w0rd!Admin', 10);
-    const userPasswordHash  = await bcrypt.hash('P@55w0rd!User', 10);
+    const passwordHash     = await bcrypt.hash('P@55w0rd!Admin', 10);
+    const userPasswordHash = await bcrypt.hash('P@55w0rd!User', 10);
 
     await queryInterface.bulkInsert('users', [
       {
@@ -41,6 +52,14 @@ module.exports = {
         phone: '09170000001',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Superadmin',
         entityid: 'GCONE',
@@ -59,6 +78,14 @@ module.exports = {
         phone: '09170000003',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Admin',
         entityid: 'GCONE',
@@ -77,6 +104,14 @@ module.exports = {
         phone: '09170000004',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Manager',
         entityid: 'GCONE',
@@ -95,6 +130,14 @@ module.exports = {
         phone: '09170000005',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Approver',
         entityid: 'GCONE',
@@ -113,6 +156,14 @@ module.exports = {
         phone: '09170000006',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Reviewer',
         entityid: 'GCONE',
@@ -131,6 +182,14 @@ module.exports = {
         phone: '09170000007',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Support',
         entityid: 'GCONE',
@@ -149,6 +208,14 @@ module.exports = {
         phone: '09170000008',
         gender: 1,
         store_id: null,
+        region: null,
+        regiondesc: null,
+        province: null,
+        provincedesc: null,
+        municipal: null,
+        municipaldesc: null,
+        brgy: null,
+        brgydesc: null,
         status: 'ACTIVE',
         roleid: 'Testuser',
         entityid: 'GCONE',
@@ -162,7 +229,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('users', {
-      username: ['superadmin', 'admin', 'manager', 'approver', 'reviewer','support', 'testuser']
+      username: ['superadmin', 'admin', 'manager', 'approver', 'reviewer', 'support', 'testuser']
     }, {});
   }
 };
