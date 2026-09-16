@@ -21,6 +21,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
+// 09/ 16 / 2026
+import { injectCorePlugins } from './services/pluginLoader';
+
+
 import { RbacProvider } from './context/RbacContext';
 
 import LoginForm    from './views/systems/auth/LoginForm';
@@ -35,7 +39,6 @@ import EntityAll    from './views/systems/entity/EntityAll';
 //================================
 import Hello        from '../src/views/modules/hello/Hello';
 import BaseMap      from '../src/views/modules/basemap/BaseMap';
-
 
 
 import Swal from 'sweetalert2';
@@ -76,43 +79,48 @@ function App() {
     // Inject the needed JS Libraries
     //===============================
     useEffect(() => {
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                // Prevent duplicate scripts if component re-renders
-                if (document.querySelector(`script[src="${src}"]`)) {
-                    return resolve();
-                }
-                const script = document.createElement('script');
-                script.src = src;
-                script.type = 'text/javascript';
-                script.async = false; // Maintained order execution for core bindings
-                script.onload = () => resolve();
-                script.onerror = () => reject(new Error(`Script load failure: ${src}`));
-                document.body.appendChild(script);
-            });
-        };
+        
+        
+        // const loadScript = (src) => {
+        //     return new Promise((resolve, reject) => {
+        //         // Prevent duplicate scripts if component re-renders
+        //         if (document.querySelector(`script[src="${src}"]`)) {
+        //             return resolve();
+        //         }
+        //         const script = document.createElement('script');
+        //         script.src = src;
+        //         script.type = 'text/javascript';
+        //         script.async = false; // Maintained order execution for core bindings
+        //         script.onload = () => resolve();
+        //         script.onerror = () => reject(new Error(`Script load failure: ${src}`));
+        //         document.body.appendChild(script);
+        //     });
+        // };
 
-        //LIbrary dependencies injection
-        const injectDependencies = async () => {
-            try {
+        // //LIbrary dependencies injection
+        // const injectDependencies = async () => {
+        //     try {
 
-                //==================================================
-                // Sequential load required for jQuery plugins
-                // Load supporting scripts for libraries being used.
-                //==================================================
-                await loadScript('/admin-lte/plugins/jquery/jquery.min.js');
-                // await loadScript('/admin-lte/plugins/popper/umd/popper.min.js');
-                await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
-                await loadScript('/admin-lte/dist/js/adminlte.min.js');
-                // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
-                console.log("Lalulla Core Core plugins initialized successfully.");
+        //         //==================================================
+        //         // Sequential load required for jQuery plugins
+        //         // Load supporting scripts for libraries being used.
+        //         //==================================================
+        //         await loadScript('/admin-lte/plugins/jquery/jquery.min.js');
+        //         // await loadScript('/admin-lte/plugins/popper/umd/popper.min.js');
+        //         await loadScript('/admin-lte/node_modules/bootstrap/dist/js/bootstrap.js');
+        //         await loadScript('/admin-lte/dist/js/adminlte.min.js');
+        //         // await loadScript('/admin-lte/plugins/sweetalert2/sweetalert2.all.min.js');
+        //         console.log("Lalulla Core Core plugins initialized successfully.");
 
-            } catch (err) {
-                console.error("Infrastructure script injection failed:", err);
-            }
-        };
+        //     } catch (err) {
+        //         console.error("Infrastructure script injection failed:", err);
+        //     }
+        // };
 
-        injectDependencies();
+        // injectDependencies();
+        
+        injectCorePlugins();
+        
     }, []);
 
 

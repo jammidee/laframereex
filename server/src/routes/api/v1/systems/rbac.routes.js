@@ -10,11 +10,12 @@
  * ------------------------------------------------------------------------
  */
 
-const express          = require('express');
-const router           = express.Router();
+const express               = require('express');
+const router                = express.Router();
 
-const RbacController   = require('../../../../controllers/api/v1/systems/rbac.controller');
-const validateToken    = require('../../../../middlewares/jwt.middleware');
+const RbacController        = require('../../../../controllers/api/v1/systems/rbac.controller');
+const validateToken         = require('../../../../middlewares/jwt.middleware');
+const ipWhitelist           = require('../../../../middlewares/ipWhitelist.middleware');
 
 const controller = new RbacController();
 
@@ -22,6 +23,6 @@ const controller = new RbacController();
  * GET /api/v1/systems/rbac/permissions
  * Fetches the mapped permissions dictionary for the authenticated user
  */
-router.get('/permissions', validateToken, controller.getUserPermissions);
+router.get('/permissions', ipWhitelist, validateToken, controller.getUserPermissions);
 
 module.exports = router;

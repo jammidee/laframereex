@@ -51,7 +51,15 @@ const localConfig = {
       roleid: 'Superadmin',
       entityid: 'CGONE'
     }
+  ],
+
+  // Define allowed IP whitelist addresses (supports IPv4 / IPv6 / loopback)
+  ipWhitelist: [
+    '127.0.0.1',
+    '::1',
+    '192.168.1.50' // Example internal office IP
   ]
+
 }
 
 // ---------------------------------------------

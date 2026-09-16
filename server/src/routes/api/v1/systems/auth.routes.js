@@ -16,6 +16,7 @@ const router           = express.Router();
 const AuthController   = require('../../../../controllers/api/v1/systems/auth.controller');
 const AuthService      = require('../../../../services/api/v1/systems/auth.service');
 const validateToken    = require('../../../../middlewares/jwt.middleware');
+// const ipWhitelist      = require('../../../../middlewares/ipWhitelist.middleware');
 
 const controller = new AuthController(new AuthService());
 

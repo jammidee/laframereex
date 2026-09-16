@@ -1,0 +1,222 @@
+// 0917/2026
+
+You are a nodedjs expert. You are task to create an IP whitelisting during an API Call.
+
+This is how I create my config:
+
+app.access.js
+/**
+ * ------------------------------------------------------------------------
+ * Lalulla Access Control Configuration
+ * ------------------------------------------------------------------------
+ */
+
+const accessConfig = {}
+
+// -------------------------------------------------------------
+// Define group that can be accessed by roles.
+// -------------------------------------------------------------
+accessConfig['cg-roles'] = {
+  'super-group'      : ['Superadmin'],
+  'admin-group'      : ['Superadmin', 'Admin'],
+  'support-group'    : ['Superadmin', 'Admin', 'Support'],
+  'business-group'   : ['Superadmin', 'Admin', 'Manager', 'User', 'Client'],
+  'user-group'       : ['Superadmin', 'Admin', 'Support', 'Manager', 'Guest', 'Visitor'],
+  'guest-group'      : ['Superadmin', 'Admin', 'Support', 'Manager', 'Guest', 'Visitor']
+}
+
+// -------------------------------------------------------------
+// Define menu that can be access by a group
+// -------------------------------------------------------------
+accessConfig['menu-access'] = {
+
+  // Dashboard Right controls
+  'dashboard_access'      : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_manage'      : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_create'      : ['admin-group','support-group'],
+  'dashboard_read'        : ['admin-group','support-group','business-group','user-group'],
+  'dashboard_update'      : ['admin-group','support-group'],
+  'dashboard_delete'      : ['admin-group','support-group'],
+  'dashboard_report'      : ['admin-group','support-group'],
+  
+    // Template Right controls
+  'template_access'      : ['admin-group','support-group','business-group','user-group'],
+  'template_manage'      : ['admin-group','support-group','business-group','user-group'],
+  'template_create'      : ['admin-group','support-group'],
+  'template_read'        : ['admin-group','support-group','business-group','user-group'],
+  'template_update'      : ['admin-group','support-group'],
+  'template_delete'      : ['admin-group','support-group'],
+  'template_report'      : ['admin-group','support-group'],
+
+  // Top Menu controls
+  'topmenu_manage'       : ['admin-group','support-group','business-group','user-group'],
+  'topmenu_create'       : ['admin-group','support-group'],
+  'topmenu_read'         : ['admin-group','support-group','business-group','user-group'],
+  'topmenu_update'       : ['admin-group','support-group'],
+  'topmenu_delete'       : ['admin-group','support-group'],
+
+  // Lookup right controls
+  'lookup_manage'        : ['admin-group','support-group','business-group','user-group'],
+  'lookup_create'        : ['admin-group','support-group'],
+  'lookup_read'          : ['admin-group','support-group','business-group','user-group'],
+  'lookup_update'        : ['admin-group','support-group'],
+  'lookup_delete'        : ['admin-group','support-group'],
+
+  // User right controls
+  'user_manage'          : ['super-group','admin-group'],
+  'user_create'          : ['super-group','admin-group'],
+  'user_read'            : ['super-group','admin-group'],
+  'user_update'          : ['super-group','admin-group'],
+  'user_delete'          : ['super-group','admin-group'],
+  'user_report'          : ['super-group','admin-group'],
+  
+  // Map Marker right controls
+  'mapmarker_manage'     : ['super-group','admin-group'],
+  'mapmarker_create'     : ['super-group','admin-group'],
+  'mapmarker_read'       : ['super-group','admin-group'],
+  'mapmarker_update'     : ['super-group','admin-group'],
+  'mapmarker_delete'     : ['super-group','admin-group'],
+  'mapmarker_report'     : ['super-group','admin-group'],
+
+  // Map Boundaries right controls
+  'mapboundaries_manage' : ['super-group','admin-group'],
+  'mapboundaries_create' : ['super-group','admin-group'],
+  'mapboundaries_read'   : ['super-group','admin-group'],
+  'mapboundaries_update' : ['super-group','admin-group'],
+  'mapboundaries_delete' : ['super-group','admin-group'],
+  'mapboundaries_report' : ['super-group','admin-group'],
+
+  // Calendar right controls
+  'calendar_manage'      : ['super-group','admin-group'],
+  'calendar_create'      : ['super-group','admin-group'],
+  'calendar_read'        : ['super-group','admin-group'],
+  'calendar_update'      : ['super-group','admin-group'],
+  'calendar_delete'      : ['super-group','admin-group'],
+  'calendar_report'      : ['super-group','admin-group'],
+
+  // Setting right controls
+  'setting_manage'       : ['super-group','admin-group'],
+  'setting_create'       : ['super-group','admin-group'],
+  'setting_read'         : ['super-group','admin-group'],
+  'setting_update'       : ['super-group','admin-group'],
+  'setting_delete'       : ['super-group','admin-group'],
+  'setting_report'       : ['super-group','admin-group'],
+
+  // Superadmin right controls
+  'superadmin_manage'    : ['super-group'],
+  'superadmin_create'    : ['super-group'],
+  'superadmin_read'      : ['super-group'],
+  'superadmin_update'    : ['super-group'],
+  'superadmin_delete'    : ['super-group'],
+  'superadmin_report'    : ['super-group'],
+
+  'settings_manage'      : ['super-group','admin-group','support-group'],
+
+  'support_dashboard'    : ['super-group','support-group'],
+  'page_test'            : ['super-group','admin-group','support-group','business-group','user-group'],
+}
+
+module.exports = accessConfig
+
+In my app.config.js
+/**
+ * Copyright (C) 2012-2028 Lalulla OPC. All rights reserved.
+ * Copyright (c) 2017 - Joel M. Damaso - mailto:jammi_dee@yahoo.com Manila/Philippines
+ * This file is part of Lalulla OPC System.
+ *
+ * Framework Designed by: Jammi Dee (jammi_dee@yahoo.com)
+ * 03/14/2026 09:59 AM
+ *
+*/
+
+const crypto          = require('crypto');
+const lalullaConfig   = require('./app.lalulla');
+const accessConfig    = require('./app.access');
+
+// ---------------------------------------------
+// Helper
+// ---------------------------------------------
+function md5(value) {
+  return crypto.createHash('md5').update(value).digest('hex');
+}
+
+// ---------------------------------------------
+// Local Config (Superadmins)
+// ---------------------------------------------
+const localConfig = {
+  superadmins: [
+    {
+      id: '0',
+      username: 'Superadmin',
+      firstname: 'Superadmin',
+      lastname: 'User',
+      email: 'superadmin@cgone.com',
+      password: md5('supersecret123'),
+      roleid: 'Superadmin',
+      entityid: 'CGONE'
+    },
+    {
+      id: '1',
+      username: 'root',
+      firstname: 'Root',
+      lastname: 'User',
+      email: 'root@cgone.com',
+      password: md5('toor'),
+      roleid: 'Superadmin',
+      entityid: 'CGONE'
+    }
+  ]
+}
+
+// ---------------------------------------------
+// Merge configs
+// ---------------------------------------------
+module.exports = {
+  ...lalullaConfig,
+  ...localConfig,
+  ...accessConfig
+}
+
+This is how my APIs are called.
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : April 07, 2026 09:41 PM
+ * ------------------------------------------------------------------------
+ */
+
+const express          = require('express');
+const router           = express.Router();
+
+const AuthController   = require('../../../../controllers/api/v1/systems/auth.controller');
+const AuthService      = require('../../../../services/api/v1/systems/auth.service');
+const validateToken    = require('../../../../middlewares/jwt.middleware');
+
+const controller = new AuthController(new AuthService());
+
+/**
+ * POST /api/v1/systems/auth/token
+ * Generate JWT
+ */
+router.post('/token', controller.getAccessToken);
+
+/**
+ * GET /api/v1/systems/auth/validate
+ * Validate JWT
+ */
+router.get('/validate', validateToken, controller.validateToken);
+
+/**
+ * GET /api/v1/systems/auth/datetime
+ * Protected endpoint
+ */
+router.get('/datetime', validateToken, controller.getDateTime);
+
+module.exports = router;
+
+Maintain my coding styles and comment, create a middleware that will act as IP whitelisting filter
