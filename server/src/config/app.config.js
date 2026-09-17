@@ -58,6 +58,13 @@ const localConfig = {
     '127.0.0.1',
     '::1',
     '192.168.1.50' // Example internal office IP
+  ],
+  
+  // Domain / Origin Whitelist (include protocol and domain, no trailing slashes)
+  domainWhitelist: [
+    'https://lalulla.com',
+    'https://app.lalulla.com',
+    'http://localhost:3000' // For local frontend development
   ]
 
 }

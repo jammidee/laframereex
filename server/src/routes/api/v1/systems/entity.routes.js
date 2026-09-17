@@ -18,7 +18,8 @@ const router           = express.Router();
 const EntityController = require('../../../../controllers/api/v1/systems/entity.controller');
 const EntityService    = require('../../../../services/api/v1/systems/entity.service');
 const validateToken    = require('../../../../middlewares/jwt.middleware');
-const ipWhitelist      = require('../../../../middlewares/ipWhitelist.middleware'); // Import whitelist filter
+const ipWhitelist      = require('../../../../middlewares/ipWhitelist.middleware');
+const domainWhitelist  = require('../../../../middlewares/domainWhitelist.middleware');
 
 const controller = new EntityController(new EntityService());
 
@@ -26,30 +27,30 @@ const controller = new EntityController(new EntityService());
  * POST /api/v1/systems/entity
  * Create a new entity record
  */
-router.post('/', ipWhitelist, validateToken, controller.createEntity);
+router.post('/', domainWhitelist, ipWhitelist, validateToken, controller.createEntity);
 
 /**
  * GET /api/v1/systems/entity
  * Fetch paginated list of entities
  */
-router.get('/', ipWhitelist, validateToken, controller.getEntities);
+router.get('/', domainWhitelist, ipWhitelist, validateToken, controller.getEntities);
 
 /**
  * GET /api/v1/systems/entity/:id
  * Fetch a single entity record by ID
  */
-router.get('/:id', ipWhitelist, validateToken, controller.getEntityById);
+router.get('/:id', domainWhitelist, ipWhitelist, validateToken, controller.getEntityById);
 
 /**
  * PUT /api/v1/systems/entity/:id
  * Update an entity record by ID
  */
-router.put('/:id', ipWhitelist, validateToken, controller.updateEntity);
+router.put('/:id', domainWhitelist, ipWhitelist, validateToken, controller.updateEntity);
 
 /**
  * DELETE /api/v1/systems/entity/:id
  * Delete an entity record by ID
  */
-router.delete('/:id', ipWhitelist, validateToken, controller.deleteEntity);
+router.delete('/:id', domainWhitelist, ipWhitelist, validateToken, controller.deleteEntity);
 
 module.exports = router;

@@ -23,6 +23,7 @@ const ConfigDBController = require('../../../../controllers/api/v1/systems/confi
 const ConfigService      = require('../../../../services/api/v1/systems/config.service');
 const validateToken      = require('../../../../middlewares/jwt.middleware');
 const ipWhitelist        = require('../../../../middlewares/ipWhitelist.middleware');
+const domainWhitelist    = require('../../../../middlewares/domainWhitelist.middleware');
 
 const controller = new ConfigDBController(new ConfigService());
 
@@ -30,24 +31,24 @@ const controller = new ConfigDBController(new ConfigService());
  * POST /api/v1/systems/configdb/cache/clear
  * Clear in-memory configuration cache
  */
-router.post('/cache/clear', ipWhitelist, validateToken, controller.clearCache);
+router.post('/cache/clear', domainWhitelist, ipWhitelist, validateToken, controller.clearCache);
 
 /**
  * GET /api/v1/systems/configdb/:key
  * Fetch configuration value by key
  */
-router.get('/:key', ipWhitelist, validateToken, controller.getConfig);
+router.get('/:key', domainWhitelist, ipWhitelist, validateToken, controller.getConfig);
 
 /**
  * POST /api/v1/systems/configdb
  * Create or update a configuration entry
  */
-router.post('/', ipWhitelist, validateToken, controller.setConfig);
+router.post('/', domainWhitelist, ipWhitelist, validateToken, controller.setConfig);
 
 /**
  * DELETE /api/v1/systems/configdb/:key
  * Delete a configuration entry by key
  */
-router.delete('/:key', ipWhitelist, validateToken, controller.deleteConfig);
+router.delete('/:key', domainWhitelist, ipWhitelist, validateToken, controller.deleteConfig);
 
 module.exports = router;

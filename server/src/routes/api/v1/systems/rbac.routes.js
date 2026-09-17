@@ -16,6 +16,7 @@ const router                = express.Router();
 const RbacController        = require('../../../../controllers/api/v1/systems/rbac.controller');
 const validateToken         = require('../../../../middlewares/jwt.middleware');
 const ipWhitelist           = require('../../../../middlewares/ipWhitelist.middleware');
+const domainWhitelist       = require('../../../../middlewares/domainWhitelist.middleware');
 
 const controller = new RbacController();
 
