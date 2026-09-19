@@ -193,8 +193,8 @@ app.use('/api/v1/systems/entity',           require('./routes/api/v1/systems/ent
 // ==========================================
 
 // Dynamic Module Autoloader Execution Runtime
-// const registerModules = require('./routes/loader.routes');
-// registerModules(app);
+const registerModuleAPIs = require('./routes/api/v1/apiloader.routes');
+registerModuleAPIs(app);
 
 // API 404 Fallback Catch Layer
 app.use((req, res, next) => {

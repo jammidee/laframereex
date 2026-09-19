@@ -1,0 +1,84 @@
+lookup.resta###
+
+# @hostname = 159.198.36.199
+@hostname = localhost
+@port = 5000
+@host = {{hostname}}:{{port}}
+@baseUrl = http://{{host}}
+@basePath = /api/v1/modules/lookup
+
+
+###
+
+# @name tokenRequest
+POST {{baseUrl}}/api/v1/systems/auth/token HTTP/1.1
+Authorization: Basic {{$dotenv BASIC_USERNAME}}:{{$dotenv BASIC_PASSWORD}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/
+
+###
+
+@token = {{tokenRequest.response.body.token}}
+
+###
+
+# @name createLookup
+POST {{baseUrl}}{{basePath}} HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/
+
+{
+  "entityid": "CGONE",
+  "appid": "LALULLA",
+  "keyid": "SETTING_KEY",
+  "itemid": "ITEM_01",
+  "description": "Test lookup entry description",
+  "colstr01": "Value 1",
+  "colnum01": 100.5,
+  "city": "Manila",
+  "sstatus": "ACTIVE"
+}
+
+###
+
+# @name getLookups
+GET {{baseUrl}}{{basePath}}?page=1&limit=10&search=Test HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/
+
+###
+
+# @name getLookupById
+GET {{baseUrl}}{{basePath}}/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/
+
+###
+
+# @name updateLookup
+PUT {{baseUrl}}{{basePath}}/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/
+
+{
+  "description": "Updated lookup entry description",
+  "sstatus": "INACTIVE"
+}
+
+###
+
+# @name deleteLookup
+DELETE {{baseUrl}}{{basePath}}/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Origin: http://localhost:5000
+Referer: http://localhost:5000/

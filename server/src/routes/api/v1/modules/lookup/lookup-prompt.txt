@@ -1,0 +1,586 @@
+// 09/17/2026
+
+You are an expert in nodejs developer. Your task is to create a basic API [CRUD] for a lookup table:
+
+The migrate script for the table is:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * Lalulla System is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 11, 2026 01:18 AM
+ * ------------------------------------------------------------------------
+ * npx sequelize-cli migration:generate --name create-lookups-table
+ */
+
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+
+    const dialect = queryInterface.sequelize.getDialect();
+
+    // Enable Postgres Extensions (e.g., pgcrypto, uuid-ossp)
+    // Execute extension creation ONLY if running on PostgreSQL
+    if (dialect === 'postgres') {
+
+      // Query installed extensions from PostgreSQL system catalog
+        const [results] = await queryInterface.sequelize.query(
+          `SELECT extname FROM pg_extension WHERE extname IN ('pgcrypto', 'uuid-ossp');`
+        );
+
+        const installedExtensions = results.map(row => row.extname);
+
+        if (!installedExtensions.includes('pgcrypto')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "pgcrypto";');
+        }
+
+        if (!installedExtensions.includes('uuid-ossp')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "uuid-ossp";');
+        }
+
+    }
+
+    await queryInterface.createTable('lookups', {
+
+      id: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+      },
+
+      juid: {
+        type: Sequelize.CHAR(36),
+        allowNull: true
+      },
+
+      entityid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      appid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      keyid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      itemid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      description: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      colstr01: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr02: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr03: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colnum01: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      colnum02: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      coldate01: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coldate02: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime01: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime02: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      contact: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      address: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      city: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      postal: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      markerdate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      phone: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      fax: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      telex: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      sstatus: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: 'ACTIVE'
+      },
+
+      pid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: '000000'
+      },
+
+      userid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      deleted: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+      }
+
+    });
+
+    // Indexes
+    await queryInterface.addIndex('lookups', ['entityid']);
+    await queryInterface.addIndex('lookups', ['appid']);
+    await queryInterface.addIndex('lookups', ['keyid']);
+    await queryInterface.addIndex('lookups', ['itemid']);
+    await queryInterface.addIndex('lookups', ['sstatus']);
+    await queryInterface.addIndex('lookups', ['pid']);
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('lookups');
+  }
+};
+
+The working folder for the API is: /src/routes/api/v1/modules/[lookup class name]
+
+Below are the templates of the API. The template are coming from /src/routes/api/v1/systems
+
+entity.routes.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026 04:22 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Express routing definitions for Entity API endpoints.
+ * ------------------------------------------------------------------------
+ */
+
+const express          = require('express');
+const router           = express.Router();
+
+const EntityController = require('../../../../controllers/api/v1/systems/entity.controller');
+const EntityService    = require('../../../../services/api/v1/systems/entity.service');
+const validateToken    = require('../../../../middlewares/jwt.middleware');
+const ipWhitelist      = require('../../../../middlewares/ipWhitelist.middleware');
+const domainWhitelist  = require('../../../../middlewares/domainWhitelist.middleware');
+
+const controller = new EntityController(new EntityService());
+
+/**
+ * POST /api/v1/systems/entity
+ * Create a new entity record
+ */
+router.post('/', domainWhitelist, ipWhitelist, validateToken, controller.createEntity);
+
+/**
+ * GET /api/v1/systems/entity
+ * Fetch paginated list of entities
+ */
+router.get('/', domainWhitelist, ipWhitelist, validateToken, controller.getEntities);
+
+/**
+ * GET /api/v1/systems/entity/:id
+ * Fetch a single entity record by ID
+ */
+router.get('/:id', domainWhitelist, ipWhitelist, validateToken, controller.getEntityById);
+
+/**
+ * PUT /api/v1/systems/entity/:id
+ * Update an entity record by ID
+ */
+router.put('/:id', domainWhitelist, ipWhitelist, validateToken, controller.updateEntity);
+
+/**
+ * DELETE /api/v1/systems/entity/:id
+ * Delete an entity record by ID
+ */
+router.delete('/:id', domainWhitelist, ipWhitelist, validateToken, controller.deleteEntity);
+
+module.exports = router;
+
+entity.controller.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026 04:21 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Controller routing incoming HTTP requests to EntityService.
+ * ------------------------------------------------------------------------
+ */
+
+class EntityController {
+  constructor(entityService) {
+    this.entityService = entityService;
+    this.createEntity  = this.createEntity.bind(this);
+    this.getEntities   = this.getEntities.bind(this);
+    this.getEntityById = this.getEntityById.bind(this);
+    this.updateEntity  = this.updateEntity.bind(this);
+    this.deleteEntity  = this.deleteEntity.bind(this);
+  }
+
+  /**
+   * Create a new entity record
+   */
+  async createEntity(req, res) {
+    try {
+      const data = await this.entityService.createEntity(req.body);
+
+      return res.status(201).json({
+        success: true,
+        message: 'Entity created successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to create entity record'
+      });
+    }
+  }
+
+  /**
+   * Fetch paginated list of entities
+   */
+  async getEntities(req, res) {
+    try {
+      const { page, limit, search, sortBy, sortOrder } = req.query;
+
+      const result = await this.entityService.getPaginatedEntities({
+        page,
+        limit,
+        search,
+        sortBy,
+        sortOrder
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entities retrieved successfully',
+        ...result
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch entity records'
+      });
+    }
+  }
+
+  /**
+   * Fetch a single entity record by ID
+   */
+  async getEntityById(req, res) {
+    try {
+      const { id } = req.params;
+      const data = await this.entityService.getEntityById(id);
+
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          message: 'Entity record not found'
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity retrieved successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch entity record'
+      });
+    }
+  }
+
+  /**
+   * Update an existing entity record by ID
+   */
+  async updateEntity(req, res) {
+    try {
+      const { id } = req.params;
+      const data = await this.entityService.updateEntity(id, req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity updated successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to update entity record'
+      });
+    }
+  }
+
+  /**
+   * Delete an entity record by ID
+   */
+  async deleteEntity(req, res) {
+    try {
+      const { id } = req.params;
+      await this.entityService.deleteEntity(id);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity deleted successfully'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to delete entity record'
+      });
+    }
+  }
+}
+
+module.exports = EntityController;
+
+entity.service.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Service layer handling business logic and query execution
+ * for entity management.
+ * ------------------------------------------------------------------------
+ */
+
+'use strict';
+
+const { Op } = require('sequelize');
+const Entity = require('../../../../models/systems/entity.model');
+
+class EntityService {
+
+  /**
+   * Create a new entity record
+   */
+    async createEntity(payload) {
+        const entityData = {
+        ...payload,
+        juid: payload.juid || crypto.randomUUID()
+        };
+
+        const newEntity = await Entity.create(entityData);
+        return newEntity;
+    }
+
+  /**
+   * Fetch paginated entity records matching DataTable search & sorting requirements
+   */
+  async getPaginatedEntities(params = {}) {
+    const {
+      page = 1,
+      limit = 10,
+      search = '',
+      sortBy = 'created_at',
+      sortOrder = 'DESC'
+    } = params;
+
+    const offset = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+
+    // Build search predicate
+    const whereClause = {
+      is_deleted: 0
+    };
+
+    if (search && search.trim() !== '') {
+      const query = `%${search.trim()}%`;
+      whereClause[Op.or] = [
+        { display_id: { [Op.iLike]: query } },
+        { name: { [Op.iLike]: query } },
+        { city: { [Op.iLike]: query } },
+        { status: { [Op.iLike]: query } }
+      ];
+    }
+
+    // Execute query with count
+    const { count, rows } = await Entity.findAndCountAll({
+      where: whereClause,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      order: [[sortBy, sortOrder.toUpperCase()]]
+    });
+
+    return {
+      totalRecords: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page, 10),
+      data: rows
+    };
+  }
+
+  /**
+   * Fetch single entity by ID
+   */
+  async getEntityById(id) {
+    return await Entity.findOne({
+      where: { id, is_deleted: 0 }
+    });
+  }
+
+  /**
+   * Update an existing entity record by ID
+   */
+  async updateEntity(id, payload) {
+    const entity = await this.getEntityById(id);
+
+    if (!entity) {
+      throw new Error('Entity record not found');
+    }
+
+    await entity.update(payload);
+    return entity;
+  }
+
+  /**
+   * Soft delete an entity record by setting is_deleted flag to 1
+   */
+  async deleteEntity(id) {
+    const entity = await this.getEntityById(id);
+
+    if (!entity) {
+      throw new Error('Entity record not found');
+    }
+
+    await entity.update({ is_deleted: 1 });
+    return true;
+  }
+}
+
+module.exports = EntityService;
+
+
+Maintain comments and coding style
+Maintain the header comment and update the timestamp in the comment
+All the newly created files will be place in one location only contrary to the template that are located
+in different folders.
+Make sure the tab is spaced by 4 spaces.
+
+I expect that the API will be automatically loaded in the app.js
+// Dynamic Module Autoloader Execution Runtime
+const registerModuleAPIs = require('./routes/apiloader.routes');
+registerModuleAPIs(app);

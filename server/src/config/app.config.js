@@ -64,7 +64,9 @@ const localConfig = {
   domainWhitelist: [
     'https://lalulla.com',
     'https://app.lalulla.com',
-    'http://localhost:3000' // For local frontend development
+    'http://localhost:5000',      // For local frontend development
+    'http://localhost:3136',      // <-- Add your REST client / local port here
+    'http://127.0.0.1:3136'
   ]
 
 }

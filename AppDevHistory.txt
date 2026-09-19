@@ -11,6 +11,9 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+09/17/2026      - Added lookup API service and autoloading
+                -
+
 09/17/2026      - Added whitelisting feature during API call.
                 - Added URL whitelisting for the API call.
                 -
