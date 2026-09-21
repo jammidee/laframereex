@@ -1,0 +1,1119 @@
+//09/20/2026
+
+You are a nodejs expert using express.js and react.js
+
+Create page for a lookup. Using the table definition from a migrate of sequelized below:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * Lalulla System is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 11, 2026 01:18 AM
+ * ------------------------------------------------------------------------
+ * npx sequelize-cli migration:generate --name create-lookups-table
+ */
+
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+
+    const dialect = queryInterface.sequelize.getDialect();
+
+    // Enable Postgres Extensions (e.g., pgcrypto, uuid-ossp)
+    // Execute extension creation ONLY if running on PostgreSQL
+    if (dialect === 'postgres') {
+
+      // Query installed extensions from PostgreSQL system catalog
+        const [results] = await queryInterface.sequelize.query(
+          `SELECT extname FROM pg_extension WHERE extname IN ('pgcrypto', 'uuid-ossp');`
+        );
+
+        const installedExtensions = results.map(row => row.extname);
+
+        if (!installedExtensions.includes('pgcrypto')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "pgcrypto";');
+        }
+
+        if (!installedExtensions.includes('uuid-ossp')) {
+          await queryInterface.sequelize.query('CREATE EXTENSION "uuid-ossp";');
+        }
+
+    }
+
+    await queryInterface.createTable('lookups', {
+
+      id: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+      },
+
+      juid: {
+        type: Sequelize.CHAR(36),
+        allowNull: true
+      },
+
+      entityid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      appid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      keyid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      itemid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      description: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: null
+      },
+
+      colstr01: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr02: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colstr03: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      colnum01: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      colnum02: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+        defaultValue: 0
+      },
+
+      coldate01: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coldate02: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime01: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      coltime02: {
+        type: Sequelize.TIME,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      contact: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      address: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      city: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      postal: {
+        type: Sequelize.STRING(200),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      markerdate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
+        defaultValue: null
+      },
+
+      phone: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      fax: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      telex: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '(000) 000-0000'
+      },
+
+      sstatus: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: 'ACTIVE'
+      },
+
+      pid: {
+        type: Sequelize.STRING(36),
+        allowNull: true,
+        defaultValue: '000000'
+      },
+
+      userid: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        defaultValue: '_NA_'
+      },
+
+      deleted: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+      }
+
+    });
+
+    // Indexes
+    await queryInterface.addIndex('lookups', ['entityid']);
+    await queryInterface.addIndex('lookups', ['appid']);
+    await queryInterface.addIndex('lookups', ['keyid']);
+    await queryInterface.addIndex('lookups', ['itemid']);
+    await queryInterface.addIndex('lookups', ['sstatus']);
+    await queryInterface.addIndex('lookups', ['pid']);
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('lookups');
+  }
+};
+
+The location of the script is: src/views/modules/[module folder name].
+
+Use the script below as template:
+
+EnityAll.jsx
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso)
+ * This file is part of the Lalulla System.
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026 10:03 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Main Entity List component displaying paginated records 
+ * using DataTables UI styling and layout wrappers, featuring an inline modal
+ * for creating new entities.
+ * ------------------------------------------------------------------------
+ */
+
+import React, { useState, useEffect } from 'react';
+
+import LaNavigation from '../../layout/laNavigation';
+import LaSideBar    from '../../layout/laSideBar';
+import LaFooter     from '../../layout/laFooter';
+
+import entityService from '../../../services/entity.service';
+
+/**
+ * STUB COMPONENTS
+ * Replace these placeholder sub-components with your actual layout files
+ */
+
+function LaRightBar() {
+    return (
+        <aside className="control-sidebar control-sidebar-dark">
+            <div className="p-3">
+                <h5>Control Sidebar</h5>
+                <p>Sidebar content</p>
+            </div>
+        </aside>
+    );
+}
+
+/**
+ * INITIAL FORM STATE
+ */
+const initialFormState = {
+    display_id: '',
+    name: '',
+    city: '',
+    status: 'ACTIVE',
+    start_date: '',
+    end_date: ''
+};
+
+/**
+ * ENTITY ALL COMPONENT
+ */
+function EntityAll({ user, onLogout }) {
+    const [entities, setEntities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Pagination & Search States
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [search, setSearch] = useState('');
+    const [sortBy, setSortBy] = useState('id');
+    const [sortOrder, setSortOrder] = useState('ASC');
+
+    // Add Entity Modal & Form States
+    const [showModal, setShowModal] = useState(false);
+    const [formData, setFormData] = useState(initialFormState);
+    const [formSaving, setFormSaving] = useState(false);
+    const [formError, setFormError] = useState(null);
+
+    const fetchEntities = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await entityService.getEntities({
+                page,
+                limit,
+                search,
+                sortBy,
+                sortOrder
+            });
+
+            setEntities(response.data || []);
+            setTotalRecords(response.totalRecords || 0);
+            setTotalPages(response.totalPages || 1);
+        } catch (err) {
+            setError(err.message || 'Error loading entities');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEntities();
+    }, [page, limit, search, sortBy, sortOrder]);
+
+    const handleSort = (field) => {
+        if (sortBy === field) {
+            setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC');
+        } else {
+            setSortBy(field);
+            setSortOrder('ASC');
+        }
+    };
+
+    /**
+     * Handles changes for inputs in the Add Entity form modal.
+     */
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    /**
+     * Resets modal form state and closes the dialog.
+     */
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setFormData(initialFormState);
+        setFormError(null);
+    };
+
+    /**
+     * Submits the new entity data to entityService.
+     */
+    const handleCreateEntity = async (e) => {
+        e.preventDefault();
+        setFormSaving(true);
+        setFormError(null);
+
+        try {
+            await entityService.createEntity(formData);
+            handleCloseModal();
+            fetchEntities();
+        } catch (err) {
+            setFormError(err.message || 'Failed to create entity. Please try again.');
+        } finally {
+            setFormSaving(false);
+        }
+    };
+
+    /**
+     * Renders the appropriate FontAwesome sort direction icon for a given table column.
+     *
+     * @param {string} field - The database column name associated with the header.
+     * @returns {JSX.Element} FontAwesome icon component.
+     */
+    const renderSortIcon = (field) => {
+        if (sortBy !== field) return <i className="fas fa-sort text-muted ml-1" />;
+        return sortOrder === 'ASC' 
+            ? <i className="fas fa-sort-up ml-1" /> 
+            : <i className="fas fa-sort-down ml-1" />;
+    };
+
+    return (
+        <div className="wrapper">
+
+            {/* Navigation Top Bar */}
+            <LaNavigation user={user} onLogout={onLogout} />
+
+            {/* Left Main Sidebar Menu */}
+            <LaSideBar user={user} activePage="entity" onLogout={onLogout} />
+
+            {/* Right Secondary Control Sidebar */}
+            {/* <LaRightBar /> */}
+
+            {/* Content Wrapper. Contains page content */}
+            <div className="content-wrapper">
+                {/* Content Header (Page header) */}
+                <div className="content-header">
+                    <div className="container-fluid">
+                        <div className="row mb-2">
+                            <div className="col-sm-6">
+                                <h1 className="m-0 text-dark">Entity Directory</h1>
+                            </div>
+                            <div className="col-sm-6">
+                                <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
+                                    <li className="breadcrumb-item list-inline-item">
+                                        <a href="/dashboard">Home</a>
+                                    </li>
+                                    <li className="breadcrumb-item list-inline-item">System</li>
+                                    <li className="breadcrumb-item active list-inline-item">Entity</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content Viewport */}
+                <div className="content">
+                    <div className="container-fluid">
+
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card card-outline card-primary">
+                                    <div className="card-header">
+                                        <h3 className="card-title">All System Entities</h3>
+                                        <div className="card-tools">
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-primary btn-sm"
+                                                onClick={() => setShowModal(true)}
+                                            >
+                                                <i className="fas fa-plus mr-1" /> Add Entity
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="card-body">
+                                        {/* DataTable Controls Header */}
+                                        <div className="row mb-3">
+                                            <div className="col-sm-12 col-md-6 d-flex align-items-center">
+                                                <label className="d-inline-flex align-items-center font-weight-normal mb-0">
+                                                    Show &nbsp;
+                                                    <select 
+                                                        className="custom-select custom-select-sm form-control form-control-sm w-auto"
+                                                        value={limit}
+                                                        onChange={(e) => { setLimit(Number(e.target.value)); setPage(1); }}
+                                                    >
+                                                        <option value={10}>10</option>
+                                                        <option value={25}>25</option>
+                                                        <option value={50}>50</option>
+                                                        <option value={100}>100</option>
+                                                    </select>
+                                                    &nbsp; entries
+                                                </label>
+                                            </div>
+
+                                            <div className="col-sm-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0">
+                                                <label className="d-inline-flex align-items-center font-weight-normal mb-0">
+                                                    Search: &nbsp;
+                                                    <input 
+                                                        type="search" 
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Search display ID, name..."
+                                                        value={search}
+                                                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        {/* Table Grid */}
+                                        <div className="table-responsive">
+                                            <table className="table table-bordered table-hover table-striped dataTable dtr-inline">
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('display_id')}>
+                                                            Display ID {renderSortIcon('display_id')}
+                                                        </th>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                                                            Entity Name {renderSortIcon('name')}
+                                                        </th>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('city')}>
+                                                            City {renderSortIcon('city')}
+                                                        </th>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('status')}>
+                                                            Status {renderSortIcon('status')}
+                                                        </th>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('start_date')}>
+                                                            Start Date {renderSortIcon('start_date')}
+                                                        </th>
+                                                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('end_date')}>
+                                                            End Date {renderSortIcon('end_date')}
+                                                        </th>
+                                                        <th className="text-center">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {loading ? (
+                                                        <tr>
+                                                            <td colSpan="7" className="text-center py-4">
+                                                                <i className="fas fa-spinner fa-spin fa-2x text-primary" />
+                                                                <p className="mt-2 mb-0">Loading entities...</p>
+                                                            </td>
+                                                        </tr>
+                                                    ) : error ? (
+                                                        <tr>
+                                                            <td colSpan="7" className="text-center text-danger py-4">
+                                                                <i className="fas fa-exclamation-triangle mr-2" />
+                                                                {error}
+                                                            </td>
+                                                        </tr>
+                                                    ) : entities.length === 0 ? (
+                                                        <tr>
+                                                            <td colSpan="7" className="text-center py-4 text-muted">
+                                                                No entity records found.
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        entities.map((item) => (
+                                                            <tr key={item.id}>
+                                                                <td><strong>{item.display_id}</strong></td>
+                                                                <td>{item.name}</td>
+                                                                <td>{item.city || 'N/A'}</td>
+                                                                <td>
+                                                                    <span className={`badge ${item.status === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>
+                                                                        {item.status}
+                                                                    </span>
+                                                                </td>
+                                                                <td>{item.start_date}</td>
+                                                                <td>{item.end_date}</td>
+                                                                <td className="text-center">
+                                                                    <a href={`/system/entity/edit/${item.id}`} className="btn btn-info btn-xs mr-1">
+                                                                        <i className="fas fa-edit" />
+                                                                    </a>
+                                                                    <a href={`/system/entity/view/${item.id}`} className="btn btn-secondary btn-xs">
+                                                                        <i className="fas fa-eye" />
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {/* Pagination Controls */}
+                                        <div className="row mt-3">
+                                            <div className="col-sm-12 col-md-5">
+                                                <div className="dataTables_info" role="status" aria-live="polite">
+                                                    Showing {entities.length === 0 ? 0 : (page - 1) * limit + 1} to {Math.min(page * limit, totalRecords)} of {totalRecords} entries
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-12 col-md-7 d-flex justify-content-md-end">
+                                                <ul className="pagination pagination-sm m-0">
+                                                    <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                                                        <button className="page-link" onClick={() => setPage((p) => Math.max(p - 1, 1))}>
+                                                            Previous
+                                                        </button>
+                                                    </li>
+                                                    {[...Array(totalPages)].map((_, idx) => (
+                                                        <li key={idx + 1} className={`page-item ${page === idx + 1 ? 'active' : ''}`}>
+                                                            <button className="page-link" onClick={() => setPage(idx + 1)}>
+                                                                {idx + 1}
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                    <li className={`page-item ${page === totalPages || totalPages === 0 ? 'disabled' : ''}`}>
+                                                        <button className="page-link" onClick={() => setPage((p) => Math.min(p + 1, totalPages))}>
+                                                            Next
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {/* /.content */}
+            </div>
+            {/* /.content-wrapper */}
+
+            {/* Dynamic layout mounting */}
+            <LaFooter />
+
+            {/* ADD NEW ENTITY MODAL */}
+            {showModal && (
+                <>
+                    <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <div className="modal-dialog modal-lg" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header bg-primary text-white">
+                                    <h5 className="modal-title">
+                                        <i className="fas fa-plus-circle mr-2" /> Add New Entity
+                                    </h5>
+                                    <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseModal}>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form onSubmit={handleCreateEntity}>
+                                    <div className="modal-body">
+                                        {formError && (
+                                            <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <i className="fas fa-exclamation-triangle mr-2" />
+                                                {formError}
+                                            </div>
+                                        )}
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="display_id">Display ID <span className="text-danger">*</span></label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="display_id" 
+                                                        name="display_id" 
+                                                        placeholder="e.g. ENT-001"
+                                                        value={formData.display_id}
+                                                        onChange={handleInputChange}
+                                                        required 
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="name">Entity Name <span className="text-danger">*</span></label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="name" 
+                                                        name="name" 
+                                                        placeholder="Enter full entity name"
+                                                        value={formData.name}
+                                                        onChange={handleInputChange}
+                                                        required 
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="city">City</label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="city" 
+                                                        name="city" 
+                                                        placeholder="Enter city"
+                                                        value={formData.city}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="status">Status</label>
+                                                    <select 
+                                                        className="form-control" 
+                                                        id="status" 
+                                                        name="status"
+                                                        value={formData.status}
+                                                        onChange={handleInputChange}
+                                                    >
+                                                        <option value="ACTIVE">ACTIVE</option>
+                                                        <option value="INACTIVE">INACTIVE</option>
+                                                        <option value="PENDING">PENDING</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="start_date">Start Date</label>
+                                                    <input 
+                                                        type="date" 
+                                                        className="form-control" 
+                                                        id="start_date" 
+                                                        name="start_date" 
+                                                        value={formData.start_date}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="end_date">End Date</label>
+                                                    <input 
+                                                        type="date" 
+                                                        className="form-control" 
+                                                        id="end_date" 
+                                                        name="end_date" 
+                                                        value={formData.end_date}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer bg-light">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary" 
+                                            onClick={handleCloseModal}
+                                            disabled={formSaving}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button 
+                                            type="submit" 
+                                            className="btn btn-primary"
+                                            disabled={formSaving}
+                                        >
+                                            {formSaving ? (
+                                                <>
+                                                    <i className="fas fa-spinner fa-spin mr-1" /> Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="fas fa-save mr-1" /> Save Entity
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
+        </div>
+    );
+}
+
+export default EntityAll;
+
+
+entity.service.js
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Frontend service for managing entity CRUD operations.
+ * ------------------------------------------------------------------------
+ */
+
+const API_BASE_URL = `${CONFIG?.VITE_BASE_URL || 'http://localhost:5000'}/api/v1/systems/entity`;
+
+class EntityClientService {
+  /**
+   * Helper to append auth headers consistently across requests.
+   */
+  _getHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
+  /**
+   * CREATE: Add a new entity record
+   */
+  async createEntity(entityData) {
+    const response = await fetch(`${API_BASE_URL}`, {
+      method: 'POST',
+      headers: this._getHeaders(),
+      body: JSON.stringify(entityData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to create entity record');
+    }
+
+    return data;
+  }
+
+  /**
+   * READ (Paginated List): Retrieve entities with filters/pagination
+   */
+  async getEntities({ page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'ASC' }) {
+    const queryParams = new URLSearchParams({
+      page,
+      limit,
+      search,
+      sortBy,
+      sortOrder
+    });
+
+    const response = await fetch(`${API_BASE_URL}?${queryParams.toString()}`, {
+      method: 'GET',
+      headers: this._getHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to retrieve entity list');
+    }
+
+    return data;
+  }
+
+  /**
+   * READ (Single): Retrieve a single entity record by ID
+   */
+  async getEntityById(id) {
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: 'GET',
+      headers: this._getHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to retrieve entity record');
+    }
+
+    return data;
+  }
+
+  /**
+   * UPDATE: Modify an existing entity record by ID
+   */
+  async updateEntity(id, entityData) {
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: 'PUT',
+      headers: this._getHeaders(),
+      body: JSON.stringify(entityData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to update entity record');
+    }
+
+    return data;
+  }
+
+  /**
+   * DELETE: Remove an entity record by ID
+   */
+  async deleteEntity(id) {
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      method: 'DELETE',
+      headers: this._getHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to delete entity record');
+    }
+
+    return data;
+  }
+}
+
+export default new EntityClientService();
+
+For API Reference for the lookup:
+Here is the route:
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 17, 2026 07:25 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Express routing definitions for Lookup API endpoints.
+ * ------------------------------------------------------------------------
+ */
+
+const express          = require('express');
+const router           = express.Router();
+
+const LookupController = require('./lookup.controller');
+const LookupService    = require('./lookup.service');
+const validateToken    = require('../../../../../middlewares/jwt.middleware');
+const ipWhitelist      = require('../../../../../middlewares/ipWhitelist.middleware');
+const domainWhitelist  = require('../../../../../middlewares/domainWhitelist.middleware');
+
+const controller = new LookupController(new LookupService());
+
+/**
+ * POST /api/v1/modules/lookup
+ * Create a new lookup record
+ */
+router.post('/', domainWhitelist, ipWhitelist, validateToken, controller.createLookup);
+
+/**
+ * GET /api/v1/modules/lookup
+ * Fetch paginated list of lookups
+ */
+router.get('/', domainWhitelist, ipWhitelist, validateToken, controller.getLookups);
+
+/**
+ * GET /api/v1/modules/lookup/:id
+ * Fetch a single lookup record by ID
+ */
+router.get('/:id', domainWhitelist, ipWhitelist, validateToken, controller.getLookupById);
+
+/**
+ * PUT /api/v1/modules/lookup/:id
+ * Update a lookup record by ID
+ */
+router.put('/:id', domainWhitelist, ipWhitelist, validateToken, controller.updateLookup);
+
+/**
+ * DELETE /api/v1/modules/lookup/:id
+ * Delete a lookup record by ID
+ */
+router.delete('/:id', domainWhitelist, ipWhitelist, validateToken, controller.deleteLookup);
+
+module.exports = router;
+
+and here is the controller:
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026 04:21 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Controller routing incoming HTTP requests to EntityService.
+ * ------------------------------------------------------------------------
+ */
+
+class EntityController {
+  constructor(entityService) {
+    this.entityService = entityService;
+    this.createEntity  = this.createEntity.bind(this);
+    this.getEntities   = this.getEntities.bind(this);
+    this.getEntityById = this.getEntityById.bind(this);
+    this.updateEntity  = this.updateEntity.bind(this);
+    this.deleteEntity  = this.deleteEntity.bind(this);
+  }
+
+  /**
+   * Create a new entity record
+   */
+  async createEntity(req, res) {
+    try {
+      const data = await this.entityService.createEntity(req.body);
+
+      return res.status(201).json({
+        success: true,
+        message: 'Entity created successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to create entity record'
+      });
+    }
+  }
+
+  /**
+   * Fetch paginated list of entities
+   */
+  async getEntities(req, res) {
+    try {
+      const { page, limit, search, sortBy, sortOrder } = req.query;
+
+      const result = await this.entityService.getPaginatedEntities({
+        page,
+        limit,
+        search,
+        sortBy,
+        sortOrder
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entities retrieved successfully',
+        ...result
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch entity records'
+      });
+    }
+  }
+
+  /**
+   * Fetch a single entity record by ID
+   */
+  async getEntityById(req, res) {
+    try {
+      const { id } = req.params;
+      const data = await this.entityService.getEntityById(id);
+
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          message: 'Entity record not found'
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity retrieved successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch entity record'
+      });
+    }
+  }
+
+  /**
+   * Update an existing entity record by ID
+   */
+  async updateEntity(req, res) {
+    try {
+      const { id } = req.params;
+      const data = await this.entityService.updateEntity(id, req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity updated successfully',
+        data
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to update entity record'
+      });
+    }
+  }
+
+  /**
+   * Delete an entity record by ID
+   */
+  async deleteEntity(req, res) {
+    try {
+      const { id } = req.params;
+      await this.entityService.deleteEntity(id);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Entity deleted successfully'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to delete entity record'
+      });
+    }
+  }
+}
+
+module.exports = EntityController;
+
+
+Maintain coding style using 4 spaces for tab.
+Maintain header comment from the template and adjust the timestamp in the header
+Maintain comments and comment your code.
+All the generated file will be placed in one folder unlike the example/template

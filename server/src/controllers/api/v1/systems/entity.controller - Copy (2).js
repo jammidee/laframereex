@@ -12,8 +12,6 @@
  * ------------------------------------------------------------------------
  */
 
-const { logAction } = require('../../../../helpers/system_logger.helper');
-
 class EntityController {
   constructor(entityService) {
     this.entityService = entityService;
@@ -31,27 +29,12 @@ class EntityController {
     try {
       const data = await this.entityService.createEntity(req.body);
 
-      await logAction(
-        req,
-        'ENTITY_CREATE',
-        `Created entity record: ${data.name} (ID: ${data.id})`,
-        'INFO',
-        data.display_id || data.id
-      );
-
       return res.status(201).json({
         success: true,
         message: 'Entity created successfully',
         data
       });
     } catch (error) {
-      await logAction(
-        req,
-        'ENTITY_CREATE_ERROR',
-        `Failed to create entity record: ${error.message}`,
-        'ERROR'
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to create entity record'
@@ -123,28 +106,12 @@ class EntityController {
       const { id } = req.params;
       const data = await this.entityService.updateEntity(id, req.body);
 
-      await logAction(
-        req,
-        'ENTITY_UPDATE',
-        `Updated entity record ID: ${id}`,
-        'INFO',
-        data.display_id || id
-      );
-
       return res.status(200).json({
         success: true,
         message: 'Entity updated successfully',
         data
       });
     } catch (error) {
-      await logAction(
-        req,
-        'ENTITY_UPDATE_ERROR',
-        `Failed to update entity record ID ${req.params.id}: ${error.message}`,
-        'ERROR',
-        req.params.id
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to update entity record'
@@ -160,27 +127,11 @@ class EntityController {
       const { id } = req.params;
       await this.entityService.deleteEntity(id);
 
-      await logAction(
-        req,
-        'ENTITY_DELETE',
-        `Soft-deleted entity record ID: ${id}`,
-        'WARNING',
-        id
-      );
-
       return res.status(200).json({
         success: true,
         message: 'Entity deleted successfully'
       });
     } catch (error) {
-      await logAction(
-        req,
-        'ENTITY_DELETE_ERROR',
-        `Failed to delete entity record ID ${req.params.id}: ${error.message}`,
-        'ERROR',
-        req.params.id
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to delete entity record'

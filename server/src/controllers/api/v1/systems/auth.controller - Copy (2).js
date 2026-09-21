@@ -15,7 +15,6 @@
 
 const crypto = require('crypto');
 const config = require('../../../../config/app.config'); // Adjust this path to where your merged config file lives
-const { logAction } = require('../../../../helpers/system_logger.helper');
 
 class AuthController {
 
@@ -31,20 +30,11 @@ class AuthController {
    */
   getAccessToken = async (req, res) => {
 
-    let cleanUsername = 'unknown';
-
     try {
 
       const authHeader = req.headers.authorization;
 
       if (!authHeader || !authHeader.startsWith('Basic ')) {
-        await logAction(
-          req,
-          'AUTH_FAILED',
-          'Authentication failed: Missing Basic Authorization header',
-          'WARNING'
-        );
-
         return res.status(401).json({
           success: false,
           message: 'Missing Basic Authorization header'
@@ -56,7 +46,7 @@ class AuthController {
 
       const [username, password] = credentials.split(':');
 
-      cleanUsername = username.trim();
+      const cleanUsername = username.trim();
       const cleanPassword = password.trim();
 
       let user = null;
@@ -96,14 +86,6 @@ class AuthController {
 
       const token = this.authService.generateToken(user);
 
-      await logAction(
-        req,
-        'AUTH_SUCCESS',
-        `Access token generated successfully for user: ${cleanUsername}`,
-        'INFO',
-        user?.entityid || '_NA_'
-      );
-
       return res.json({
         success: true,
         token,
@@ -111,13 +93,6 @@ class AuthController {
       });
 
     } catch (err) {
-
-      await logAction(
-        req,
-        'AUTH_FAILED',
-        `Authentication failed for user [${cleanUsername}]: ${err.message}`,
-        'ERROR'
-      );
 
       return res.status(401).json({
         success: false,

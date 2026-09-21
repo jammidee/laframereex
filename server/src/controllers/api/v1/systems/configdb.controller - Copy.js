@@ -16,8 +16,6 @@
  * ------------------------------------------------------------------------
  */
 
-const { logAction } = require('../../../../helpers/system_logger.helper');
-
 class ConfigDBController {
   constructor(configService) {
     this.configService = configService;
@@ -55,14 +53,6 @@ class ConfigDBController {
         data
       });
     } catch (error) {
-      await logAction(
-        req,
-        'CONFIG_GET_ERROR',
-        `Failed to fetch configuration for key [${req.params.key}]: ${error.message}`,
-        'ERROR',
-        req.query.entityid || '_NA_'
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to fetch configuration'
@@ -79,14 +69,6 @@ class ConfigDBController {
       const userid = req.user ? req.user.id : 0;
 
       if (!key || value === undefined) {
-        await logAction(
-          req,
-          'CONFIG_SET_VALIDATION_ERROR',
-          'Configuration save failed: Key and value are required fields',
-          'WARNING',
-          entityid || '_NA_'
-        );
-
         return res.status(400).json({
           success: false,
           message: 'Key and value are required fields'
@@ -101,27 +83,11 @@ class ConfigDBController {
         ttl: ttl ? parseInt(ttl, 10) : undefined
       });
 
-      await logAction(
-        req,
-        'CONFIG_SET',
-        `Configuration saved successfully for key: ${key}`,
-        'INFO',
-        entityid || '_NA_'
-      );
-
       return res.status(200).json({
         success: true,
         message: 'Configuration saved successfully'
       });
     } catch (error) {
-      await logAction(
-        req,
-        'CONFIG_SET_ERROR',
-        `Failed to save configuration for key [${req.body?.key}]: ${error.message}`,
-        'ERROR',
-        req.body?.entityid || '_NA_'
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to save configuration'
@@ -139,14 +105,6 @@ class ConfigDBController {
 
       await this.configService.delete(key, entityid);
 
-      await logAction(
-        req,
-        'CONFIG_DELETE',
-        `Configuration deleted successfully for key: ${key}`,
-        'WARNING',
-        entityid || '_NA_'
-      );
-
       return res.status(200).json({
         success: true,
         message: 'Configuration deleted successfully'
@@ -158,14 +116,6 @@ class ConfigDBController {
           message: error.message
         });
       }
-
-      await logAction(
-        req,
-        'CONFIG_DELETE_ERROR',
-        `Failed to delete configuration for key [${req.params.key}]: ${error.message}`,
-        'ERROR',
-        req.query.entityid || '_NA_'
-      );
 
       return res.status(500).json({
         success: false,
@@ -181,25 +131,11 @@ class ConfigDBController {
     try {
       this.configService.clearCache();
 
-      await logAction(
-        req,
-        'CONFIG_CACHE_CLEAR',
-        'Configuration cache cleared manually',
-        'INFO'
-      );
-
       return res.status(200).json({
         success: true,
         message: 'Configuration cache cleared successfully'
       });
     } catch (error) {
-      await logAction(
-        req,
-        'CONFIG_CACHE_CLEAR_ERROR',
-        `Failed to clear configuration cache: ${error.message}`,
-        'ERROR'
-      );
-
       return res.status(500).json({
         success: false,
         message: error.message || 'Failed to clear configuration cache'
