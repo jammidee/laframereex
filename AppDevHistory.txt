@@ -11,6 +11,9 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+09/24/2026      - Added migrate for sql sync logs
+                - Added SQL Sync Logs library and applied it.
+
 09/22/2026      - Added logging helper script.
                 - Adding logging to the following APIs: auth, configdb, entity.
                 -
