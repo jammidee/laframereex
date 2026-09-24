@@ -39,6 +39,8 @@ import EntityAll    from './views/systems/entity/EntityAll';
 //================================
 import Hello        from '../src/views/modules/hello/Hello';
 import BaseMap      from '../src/views/modules/basemap/BaseMap';
+import Lookup       from '../src/views/modules/lookup/Lookup';
+import About        from '../src/views/modules/about/About';
 
 
 import Swal from 'sweetalert2';
@@ -118,9 +120,9 @@ function App() {
         // };
 
         // injectDependencies();
-        
+
         injectCorePlugins();
-        
+
     }, []);
 
 
@@ -235,10 +237,13 @@ function App() {
                             {/* Modules */}
                             <Route path="/modules/hello" element={<Hello onLogout={handleLogout} user={user} activePage="hello" />} />
                             <Route path="/modules/basemap" element={<BaseMap onLogout={handleLogout} user={user} activePage="basemap" />} />
+                            <Route path="/modules/lookup" element={<Lookup onLogout={handleLogout} user={user} activePage="lookup" />} />
+                            <Route path="/modules/about" element={<About onLogout={handleLogout} user={user} activePage="about" />} />
 
 
                             {/* Catchall safely keeps signed in context on dashboard */}
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
                         </>
                     ) : (
                         <>

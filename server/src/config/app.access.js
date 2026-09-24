@@ -66,6 +66,13 @@ accessConfig['menu-access'] = {
   'lookup_update'        : ['admin-group','support-group'],
   'lookup_delete'        : ['admin-group','support-group'],
 
+  // About right controls
+  'about_manage'          : ['admin-group','support-group','business-group','user-group'],
+  'about_create'          : ['admin-group','support-group'],
+  'about_read'            : ['admin-group','support-group','business-group','user-group'],
+  'about_update'          : ['admin-group','support-group'],
+  'about_delete'          : ['admin-group','support-group'],
+
   // User right controls
   'user_manage'          : ['super-group','admin-group'],
   'user_create'          : ['super-group','admin-group'],

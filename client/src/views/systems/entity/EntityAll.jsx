@@ -182,7 +182,7 @@ function EntityAll({ user, onLogout }) {
                     <div className="container-fluid">
                         <div className="row mb-2">
                             <div className="col-sm-6">
-                                <h1 className="m-0 text-dark">Entity Directory</h1>
+                                <h4 className="m-0 text-dark">Entity Directory</h4>
                             </div>
                             <div className="col-sm-6">
                                 <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
