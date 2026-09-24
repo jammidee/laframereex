@@ -15,7 +15,6 @@
 'use strict';
 
 const { logAction } = require('../../../../helpers/system_logger.helper');
-const { logSqlAction } = require('../../../../helpers/sqlsynclogs.helper');
 
 class EntityController {
     constructor(entityService) {
@@ -31,26 +30,8 @@ class EntityController {
      * Create a new entity record
      */
     async createEntity(req, res) {
-        let capturedSql = '';
-        let executionTime = 0;
-
         try {
-            const startTime = Date.now();
-            
-            // Pass a Sequelize logging option to capture the exact SQL and execution time
-            const data = await this.entityService.createEntity(req.body, {
-                logging: (sql, timing) => {
-                    capturedSql = sql;
-                    if (typeof timing === 'number') {
-                        executionTime = timing;
-                    }
-                },
-                benchmark: true // Enables timing measurement in Sequelize
-            });
-
-            if (!executionTime) {
-                executionTime = Date.now() - startTime;
-            }
+            const data = await this.entityService.createEntity(req.body);
 
             await logAction(
                 req,
@@ -58,16 +39,6 @@ class EntityController {
                 `Created entity record: ${data.name} (ID: ${data.id})`,
                 'INFO',
                 data.display_id || data.id
-            );
-
-            await logSqlAction(
-                req,
-                capturedSql || `-- Executed create for entity ID: ${data.id}`,
-                executionTime,
-                true,
-                'ENTITY_CREATE',
-                data.display_id || data.id,
-                'INFO'
             );
 
             return res.status(201).json({
@@ -80,16 +51,6 @@ class EntityController {
                 req,
                 'ENTITY_CREATE_ERROR',
                 `Failed to create entity record: ${error.message}`,
-                'ERROR'
-            );
-
-            await logSqlAction(
-                req,
-                capturedSql ? `-- FAILED: ${capturedSql} | Error: ${error.message}` : `-- FAILED CREATE: ${error.message}`,
-                executionTime,
-                false,
-                'ENTITY_CREATE_ERROR',
-                '_NA_',
                 'ERROR'
             );
 
@@ -115,12 +76,27 @@ class EntityController {
                 sortOrder
             });
 
+            await logAction(
+                req,
+                'ENTITIES_FETCH',
+                `Retrieved paginated entity list (page: ${page || 1}, limit: ${limit || 10})`,
+                'INFO',
+                '_NA_'
+            );
+
             return res.status(200).json({
                 success: true,
                 message: 'Entities retrieved successfully',
                 ...result
             });
         } catch (error) {
+            await logAction(
+                req,
+                'ENTITIES_FETCH_ERROR',
+                `Failed to fetch entity records: ${error.message}`,
+                'ERROR'
+            );
+
             return res.status(500).json({
                 success: false,
                 message: error.message || 'Failed to fetch entity records'
@@ -137,11 +113,27 @@ class EntityController {
             const data = await this.entityService.getEntityById(id);
 
             if (!data) {
+                await logAction(
+                    req,
+                    'ENTITY_FETCH_NOT_FOUND',
+                    `Entity record not found for ID: ${id}`,
+                    'WARNING',
+                    id
+                );
+
                 return res.status(404).json({
                     success: false,
                     message: 'Entity record not found'
                 });
             }
+
+            await logAction(
+                req,
+                'ENTITY_FETCH',
+                `Retrieved entity record for ID: ${id}`,
+                'INFO',
+                data.display_id || id
+            );
 
             return res.status(200).json({
                 success: true,
@@ -149,6 +141,14 @@ class EntityController {
                 data
             });
         } catch (error) {
+            await logAction(
+                req,
+                'ENTITY_FETCH_ERROR',
+                `Failed to fetch entity record ID ${req.params.id}: ${error.message}`,
+                'ERROR',
+                req.params.id
+            );
+
             return res.status(500).json({
                 success: false,
                 message: error.message || 'Failed to fetch entity record'
@@ -160,26 +160,9 @@ class EntityController {
      * Update an existing entity record by ID
      */
     async updateEntity(req, res) {
-        let capturedSql = '';
-        let executionTime = 0;
-
         try {
             const { id } = req.params;
-            const startTime = Date.now();
-
-            const data = await this.entityService.updateEntity(id, req.body, {
-                logging: (sql, timing) => {
-                    capturedSql = sql;
-                    if (typeof timing === 'number') {
-                        executionTime = timing;
-                    }
-                },
-                benchmark: true
-            });
-
-            if (!executionTime) {
-                executionTime = Date.now() - startTime;
-            }
+            const data = await this.entityService.updateEntity(id, req.body);
 
             await logAction(
                 req,
@@ -187,16 +170,6 @@ class EntityController {
                 `Updated entity record ID: ${id}`,
                 'INFO',
                 data.display_id || id
-            );
-
-            await logSqlAction(
-                req,
-                capturedSql || `-- Executed update for entity ID: ${id}`,
-                executionTime,
-                true,
-                'ENTITY_UPDATE',
-                data.display_id || id,
-                'INFO'
             );
 
             return res.status(200).json({
@@ -213,16 +186,6 @@ class EntityController {
                 req.params.id
             );
 
-            await logSqlAction(
-                req,
-                capturedSql ? `-- FAILED: ${capturedSql} | Error: ${error.message}` : `-- FAILED UPDATE ID ${req.params.id}: ${error.message}`,
-                executionTime,
-                false,
-                'ENTITY_UPDATE_ERROR',
-                req.params.id,
-                'ERROR'
-            );
-
             return res.status(500).json({
                 success: false,
                 message: error.message || 'Failed to update entity record'
@@ -234,26 +197,9 @@ class EntityController {
      * Delete an entity record by ID
      */
     async deleteEntity(req, res) {
-        let capturedSql = '';
-        let executionTime = 0;
-
         try {
             const { id } = req.params;
-            const startTime = Date.now();
-
-            await this.entityService.deleteEntity(id, {
-                logging: (sql, timing) => {
-                    capturedSql = sql;
-                    if (typeof timing === 'number') {
-                        executionTime = timing;
-                    }
-                },
-                benchmark: true
-            });
-
-            if (!executionTime) {
-                executionTime = Date.now() - startTime;
-            }
+            await this.entityService.deleteEntity(id);
 
             await logAction(
                 req,
@@ -261,16 +207,6 @@ class EntityController {
                 `Soft-deleted entity record ID: ${id}`,
                 'WARNING',
                 id
-            );
-
-            await logSqlAction(
-                req,
-                capturedSql || `-- Executed soft delete for entity ID: ${id}`,
-                executionTime,
-                true,
-                'ENTITY_DELETE',
-                id,
-                'WARNING'
             );
 
             return res.status(200).json({
@@ -284,16 +220,6 @@ class EntityController {
                 `Failed to delete entity record ID ${req.params.id}: ${error.message}`,
                 'ERROR',
                 req.params.id
-            );
-
-            await logSqlAction(
-                req,
-                capturedSql ? `-- FAILED: ${capturedSql} | Error: ${error.message}` : `-- FAILED DELETE ID ${req.params.id}: ${error.message}`,
-                executionTime,
-                false,
-                'ENTITY_DELETE_ERROR',
-                req.params.id,
-                'ERROR'
             );
 
             return res.status(500).json({

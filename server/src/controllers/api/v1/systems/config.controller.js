@@ -15,6 +15,8 @@
 
 'use strict';
 
+const { logAction } = require('../../../../helpers/system_logger.helper');
+
 /**
  * ConfigController (API V1)
  * HTTP layer only
@@ -37,14 +39,21 @@ class ConfigController {
      * ------------------------------------------------------------------
      */
     get = async (req, res) => {
-
         try {
-
             const { key } = req.params;
+            const entityid = req.query.entityid || '_NA_';
 
             const value = await this.configService.get(key, {
                 entityid: req.query.entityid
             });
+
+            await logAction(
+                req,
+                'CONFIG_FETCH',
+                `Retrieved configuration for key: ${key}`,
+                'INFO',
+                entityid
+            );
 
             return res.json({
                 success: true,
@@ -53,6 +62,13 @@ class ConfigController {
             });
 
         } catch (err) {
+            await logAction(
+                req,
+                'CONFIG_FETCH_ERROR',
+                `Failed to retrieve configuration for key [${req.params.key}]: ${err.message}`,
+                'ERROR',
+                req.query.entityid || '_NA_'
+            );
 
             return res.status(500).json({
                 success: false,
@@ -68,12 +84,18 @@ class ConfigController {
      * ------------------------------------------------------------------
      */
     set = async (req, res) => {
-
         try {
-
             const { key, value, entityid, description, var_type } = req.body;
 
             if (!key) {
+                await logAction(
+                    req,
+                    'CONFIG_SET_FAILED',
+                    'Failed to save configuration: Key is required',
+                    'WARNING',
+                    entityid || '_NA_'
+                );
+
                 return res.status(400).json({
                     success: false,
                     message: 'Key is required'
@@ -87,12 +109,27 @@ class ConfigController {
                 userid: req.user ? req.user.userid : 0
             });
 
+            await logAction(
+                req,
+                'CONFIG_SET',
+                `Successfully saved configuration for key: ${key}`,
+                'INFO',
+                entityid || '_NA_'
+            );
+
             return res.json({
                 success: true,
                 message: 'Configuration saved'
             });
 
         } catch (err) {
+            await logAction(
+                req,
+                'CONFIG_SET_ERROR',
+                `Failed to save configuration for key [${req.body?.key || 'unknown'}]: ${err.message}`,
+                'ERROR',
+                req.body?.entityid || '_NA_'
+            );
 
             return res.status(500).json({
                 success: false,
@@ -108,12 +145,19 @@ class ConfigController {
      * ------------------------------------------------------------------
      */
     delete = async (req, res) => {
-
         try {
-
             const { key } = req.params;
+            const entityid = req.query.entityid || '_NA_';
 
             await this.configService.delete(key, req.query.entityid);
+
+            await logAction(
+                req,
+                'CONFIG_DELETE',
+                `Soft-deleted configuration for key: ${key}`,
+                'WARNING',
+                entityid
+            );
 
             return res.json({
                 success: true,
@@ -121,6 +165,13 @@ class ConfigController {
             });
 
         } catch (err) {
+            await logAction(
+                req,
+                'CONFIG_DELETE_ERROR',
+                `Failed to delete configuration for key [${req.params.key}]: ${err.message}`,
+                'ERROR',
+                req.query.entityid || '_NA_'
+            );
 
             return res.status(404).json({
                 success: false,

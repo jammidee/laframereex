@@ -16,6 +16,7 @@
 
 'use strict';
 
+const config = require('../config/app.config'); // Adjust path to your config file as needed
 const SystemLogService = require('../services/api/v1/systems/system_logs.service');
 const systemLogService = new SystemLogService();
 
@@ -28,6 +29,11 @@ const systemLogService = new SystemLogService();
  * @param {string|number} [entityId='_NA_'] - Associated entity ID or reference
  */
 async function logAction(req, actionType, details, severity = 'INFO', entityId = '_NA_') {
+    // Centralized configuration check: exit early if logging is disabled
+    if (config.syslogging !== true) { // Or use a specific config flag like config.systemlogging if separate
+        return;
+    }
+
     try {
         await systemLogService.createLog({
             entityid: entityId ? String(entityId) : '_NA_',
