@@ -12,8 +12,8 @@
  * CREATED DATE : August 23, 2026 10:03 PM
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Main Entity List component displaying paginated records 
- * using DataTables UI styling and layout wrappers, featuring an inline modal
- * for creating new entities.
+ * using DataTables UI styling and layout wrappers, featuring inline modals
+ * for creating, viewing, editing, and deleting entities with success/error alerts.
  * ------------------------------------------------------------------------
  */
 
@@ -57,9 +57,14 @@ const initialFormState = {
  * ENTITY ALL COMPONENT
  */
 function EntityAll({ user, onLogout }) {
+
+    //Initiate variables
     const [entities, setEntities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Global Notification Banner State
+    const [notification, setNotification] = useState(null); // { type: 'success' | 'danger', message: '' }
 
     // Pagination & Search States
     const [page, setPage] = useState(1);
@@ -76,9 +81,40 @@ function EntityAll({ user, onLogout }) {
     const [formSaving, setFormSaving] = useState(false);
     const [formError, setFormError] = useState(null);
 
+    // View Entity Modal States
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [viewData, setViewData] = useState(null);
+    const [viewLoading, setViewLoading] = useState(false);
+
+    // Edit Entity Modal & Form States
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [editFormData, setEditFormData] = useState(initialFormState);
+    const [editSaving, setEditSaving] = useState(false);
+    const [editError, setEditError] = useState(null);
+
+    // Delete Confirmation Modal States
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleteName, setDeleteName] = useState('');
+    const [deleteDeleting, setDeleteDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState(null);
+
+    // Helper to auto-dismiss notifications after 5 seconds
+    const showNotification = (type, message) => {
+        setNotification({ type, message });
+        setTimeout(() => {
+            setNotification(null);
+        }, 5000);
+    };
+
+    //Fetch data from server
     const fetchEntities = async () => {
+
+        //Display loading page
         setLoading(true);
         setError(null);
+
         try {
             const response = await entityService.getEntities({
                 page,
@@ -91,6 +127,7 @@ function EntityAll({ user, onLogout }) {
             setEntities(response.data || []);
             setTotalRecords(response.totalRecords || 0);
             setTotalPages(response.totalPages || 1);
+
         } catch (err) {
             setError(err.message || 'Error loading entities');
         } finally {
@@ -98,9 +135,14 @@ function EntityAll({ user, onLogout }) {
         }
     };
 
+
+    //Fetch Data
     useEffect(() => {
+
         fetchEntities();
+
     }, [page, limit, search, sortBy, sortOrder]);
+
 
     const handleSort = (field) => {
         if (sortBy === field) {
@@ -126,27 +168,146 @@ function EntityAll({ user, onLogout }) {
      * Resets modal form state and closes the dialog.
      */
     const handleCloseModal = () => {
+
         setShowModal(false);
         setFormData(initialFormState);
         setFormError(null);
+
     };
 
     /**
-     * Submits the new entity data to entityService.
+     * Submits the new entity data to entityService[cite: 1].
      */
     const handleCreateEntity = async (e) => {
+
         e.preventDefault();
+
         setFormSaving(true);
         setFormError(null);
 
         try {
+
             await entityService.createEntity(formData);
             handleCloseModal();
             fetchEntities();
+            showNotification('success', 'Entity record successfully created.');
+
         } catch (err) {
             setFormError(err.message || 'Failed to create entity. Please try again.');
         } finally {
             setFormSaving(false);
+        }
+    };
+
+    /**
+     * Opens View Modal and loads single entity details.
+     */
+    const handleOpenView = async (id) => {
+        setShowViewModal(true);
+        setViewLoading(true);
+        setViewData(null);
+        try {
+            const response = await entityService.getEntityById(id);
+            setViewData(response.data || response);
+        } catch (err) {
+            setError(err.message || 'Failed to fetch entity details.');
+        } finally {
+            setViewLoading(false);
+        }
+    };
+
+    const handleCloseViewModal = () => {
+        setShowViewModal(false);
+        setViewData(null);
+    };
+
+    /**
+     * Opens Edit Modal and loads entity data into state.
+     */
+    const handleOpenEdit = async (id) => {
+        setEditId(id);
+        setShowEditModal(true);
+        setEditError(null);
+        try {
+            const response = await entityService.getEntityById(id);
+            const data = response.data || response;
+            setEditFormData({
+                display_id: data.display_id || '',
+                name: data.name || '',
+                city: data.city || '',
+                status: data.status || 'ACTIVE',
+                start_date: data.start_date || '',
+                end_date: data.end_date || ''
+            });
+        } catch (err) {
+            setEditError(err.message || 'Failed to load entity record for editing.');
+        }
+    };
+
+    const handleEditInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleCloseEditModal = () => {
+        setShowEditModal(false);
+        setEditId(null);
+        setEditFormData(initialFormState);
+        setEditError(null);
+    };
+
+    const handleUpdateEntity = async (e) => {
+        e.preventDefault();
+        setEditSaving(true);
+        setEditError(null);
+
+        try {
+            await entityService.updateEntity(editId, editFormData);
+            handleCloseEditModal();
+            fetchEntities();
+            showNotification('success', 'Entity record successfully updated.');
+        } catch (err) {
+            setEditError(err.message || 'Failed to update entity record.');
+            showNotification('danger', err.message || 'Failed to update entity record.');
+        } finally {
+            setEditSaving(false);
+        }
+    };
+
+    /**
+     * Opens Delete Confirmation Modal.
+     */
+    const handleOpenDelete = (item) => {
+        setDeleteId(item.id);
+        setDeleteName(item.name);
+        setShowDeleteModal(true);
+        setDeleteError(null);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
+        setDeleteId(null);
+        setDeleteName('');
+        setDeleteError(null);
+    };
+
+    const handleDeleteEntity = async () => {
+        setDeleteDeleting(true);
+        setDeleteError(null);
+
+        try {
+            await entityService.deleteEntity(deleteId);
+            handleCloseDeleteModal();
+            fetchEntities();
+            showNotification('success', 'Entity record successfully deleted.');
+        } catch (err) {
+            setDeleteError(err.message || 'Failed to delete entity record.');
+            showNotification('danger', err.message || 'Failed to delete entity record.');
+        } finally {
+            setDeleteDeleting(false);
         }
     };
 
@@ -200,6 +361,17 @@ function EntityAll({ user, onLogout }) {
                 {/* Main Content Viewport */}
                 <div className="content">
                     <div className="container-fluid">
+
+                        {/* Global Notification Banner */}
+                        {notification && (
+                            <div className={`alert alert-${notification.type} alert-dismissible fade show`} role="alert">
+                                <i className={`fas ${notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2`} />
+                                {notification.message}
+                                <button type="button" className="close" onClick={() => setNotification(null)} aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        )}
 
                         <div className="row">
                             <div className="col-12">
@@ -312,12 +484,30 @@ function EntityAll({ user, onLogout }) {
                                                                 <td>{item.start_date}</td>
                                                                 <td>{item.end_date}</td>
                                                                 <td className="text-center">
-                                                                    <a href={`/system/entity/edit/${item.id}`} className="btn btn-info btn-xs mr-1">
+                                                                    <button 
+                                                                        type="button" 
+                                                                        className="btn btn-info btn-xs mr-1" 
+                                                                        title="Edit"
+                                                                        onClick={() => handleOpenEdit(item.id)}
+                                                                    >
                                                                         <i className="fas fa-edit" />
-                                                                    </a>
-                                                                    <a href={`/system/entity/view/${item.id}`} className="btn btn-secondary btn-xs">
+                                                                    </button>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        className="btn btn-secondary btn-xs mr-1" 
+                                                                        title="View"
+                                                                        onClick={() => handleOpenView(item.id)}
+                                                                    >
                                                                         <i className="fas fa-eye" />
-                                                                    </a>
+                                                                    </button>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        className="btn btn-danger btn-xs" 
+                                                                        title="Delete"
+                                                                        onClick={() => handleOpenDelete(item)}
+                                                                    >
+                                                                        <i className="fas fa-trash" />
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         ))
@@ -372,152 +562,427 @@ function EntityAll({ user, onLogout }) {
 
             {/* ADD NEW ENTITY MODAL */}
             {showModal && (
-                <>
-                    <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                        <div className="modal-dialog modal-lg" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header bg-primary text-white">
-                                    <h5 className="modal-title">
-                                        <i className="fas fa-plus-circle mr-2" /> Add New Entity
-                                    </h5>
-                                    <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseModal}>
-                                        <span aria-hidden="true">&times;</span>
+                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header bg-primary text-white">
+                                <h5 className="modal-title">
+                                    <i className="fas fa-plus-circle mr-2" /> Add New Entity
+                                </h5>
+                                <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseModal}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form onSubmit={handleCreateEntity}>
+                                <div className="modal-body">
+                                    {formError && (
+                                        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i className="fas fa-exclamation-triangle mr-2" />
+                                            {formError}
+                                        </div>
+                                    )}
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="display_id">Display ID <span className="text-danger">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="display_id" 
+                                                    name="display_id" 
+                                                    placeholder="e.g. ENT-001"
+                                                    value={formData.display_id}
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="name">Entity Name <span className="text-danger">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="name" 
+                                                    name="name" 
+                                                    placeholder="Enter full entity name"
+                                                    value={formData.name}
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="city">City</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="city" 
+                                                    name="city" 
+                                                    placeholder="Enter city"
+                                                    value={formData.city}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="status">Status</label>
+                                                <select 
+                                                    className="form-control" 
+                                                    id="status" 
+                                                    name="status"
+                                                    value={formData.status}
+                                                    onChange={handleInputChange}
+                                                >
+                                                    <option value="ACTIVE">ACTIVE</option>
+                                                    <option value="INACTIVE">INACTIVE</option>
+                                                    <option value="PENDING">PENDING</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="start_date">Start Date</label>
+                                                <input 
+                                                    type="date" 
+                                                    className="form-control" 
+                                                    id="start_date" 
+                                                    name="start_date" 
+                                                    value={formData.start_date}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="end_date">End Date</label>
+                                                <input 
+                                                    type="date" 
+                                                    className="form-control" 
+                                                    id="end_date" 
+                                                    name="end_date" 
+                                                    value={formData.end_date}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer bg-light">
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-secondary" 
+                                        onClick={handleCloseModal}
+                                        disabled={formSaving}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit" 
+                                        className="btn btn-primary"
+                                        disabled={formSaving}
+                                    >
+                                        {formSaving ? (
+                                            <>
+                                                <i className="fas fa-spinner fa-spin mr-1" /> Saving...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fas fa-save mr-1" /> Save Entity
+                                            </>
+                                        )}
                                     </button>
                                 </div>
-                                <form onSubmit={handleCreateEntity}>
-                                    <div className="modal-body">
-                                        {formError && (
-                                            <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <i className="fas fa-exclamation-triangle mr-2" />
-                                                {formError}
-                                            </div>
-                                        )}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="display_id">Display ID <span className="text-danger">*</span></label>
-                                                    <input 
-                                                        type="text" 
-                                                        className="form-control" 
-                                                        id="display_id" 
-                                                        name="display_id" 
-                                                        placeholder="e.g. ENT-001"
-                                                        value={formData.display_id}
-                                                        onChange={handleInputChange}
-                                                        required 
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="name">Entity Name <span className="text-danger">*</span></label>
-                                                    <input 
-                                                        type="text" 
-                                                        className="form-control" 
-                                                        id="name" 
-                                                        name="name" 
-                                                        placeholder="Enter full entity name"
-                                                        value={formData.name}
-                                                        onChange={handleInputChange}
-                                                        required 
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="city">City</label>
-                                                    <input 
-                                                        type="text" 
-                                                        className="form-control" 
-                                                        id="city" 
-                                                        name="city" 
-                                                        placeholder="Enter city"
-                                                        value={formData.city}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="status">Status</label>
-                                                    <select 
-                                                        className="form-control" 
-                                                        id="status" 
-                                                        name="status"
-                                                        value={formData.status}
-                                                        onChange={handleInputChange}
-                                                    >
-                                                        <option value="ACTIVE">ACTIVE</option>
-                                                        <option value="INACTIVE">INACTIVE</option>
-                                                        <option value="PENDING">PENDING</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="start_date">Start Date</label>
-                                                    <input 
-                                                        type="date" 
-                                                        className="form-control" 
-                                                        id="start_date" 
-                                                        name="start_date" 
-                                                        value={formData.start_date}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-group">
-                                                    <label htmlFor="end_date">End Date</label>
-                                                    <input 
-                                                        type="date" 
-                                                        className="form-control" 
-                                                        id="end_date" 
-                                                        name="end_date" 
-                                                        value={formData.end_date}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+            {/* VIEW ENTITY MODAL */}
+            {showViewModal && (
+                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header bg-secondary text-white">
+                                <h5 className="modal-title">
+                                    <i className="fas fa-eye mr-2" /> View Entity Details
+                                </h5>
+                                <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseViewModal}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {viewLoading ? (
+                                    <div className="text-center py-4">
+                                        <i className="fas fa-spinner fa-spin fa-2x text-secondary" />
+                                        <p className="mt-2 mb-0">Loading details...</p>
                                     </div>
-                                    <div className="modal-footer bg-light">
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-secondary" 
-                                            onClick={handleCloseModal}
-                                            disabled={formSaving}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button 
-                                            type="submit" 
-                                            className="btn btn-primary"
-                                            disabled={formSaving}
-                                        >
-                                            {formSaving ? (
-                                                <>
-                                                    <i className="fas fa-spinner fa-spin mr-1" /> Saving...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <i className="fas fa-save mr-1" /> Save Entity
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
+                                ) : viewData ? (
+                                    <table className="table table-striped table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <th style={{ width: '30%' }}>ID</th>
+                                                <td>{viewData.id}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Display ID</th>
+                                                <td><strong>{viewData.display_id}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Entity Name</th>
+                                                <td>{viewData.name}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>City</th>
+                                                <td>{viewData.city || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td>
+                                                    <span className={`badge ${viewData.status === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>
+                                                        {viewData.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Start Date</th>
+                                                <td>{viewData.start_date || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>End Date</th>
+                                                <td>{viewData.end_date || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Created At</th>
+                                                <td>{viewData.createdAt || viewData.created_at || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Updated At</th>
+                                                <td>{viewData.updatedAt || viewData.updated_at || 'N/A'}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <p className="text-center text-danger">No data available.</p>
+                                )}
+                            </div>
+                            <div className="modal-footer bg-light">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseViewModal}>
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </div>
-                </>
+                </div>
+            )}
+
+            {/* EDIT ENTITY MODAL */}
+            {showEditModal && (
+                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header bg-info text-white">
+                                <h5 className="modal-title">
+                                    <i className="fas fa-edit mr-2" /> Edit Entity Record
+                                </h5>
+                                <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseEditModal}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form onSubmit={handleUpdateEntity}>
+                                <div className="modal-body">
+                                    {editError && (
+                                        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i className="fas fa-exclamation-triangle mr-2" />
+                                            {editError}
+                                        </div>
+                                    )}
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_display_id">Display ID <span className="text-danger">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="edit_display_id" 
+                                                    name="display_id" 
+                                                    value={editFormData.display_id}
+                                                    onChange={handleEditInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_name">Entity Name <span className="text-danger">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="edit_name" 
+                                                    name="name" 
+                                                    value={editFormData.name}
+                                                    onChange={handleEditInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_city">City</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    id="edit_city" 
+                                                    name="city" 
+                                                    value={editFormData.city}
+                                                    onChange={handleEditInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_status">Status</label>
+                                                <select 
+                                                    className="form-control" 
+                                                    id="edit_status" 
+                                                    name="status"
+                                                    value={editFormData.status}
+                                                    onChange={handleEditInputChange}
+                                                >
+                                                    <option value="ACTIVE">ACTIVE</option>
+                                                    <option value="INACTIVE">INACTIVE</option>
+                                                    <option value="PENDING">PENDING</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_start_date">Start Date</label>
+                                                <input 
+                                                    type="date" 
+                                                    className="form-control" 
+                                                    id="edit_start_date" 
+                                                    name="start_date" 
+                                                    value={editFormData.start_date}
+                                                    onChange={handleEditInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_end_date">End Date</label>
+                                                <input 
+                                                    type="date" 
+                                                    className="form-control" 
+                                                    id="edit_end_date" 
+                                                    name="end_date" 
+                                                    value={editFormData.end_date}
+                                                    onChange={handleEditInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer bg-light">
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-secondary" 
+                                        onClick={handleCloseEditModal}
+                                        disabled={editSaving}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit" 
+                                        className="btn btn-info text-white"
+                                        disabled={editSaving}
+                                    >
+                                        {editSaving ? (
+                                            <>
+                                                <i className="fas fa-spinner fa-spin mr-1" /> Updating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fas fa-save mr-1" /> Update Changes
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* DELETE CONFIRMATION MODAL */}
+            {showDeleteModal && (
+                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header bg-danger text-white">
+                                <h5 className="modal-title">
+                                    <i className="fas fa-exclamation-triangle mr-2" /> Confirm Deletion
+                                </h5>
+                                <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseDeleteModal}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {deleteError && (
+                                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <i className="fas fa-exclamation-triangle mr-2" />
+                                        {deleteError}
+                                    </div>
+                                )}
+                                <p>Are you sure you want to delete entity record: <strong>{deleteName}</strong>?</p>
+                                <p className="text-danger mb-0"><small>This action cannot be undone.</small></p>
+                            </div>
+                            <div className="modal-footer bg-light">
+                                <button 
+                                    type="button" 
+                                    className="btn btn-secondary" 
+                                    onClick={handleCloseDeleteModal}
+                                    disabled={deleteDeleting}
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="button" 
+                                    className="btn btn-danger" 
+                                    onClick={handleDeleteEntity}
+                                    disabled={deleteDeleting}
+                                >
+                                    {deleteDeleting ? (
+                                        <>
+                                            <i className="fas fa-spinner fa-spin mr-1" /> Deleting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="fas fa-trash mr-1" /> Confirm Delete
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
 
         </div>

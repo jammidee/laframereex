@@ -29,8 +29,8 @@ module.exports = {
   async up(queryInterface, Sequelize) {
 
     const defaultRow = {
-      entityid: 'LALULLA',
-      appid: 'CGONE',
+      entityid: 'CGONE',
+      appid: 'LALLULA',
       colstr01: '_NA_',
       colstr02: '_NA_',
       colstr03: '_NA_',
@@ -108,8 +108,8 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('lookups', {
-      entityid: 'LALULLA',
-      appid: 'CGONE',
+      entityid: 'CGONE',
+      appid: 'LALLULA',
       keyid: ['GENDER', 'MARITAL-STATUS', 'EDUCATION', 'CURRENCY', 'LANGUAGE', 'DEPARTMENT']
     }, {});
   }

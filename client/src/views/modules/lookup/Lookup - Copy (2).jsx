@@ -9,7 +9,7 @@
  * AUTHOR       : Jammi Dee (Joel M. Damaso)
  * LOCATION     : Manila, Philippines
  * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : September 26, 2026 12:50 AM
+ * CREATED DATE : September 20, 2026 12:00 AM
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Main Lookup List component displaying paginated records 
  * using DataTables UI styling and layout wrappers, featuring inline modals
@@ -19,9 +19,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-import LaNavigation from '../../layout/laNavigation';
-import LaSideBar    from '../../layout/laSideBar';
-import LaFooter     from '../../layout/laFooter';
+import LaNavigation from './layout/laNavigation';
+import LaSideBar    from './layout/laSideBar';
+import LaFooter     from './layout/laFooter';
 
 import lookupService from './lookup.service';
 
@@ -29,7 +29,7 @@ import lookupService from './lookup.service';
  * INITIAL FORM STATE
  */
 const initialFormState = {
-    entityid: '',
+    entityid: 'CGONE',
     appid: '',
     keyid: '',
     itemid: '',
@@ -43,18 +43,6 @@ const initialFormState = {
 };
 
 /**
- * HARDCODED KEY IDS LIST (Independent of table records)
- */
-const PREDEFINED_KEY_IDS = [
-    'GENDER',
-    'DEPARTMENT',
-    'MARITAL-STATUS',
-    'EDUCATION',
-    'CURRENCY',
-    'LANGUAGE'
-];
-
-/**
  * LOOKUP ALL COMPONENT
  */
 function LookupAll({ user, onLogout }) {
@@ -64,12 +52,8 @@ function LookupAll({ user, onLogout }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Extract entity from user object (fallback to CGONE if none)
-    const currentEntityId = user?.entityid || user?.entityId || 'CGONE';
-
-    // Filter by keyid state
-    const [keyIdFilter, setKeyIdFilter] = useState('');
-    const [availableKeyIds, setAvailableKeyIds] = useState([]);
+    // Filter by entityid state (default to 'CGONE')
+    const [entityIdFilter, setEntityIdFilter] = useState('CGONE');
 
     // Global Notification Banner State
     const [notification, setNotification] = useState(null);
@@ -85,10 +69,7 @@ function LookupAll({ user, onLogout }) {
 
     // Add Lookup Modal & Form States
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({
-        ...initialFormState,
-        entityid: currentEntityId
-    });
+    const [formData, setFormData] = useState(initialFormState);
     const [formSaving, setFormSaving] = useState(false);
     const [formError, setFormError] = useState(null);
 
@@ -111,9 +92,7 @@ function LookupAll({ user, onLogout }) {
     const [deleteDeleting, setDeleteDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState(null);
 
-    /**
-     * Helper to auto-dismiss notifications after 5 seconds
-     */
+    // Helper to auto-dismiss notifications after 5 seconds
     const showNotification = (type, message) => {
         setNotification({ type, message });
         setTimeout(() => {
@@ -121,17 +100,14 @@ function LookupAll({ user, onLogout }) {
         }, 5000);
     };
 
-    /**
-     * Fetch lookup data from the server with filters and pagination
-     */
+    // Fetch data from server
     const fetchLookups = async () => {
         setLoading(true);
         setError(null);
 
         try {
             const response = await lookupService.getLookups({
-                entityid: currentEntityId || 'CGONE',
-                keyid: keyIdFilter || undefined,
+                entityid: entityIdFilter || 'CGONE',
                 page,
                 limit,
                 search,
@@ -139,14 +115,9 @@ function LookupAll({ user, onLogout }) {
                 sortOrder
             });
 
-            const records = response.data || [];
-            setLookups(records);
+            setLookups(response.data || []);
             setTotalRecords(response.totalRecords || 0);
             setTotalPages(response.totalPages || 1);
-
-            // Extract unique Key IDs for the dropdown filter dynamically from results
-            const uniqueKeys = [...new Set(records.map(item => item.keyid))].filter(Boolean);
-            setAvailableKeyIds(uniqueKeys);
 
         } catch (err) {
             setError(err.message || 'Error loading lookups');
@@ -155,12 +126,10 @@ function LookupAll({ user, onLogout }) {
         }
     };
 
-    /**
-     * Trigger data retrieval on dependency updates
-     */
+    // Fetch Data on dependency changes
     useEffect(() => {
         fetchLookups();
-    }, [currentEntityId, keyIdFilter, page, limit, search, sortBy, sortOrder]);
+    }, [entityIdFilter, page, limit, search, sortBy, sortOrder]);
 
     const handleSort = (field) => {
         if (sortBy === field) {
@@ -181,10 +150,7 @@ function LookupAll({ user, onLogout }) {
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setFormData({
-            ...initialFormState,
-            entityid: currentEntityId
-        });
+        setFormData(initialFormState);
         setFormError(null);
     };
 
@@ -194,11 +160,7 @@ function LookupAll({ user, onLogout }) {
         setFormError(null);
 
         try {
-            const payload = {
-                ...formData,
-                entityid: currentEntityId
-            };
-            await lookupService.createLookup(payload);
+            await lookupService.createLookup(formData);
             handleCloseModal();
             fetchLookups();
             showNotification('success', 'Lookup record successfully created.');
@@ -236,7 +198,7 @@ function LookupAll({ user, onLogout }) {
             const response = await lookupService.getLookupById(id);
             const data = response.data || response;
             setEditFormData({
-                entityid: data.entityid || currentEntityId,
+                entityid: data.entityid || 'CGONE',
                 appid: data.appid || '',
                 keyid: data.keyid || '',
                 itemid: data.itemid || '',
@@ -274,11 +236,7 @@ function LookupAll({ user, onLogout }) {
         setEditError(null);
 
         try {
-            const payload = {
-                ...editFormData,
-                entityid: currentEntityId
-            };
-            await lookupService.updateLookup(editId, payload);
+            await lookupService.updateLookup(editId, editFormData);
             handleCloseEditModal();
             fetchLookups();
             showNotification('success', 'Lookup record successfully updated.');
@@ -366,28 +324,13 @@ function LookupAll({ user, onLogout }) {
                         <div className="row">
                             <div className="col-12">
                                 <div className="card card-outline card-primary">
-                                    <div className="card-header d-flex align-items-center justify-content-between">
+                                    <div className="card-header">
                                         <h3 className="card-title">System Lookup Entries</h3>
-                                        <div className="card-tools ml-auto d-flex align-items-center m-0">
-                                            <select 
-                                                className="form-control form-control-sm mr-2"
-                                                style={{ width: '160px' }}
-                                                value={keyIdFilter}
-                                                onChange={(e) => { setKeyIdFilter(e.target.value); setPage(1); }}
-                                            >
-                                                <option value="">All Key IDs</option>
-                                                {PREDEFINED_KEY_IDS.map((kId) => (
-                                                    <option key={kId} value={kId}>{kId}</option>
-                                                ))}
-                                            </select>
-
+                                        <div className="card-tools">
                                             <button 
                                                 type="button" 
                                                 className="btn btn-primary btn-sm"
-                                                onClick={() => {
-                                                    setFormData(prev => ({ ...prev, entityid: currentEntityId }));
-                                                    setShowModal(true);
-                                                }}
+                                                onClick={() => setShowModal(true)}
                                             >
                                                 <i className="fas fa-plus mr-1" /> Add Lookup
                                             </button>
@@ -395,8 +338,22 @@ function LookupAll({ user, onLogout }) {
                                     </div>
 
                                     <div className="card-body">
+                                        {/* Filters & Control Header */}
                                         <div className="row mb-3">
-                                            <div className="col-sm-12 col-md-6 d-flex align-items-center mb-2 mb-md-0">
+                                            <div className="col-sm-12 col-md-4 d-flex align-items-center mb-2 mb-md-0">
+                                                <label className="d-inline-flex align-items-center font-weight-normal mb-0 w-100">
+                                                    Entity ID: &nbsp;
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control form-control-sm"
+                                                        value={entityIdFilter}
+                                                        onChange={(e) => { setEntityIdFilter(e.target.value); setPage(1); }}
+                                                        placeholder="CGONE"
+                                                    />
+                                                </label>
+                                            </div>
+
+                                            <div className="col-sm-12 col-md-4 d-flex align-items-center mb-2 mb-md-0">
                                                 <label className="d-inline-flex align-items-center font-weight-normal mb-0">
                                                     Show &nbsp;
                                                     <select 
@@ -413,13 +370,12 @@ function LookupAll({ user, onLogout }) {
                                                 </label>
                                             </div>
 
-                                            <div className="col-sm-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                                <label className="d-inline-flex align-items-center font-weight-normal mb-0">
+                                            <div className="col-sm-12 col-md-4 d-flex justify-content-md-end align-items-center">
+                                                <label className="d-inline-flex align-items-center font-weight-normal mb-0 w-100 justify-content-md-end">
                                                     Search: &nbsp;
                                                     <input 
                                                         type="search" 
                                                         className="form-control form-control-sm"
-                                                        style={{ width: '220px' }}
                                                         placeholder="KeyID, ItemID, desc..."
                                                         value={search}
                                                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -428,6 +384,7 @@ function LookupAll({ user, onLogout }) {
                                             </div>
                                         </div>
 
+                                        {/* Table Grid */}
                                         <div className="table-responsive">
                                             <table className="table table-bordered table-hover table-striped dataTable dtr-inline">
                                                 <thead>
@@ -520,6 +477,7 @@ function LookupAll({ user, onLogout }) {
                                             </table>
                                         </div>
 
+                                        {/* Pagination Controls */}
                                         <div className="row mt-3">
                                             <div className="col-sm-12 col-md-5">
                                                 <div className="dataTables_info" role="status" aria-live="polite">
@@ -548,6 +506,7 @@ function LookupAll({ user, onLogout }) {
                                                 </ul>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -578,13 +537,19 @@ function LookupAll({ user, onLogout }) {
                                     )}
 
                                     <div className="row">
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
+                                            <div className="form-group">
+                                                <label htmlFor="entityid">Entity ID</label>
+                                                <input type="text" className="form-control" id="entityid" name="entityid" value={formData.entityid} onChange={handleInputChange} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="appid">App ID</label>
                                                 <input type="text" className="form-control" id="appid" name="appid" value={formData.appid} onChange={handleInputChange} />
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="keyid">Key ID <span className="text-danger">*</span></label>
                                                 <input type="text" className="form-control" id="keyid" name="keyid" value={formData.keyid} onChange={handleInputChange} required />
@@ -631,10 +596,10 @@ function LookupAll({ user, onLogout }) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <div className="modal-footer bg-light">
+                                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal} disabled={formSaving}>Cancel</button>
                                     <button type="submit" className="btn btn-primary" disabled={formSaving}>
-                                        {formSaving ? <><i className="fas fa-spinner fa-spin mr-1" /> Saving...</> : 'Save Lookup'}
+                                        {formSaving ? <><i className="fas fa-spinner fa-spin mr-1" /> Saving...</> : <><i className="fas fa-save mr-1" /> Save Lookup</>}
                                     </button>
                                 </div>
                             </form>
@@ -656,10 +621,7 @@ function LookupAll({ user, onLogout }) {
                             </div>
                             <div className="modal-body">
                                 {viewLoading ? (
-                                    <div className="text-center py-4">
-                                        <i className="fas fa-spinner fa-spin fa-2x text-secondary" />
-                                        <p className="mt-2 mb-0">Loading details...</p>
-                                    </div>
+                                    <div className="text-center py-4"><i className="fas fa-spinner fa-spin fa-2x text-secondary" /></div>
                                 ) : viewData ? (
                                     <table className="table table-striped table-bordered">
                                         <tbody>
@@ -672,9 +634,7 @@ function LookupAll({ user, onLogout }) {
                                             <tr><th>Status</th><td><span className={`badge ${viewData.sstatus === 'ACTIVE' ? 'badge-success' : 'badge-secondary'}`}>{viewData.sstatus}</span></td></tr>
                                         </tbody>
                                     </table>
-                                ) : (
-                                    <p className="text-center text-danger">No data available.</p>
-                                )}
+                                ) : <p className="text-center text-danger">No data available.</p>}
                             </div>
                             <div className="modal-footer bg-light">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseViewModal}>Close</button>
@@ -697,53 +657,32 @@ function LookupAll({ user, onLogout }) {
                             </div>
                             <form onSubmit={handleUpdateLookup}>
                                 <div className="modal-body">
-                                    {editError && (
-                                        <div className="alert alert-danger" role="alert">
-                                            <i className="fas fa-exclamation-triangle mr-2" />{editError}
-                                        </div>
-                                    )}
-
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="edit_appid">App ID</label>
-                                                <input type="text" className="form-control" id="edit_appid" name="appid" value={editFormData.appid} onChange={handleEditInputChange} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="edit_keyid">Key ID <span className="text-danger">*</span></label>
-                                                <input type="text" className="form-control" id="edit_keyid" name="keyid" value={editFormData.keyid} onChange={handleEditInputChange} required />
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    {editError && <div className="alert alert-danger">{editError}</div>}
                                     <div className="row">
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <label htmlFor="edit_itemid">Item ID <span className="text-danger">*</span></label>
+                                                <label htmlFor="edit_entityid">Entity ID</label>
+                                                <input type="text" className="form-control" id="edit_entityid" name="entityid" value={editFormData.entityid} onChange={handleEditInputChange} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_keyid">Key ID</label>
+                                                <input type="text" className="form-control" id="edit_keyid" name="keyid" value={editFormData.keyid} onChange={handleEditInputChange} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="form-group">
+                                                <label htmlFor="edit_itemid">Item ID</label>
                                                 <input type="text" className="form-control" id="edit_itemid" name="itemid" value={editFormData.itemid} onChange={handleEditInputChange} required />
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className="row">
                                         <div className="col-md-8">
                                             <div className="form-group">
                                                 <label htmlFor="edit_description">Description</label>
                                                 <input type="text" className="form-control" id="edit_description" name="description" value={editFormData.description} onChange={handleEditInputChange} />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-md-4">
-                                            <div className="form-group">
-                                                <label htmlFor="edit_colstr01">Column String 01</label>
-                                                <input type="text" className="form-control" id="edit_colstr01" name="colstr01" value={editFormData.colstr01} onChange={handleEditInputChange} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <div className="form-group">
-                                                <label htmlFor="edit_colnum01">Column Num 01</label>
-                                                <input type="number" step="any" className="form-control" id="edit_colnum01" name="colnum01" value={editFormData.colnum01} onChange={handleEditInputChange} />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
@@ -758,9 +697,9 @@ function LookupAll({ user, onLogout }) {
                                     </div>
                                 </div>
                                 <div className="modal-footer bg-light">
-                                    <button type="button" className="btn btn-secondary" onClick={handleCloseEditModal}>Cancel</button>
+                                    <button type="button" className="btn btn-secondary" onClick={handleCloseEditModal} disabled={editSaving}>Cancel</button>
                                     <button type="submit" className="btn btn-info text-white" disabled={editSaving}>
-                                        {editSaving ? <><i className="fas fa-spinner fa-spin mr-1" /> Updating...</> : 'Update Changes'}
+                                        {editSaving ? <><i className="fas fa-spinner fa-spin mr-1" /> Updating...</> : <><i className="fas fa-save mr-1" /> Update Changes</>}
                                     </button>
                                 </div>
                             </form>
@@ -781,18 +720,13 @@ function LookupAll({ user, onLogout }) {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                {deleteError && (
-                                    <div className="alert alert-danger" role="alert">
-                                        <i className="fas fa-exclamation-triangle mr-2" />{deleteError}
-                                    </div>
-                                )}
-                                <p>Are you sure you want to delete lookup record: <strong>{deleteName}</strong>?</p>
-                                <p className="text-danger mb-0"><small>This action cannot be undone.</small></p>
+                                {deleteError && <div className="alert alert-danger">{deleteError}</div>}
+                                <p>Are you sure you want to delete lookup item: <strong>{deleteName}</strong>?</p>
                             </div>
                             <div className="modal-footer bg-light">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseDeleteModal} disabled={deleteDeleting}>Cancel</button>
                                 <button type="button" className="btn btn-danger" onClick={handleDeleteLookup} disabled={deleteDeleting}>
-                                    {deleteDeleting ? <><i className="fas fa-spinner fa-spin mr-1" /> Deleting...</> : 'Confirm Delete'}
+                                    {deleteDeleting ? <><i className="fas fa-spinner fa-spin mr-1" /> Deleting...</> : <><i className="fas fa-trash mr-1" /> Confirm Delete</>}
                                 </button>
                             </div>
                         </div>

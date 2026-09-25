@@ -1241,8 +1241,7 @@ function EntityAll({ user, onLogout }) {
 export default EntityAll;
 
 
-
-entity.service.js
+lookup.service.js
 /**
  * ------------------------------------------------------------------------
  * Copyright (C) 2026 Lalulla OPC. All rights reserved.
@@ -1251,128 +1250,136 @@ entity.service.js
  * AUTHOR       : Jammi Dee (Joel M. Damaso)
  * LOCATION     : Manila, Philippines
  * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : August 23, 2026
+ * CREATED DATE : September 20, 2026
  * ------------------------------------------------------------------------
- * DESCRIPTION  : Frontend service for managing entity CRUD operations.
+ * DESCRIPTION  : Frontend service for managing lookup CRUD operations.
  * ------------------------------------------------------------------------
  */
 
-const API_BASE_URL = `${CONFIG?.VITE_BASE_URL || 'http://localhost:5000'}/api/v1/systems/entity`;
+const API_BASE_URL = `${CONFIG?.VITE_BASE_URL || 'http://localhost:5000'}/api/v1/modules/lookup`;
 
-class EntityClientService {
-  /**
-   * Helper to append auth headers consistently across requests.
-   */
-  _getHeaders() {
-    const token = localStorage.getItem('token');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-  }
-
-  /**
-   * CREATE: Add a new entity record
-   */
-  async createEntity(entityData) {
-    const response = await fetch(`${API_BASE_URL}`, {
-      method: 'POST',
-      headers: this._getHeaders(),
-      body: JSON.stringify(entityData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to create entity record');
+class LookupClientService {
+    /**
+     * Helper to append auth headers consistently across requests.
+     */
+    _getHeaders() {
+        const token = localStorage.getItem('token');
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
     }
 
-    return data;
-  }
+    /**
+     * CREATE: Add a new lookup record
+     */
+    async createLookup(lookupData) {
+        // Ensure entityid defaults to 'CGONE' if none provided
+        const payload = {
+            ...lookupData,
+            entityid: lookupData.entityid || 'CGONE'
+        };
 
-  /**
-   * READ (Paginated List): Retrieve entities with filters/pagination
-   */
-  async getEntities({ page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'ASC' }) {
-    const queryParams = new URLSearchParams({
-      page,
-      limit,
-      search,
-      sortBy,
-      sortOrder
-    });
+        const response = await fetch(`${API_BASE_URL}`, {
+            method: 'POST',
+            headers: this._getHeaders(),
+            body: JSON.stringify(payload)
+        });
 
-    const response = await fetch(`${API_BASE_URL}?${queryParams.toString()}`, {
-      method: 'GET',
-      headers: this._getHeaders()
-    });
+        const data = await response.json();
 
-    const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Failed to create lookup record');
+        }
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to retrieve entity list');
+        return data;
     }
 
-    return data;
-  }
+    /**
+     * READ (Paginated List): Retrieve lookups with filters/pagination
+     */
+    async getLookups({ entityid = 'CGONE', page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'ASC' }) {
+        const queryParams = new URLSearchParams({
+            entityid: entityid || 'CGONE',
+            page,
+            limit,
+            search,
+            sortBy,
+            sortOrder
+        });
 
-  /**
-   * READ (Single): Retrieve a single entity record by ID
-   */
-  async getEntityById(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'GET',
-      headers: this._getHeaders()
-    });
+        const response = await fetch(`${API_BASE_URL}?${queryParams.toString()}`, {
+            method: 'GET',
+            headers: this._getHeaders()
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to retrieve entity record');
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Failed to retrieve lookup list');
+        }
+
+        return data;
     }
 
-    return data;
-  }
+    /**
+     * READ (Single): Retrieve a single lookup record by ID
+     */
+    async getLookupById(id) {
+        const response = await fetch(`${API_BASE_URL}/${id}`, {
+            method: 'GET',
+            headers: this._getHeaders()
+        });
 
-  /**
-   * UPDATE: Modify an existing entity record by ID
-   */
-  async updateEntity(id, entityData) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: this._getHeaders(),
-      body: JSON.stringify(entityData)
-    });
+        const data = await response.json();
 
-    const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Failed to retrieve lookup record');
+        }
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to update entity record');
+        return data;
     }
 
-    return data;
-  }
+    /**
+     * UPDATE: Modify an existing lookup record by ID
+     */
+    async updateLookup(id, lookupData) {
+        const response = await fetch(`${API_BASE_URL}/${id}`, {
+            method: 'PUT',
+            headers: this._getHeaders(),
+            body: JSON.stringify(lookupData)
+        });
 
-  /**
-   * DELETE: Remove an entity record by ID
-   */
-  async deleteEntity(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'DELETE',
-      headers: this._getHeaders()
-    });
+        const data = await response.json();
 
-    const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Failed to update lookup record');
+        }
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to delete entity record');
+        return data;
     }
 
-    return data;
-  }
+    /**
+     * DELETE: Remove a lookup record by ID
+     */
+    async deleteLookup(id) {
+        const response = await fetch(`${API_BASE_URL}/${id}`, {
+            method: 'DELETE',
+            headers: this._getHeaders()
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Failed to delete lookup record');
+        }
+
+        return data;
+    }
 }
 
-export default new EntityClientService();
+export default new LookupClientService();
+
 
 For API Reference for the lookup:
 Here is the route:

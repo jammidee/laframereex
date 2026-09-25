@@ -1,252 +1,3 @@
-//09/20/2026
-
-You are a nodejs expert using express.js and react.js. Create the LookupAll.jsx and lookup.service.js on the react side.
-
-Create page for a lookup. Using the table definition from a migrate of sequelized below:
-
-/**
- * ------------------------------------------------------------------------
- * Copyright (C) 2026 Lalulla OPC. All rights reserved.
- *
- * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
- * This file is part of the Lalulla System.
- *
- * Lalulla System is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * ------------------------------------------------------------------------
- * PRODUCT NAME : Lalulla Nodejs Framework
- * AUTHOR       : Jammi Dee (Joel M. Damaso)
- * LOCATION     : Manila, Philippines
- * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : September 11, 2026 01:18 AM
- * ------------------------------------------------------------------------
- * npx sequelize-cli migration:generate --name create-lookups-table
- */
-
-'use strict';
-
-/** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-
-    const dialect = queryInterface.sequelize.getDialect();
-
-    // Enable Postgres Extensions (e.g., pgcrypto, uuid-ossp)
-    // Execute extension creation ONLY if running on PostgreSQL
-    if (dialect === 'postgres') {
-
-      // Query installed extensions from PostgreSQL system catalog
-        const [results] = await queryInterface.sequelize.query(
-          `SELECT extname FROM pg_extension WHERE extname IN ('pgcrypto', 'uuid-ossp');`
-        );
-
-        const installedExtensions = results.map(row => row.extname);
-
-        if (!installedExtensions.includes('pgcrypto')) {
-          await queryInterface.sequelize.query('CREATE EXTENSION "pgcrypto";');
-        }
-
-        if (!installedExtensions.includes('uuid-ossp')) {
-          await queryInterface.sequelize.query('CREATE EXTENSION "uuid-ossp";');
-        }
-
-    }
-
-    await queryInterface.createTable('lookups', {
-
-      id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-      },
-
-      juid: {
-        type: Sequelize.CHAR(36),
-        allowNull: true
-      },
-
-      entityid: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: null
-      },
-
-      appid: {
-        type: Sequelize.STRING(36),
-        allowNull: true,
-        defaultValue: null
-      },
-
-      keyid: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: null
-      },
-
-      itemid: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: null
-      },
-
-      description: {
-        type: Sequelize.STRING(200),
-        allowNull: true,
-        defaultValue: null
-      },
-
-      colstr01: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      colstr02: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      colstr03: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      colnum01: {
-        type: Sequelize.DOUBLE,
-        allowNull: true,
-        defaultValue: 0
-      },
-
-      colnum02: {
-        type: Sequelize.DOUBLE,
-        allowNull: true,
-        defaultValue: 0
-      },
-
-      coldate01: {
-        type: Sequelize.DATEONLY,
-        allowNull: true,
-        defaultValue: null
-      },
-
-      coldate02: {
-        type: Sequelize.DATEONLY,
-        allowNull: true,
-        defaultValue: null
-      },
-
-      coltime01: {
-        type: Sequelize.TIME,
-        allowNull: true,
-        defaultValue: null
-      },
-
-      coltime02: {
-        type: Sequelize.TIME,
-        allowNull: true,
-        defaultValue: null
-      },
-
-      contact: {
-        type: Sequelize.STRING(200),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      address: {
-        type: Sequelize.STRING(200),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      city: {
-        type: Sequelize.STRING(200),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      postal: {
-        type: Sequelize.STRING(200),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      markerdate: {
-        type: Sequelize.DATEONLY,
-        allowNull: true,
-        defaultValue: null
-      },
-
-      phone: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '(000) 000-0000'
-      },
-
-      fax: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '(000) 000-0000'
-      },
-
-      telex: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '(000) 000-0000'
-      },
-
-      sstatus: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: 'ACTIVE'
-      },
-
-      pid: {
-        type: Sequelize.STRING(36),
-        allowNull: true,
-        defaultValue: '000000'
-      },
-
-      userid: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-        defaultValue: '_NA_'
-      },
-
-      deleted: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-      }
-
-    });
-
-    // Indexes
-    await queryInterface.addIndex('lookups', ['entityid']);
-    await queryInterface.addIndex('lookups', ['appid']);
-    await queryInterface.addIndex('lookups', ['keyid']);
-    await queryInterface.addIndex('lookups', ['itemid']);
-    await queryInterface.addIndex('lookups', ['sstatus']);
-    await queryInterface.addIndex('lookups', ['pid']);
-  },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('lookups');
-  }
-};
-
-The location of the script is: src/views/modules/[module folder name].
-
-Use the script below as template:
-
-EntityAll.jsx
-
 /**
  * ------------------------------------------------------------------------
  * Copyright (C) 2026 Lalulla OPC. All rights reserved.
@@ -262,7 +13,7 @@ EntityAll.jsx
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Main Entity List component displaying paginated records 
  * using DataTables UI styling and layout wrappers, featuring inline modals
- * for creating, viewing, editing, and deleting entities with success/error alerts.
+ * for creating, viewing, editing, and deleting entities.
  * ------------------------------------------------------------------------
  */
 
@@ -312,9 +63,6 @@ function EntityAll({ user, onLogout }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Global Notification Banner State
-    const [notification, setNotification] = useState(null); // { type: 'success' | 'danger', message: '' }
-
     // Pagination & Search States
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
@@ -348,14 +96,6 @@ function EntityAll({ user, onLogout }) {
     const [deleteName, setDeleteName] = useState('');
     const [deleteDeleting, setDeleteDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState(null);
-
-    // Helper to auto-dismiss notifications after 5 seconds
-    const showNotification = (type, message) => {
-        setNotification({ type, message });
-        setTimeout(() => {
-            setNotification(null);
-        }, 5000);
-    };
 
     //Fetch data from server
     const fetchEntities = async () => {
@@ -439,7 +179,6 @@ function EntityAll({ user, onLogout }) {
             await entityService.createEntity(formData);
             handleCloseModal();
             fetchEntities();
-            showNotification('success', 'Entity record successfully created.');
 
         } catch (err) {
             setFormError(err.message || 'Failed to create entity. Please try again.');
@@ -517,10 +256,8 @@ function EntityAll({ user, onLogout }) {
             await entityService.updateEntity(editId, editFormData);
             handleCloseEditModal();
             fetchEntities();
-            showNotification('success', 'Entity record successfully updated.');
         } catch (err) {
             setEditError(err.message || 'Failed to update entity record.');
-            showNotification('danger', err.message || 'Failed to update entity record.');
         } finally {
             setEditSaving(false);
         }
@@ -551,10 +288,8 @@ function EntityAll({ user, onLogout }) {
             await entityService.deleteEntity(deleteId);
             handleCloseDeleteModal();
             fetchEntities();
-            showNotification('success', 'Entity record successfully deleted.');
         } catch (err) {
             setDeleteError(err.message || 'Failed to delete entity record.');
-            showNotification('danger', err.message || 'Failed to delete entity record.');
         } finally {
             setDeleteDeleting(false);
         }
@@ -610,17 +345,6 @@ function EntityAll({ user, onLogout }) {
                 {/* Main Content Viewport */}
                 <div className="content">
                     <div className="container-fluid">
-
-                        {/* Global Notification Banner */}
-                        {notification && (
-                            <div className={`alert alert-${notification.type} alert-dismissible fade show`} role="alert">
-                                <i className={`fas ${notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2`} />
-                                {notification.message}
-                                <button type="button" className="close" onClick={() => setNotification(null)} aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        )}
 
                         <div className="row">
                             <div className="col-12">
@@ -811,150 +535,152 @@ function EntityAll({ user, onLogout }) {
 
             {/* ADD NEW ENTITY MODAL */}
             {showModal && (
-                <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                    <div className="modal-dialog modal-lg" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header bg-primary text-white">
-                                <h5 className="modal-title">
-                                    <i className="fas fa-plus-circle mr-2" /> Add New Entity
-                                </h5>
-                                <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseModal}>
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form onSubmit={handleCreateEntity}>
-                                <div className="modal-body">
-                                    {formError && (
-                                        <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                                            <i className="fas fa-exclamation-triangle mr-2" />
-                                            {formError}
-                                        </div>
-                                    )}
-
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="display_id">Display ID <span className="text-danger">*</span></label>
-                                                <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    id="display_id" 
-                                                    name="display_id" 
-                                                    placeholder="e.g. ENT-001"
-                                                    value={formData.display_id}
-                                                    onChange={handleInputChange}
-                                                    required 
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="name">Entity Name <span className="text-danger">*</span></label>
-                                                <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    id="name" 
-                                                    name="name" 
-                                                    placeholder="Enter full entity name"
-                                                    value={formData.name}
-                                                    onChange={handleInputChange}
-                                                    required 
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="city">City</label>
-                                                <input 
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    id="city" 
-                                                    name="city" 
-                                                    placeholder="Enter city"
-                                                    value={formData.city}
-                                                    onChange={handleInputChange}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="status">Status</label>
-                                                <select 
-                                                    className="form-control" 
-                                                    id="status" 
-                                                    name="status"
-                                                    value={formData.status}
-                                                    onChange={handleInputChange}
-                                                >
-                                                    <option value="ACTIVE">ACTIVE</option>
-                                                    <option value="INACTIVE">INACTIVE</option>
-                                                    <option value="PENDING">PENDING</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="start_date">Start Date</label>
-                                                <input 
-                                                    type="date" 
-                                                    className="form-control" 
-                                                    id="start_date" 
-                                                    name="start_date" 
-                                                    value={formData.start_date}
-                                                    onChange={handleInputChange}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="form-group">
-                                                <label htmlFor="end_date">End Date</label>
-                                                <input 
-                                                    type="date" 
-                                                    className="form-control" 
-                                                    id="end_date" 
-                                                    name="end_date" 
-                                                    value={formData.end_date}
-                                                    onChange={handleInputChange}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="modal-footer bg-light">
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-secondary" 
-                                        onClick={handleCloseModal}
-                                        disabled={formSaving}
-                                    >
-                                        Cancel
+                <>
+                    <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <div className="modal-dialog modal-lg" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header bg-primary text-white">
+                                    <h5 className="modal-title">
+                                        <i className="fas fa-plus-circle mr-2" /> Add New Entity
+                                    </h5>
+                                    <button type="button" className="close text-white" aria-label="Close" onClick={handleCloseModal}>
+                                        <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <button 
-                                        type="submit" 
-                                        className="btn btn-primary"
-                                        disabled={formSaving}
-                                    >
-                                        {formSaving ? (
-                                            <>
-                                                <i className="fas fa-spinner fa-spin mr-1" /> Saving...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="fas fa-save mr-1" /> Save Entity
-                                            </>
+                                </div>
+                                <form onSubmit={handleCreateEntity}>
+                                    <div className="modal-body">
+                                        {formError && (
+                                            <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <i className="fas fa-exclamation-triangle mr-2" />
+                                                {formError}
+                                            </div>
                                         )}
-                                    </button>
-                                </div>
-                            </form>
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="display_id">Display ID <span className="text-danger">*</span></label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="display_id" 
+                                                        name="display_id" 
+                                                        placeholder="e.g. ENT-001"
+                                                        value={formData.display_id}
+                                                        onChange={handleInputChange}
+                                                        required 
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="name">Entity Name <span className="text-danger">*</span></label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="name" 
+                                                        name="name" 
+                                                        placeholder="Enter full entity name"
+                                                        value={formData.name}
+                                                        onChange={handleInputChange}
+                                                        required 
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="city">City</label>
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        id="city" 
+                                                        name="city" 
+                                                        placeholder="Enter city"
+                                                        value={formData.city}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="status">Status</label>
+                                                    <select 
+                                                        className="form-control" 
+                                                        id="status" 
+                                                        name="status"
+                                                        value={formData.status}
+                                                        onChange={handleInputChange}
+                                                    >
+                                                        <option value="ACTIVE">ACTIVE</option>
+                                                        <option value="INACTIVE">INACTIVE</option>
+                                                        <option value="PENDING">PENDING</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="start_date">Start Date</label>
+                                                    <input 
+                                                        type="date" 
+                                                        className="form-control" 
+                                                        id="start_date" 
+                                                        name="start_date" 
+                                                        value={formData.start_date}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-group">
+                                                    <label htmlFor="end_date">End Date</label>
+                                                    <input 
+                                                        type="date" 
+                                                        className="form-control" 
+                                                        id="end_date" 
+                                                        name="end_date" 
+                                                        value={formData.end_date}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer bg-light">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-secondary" 
+                                            onClick={handleCloseModal}
+                                            disabled={formSaving}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button 
+                                            type="submit" 
+                                            className="btn btn-primary"
+                                            disabled={formSaving}
+                                        >
+                                            {formSaving ? (
+                                                <>
+                                                    <i className="fas fa-spinner fa-spin mr-1" /> Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="fas fa-save mr-1" /> Save Entity
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
 
             {/* VIEW ENTITY MODAL */}
@@ -1239,348 +965,3 @@ function EntityAll({ user, onLogout }) {
 }
 
 export default EntityAll;
-
-
-
-entity.service.js
-/**
- * ------------------------------------------------------------------------
- * Copyright (C) 2026 Lalulla OPC. All rights reserved.
- *
- * PRODUCT NAME : Lalulla Nodejs Framework
- * AUTHOR       : Jammi Dee (Joel M. Damaso)
- * LOCATION     : Manila, Philippines
- * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : August 23, 2026
- * ------------------------------------------------------------------------
- * DESCRIPTION  : Frontend service for managing entity CRUD operations.
- * ------------------------------------------------------------------------
- */
-
-const API_BASE_URL = `${CONFIG?.VITE_BASE_URL || 'http://localhost:5000'}/api/v1/systems/entity`;
-
-class EntityClientService {
-  /**
-   * Helper to append auth headers consistently across requests.
-   */
-  _getHeaders() {
-    const token = localStorage.getItem('token');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-  }
-
-  /**
-   * CREATE: Add a new entity record
-   */
-  async createEntity(entityData) {
-    const response = await fetch(`${API_BASE_URL}`, {
-      method: 'POST',
-      headers: this._getHeaders(),
-      body: JSON.stringify(entityData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to create entity record');
-    }
-
-    return data;
-  }
-
-  /**
-   * READ (Paginated List): Retrieve entities with filters/pagination
-   */
-  async getEntities({ page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'ASC' }) {
-    const queryParams = new URLSearchParams({
-      page,
-      limit,
-      search,
-      sortBy,
-      sortOrder
-    });
-
-    const response = await fetch(`${API_BASE_URL}?${queryParams.toString()}`, {
-      method: 'GET',
-      headers: this._getHeaders()
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to retrieve entity list');
-    }
-
-    return data;
-  }
-
-  /**
-   * READ (Single): Retrieve a single entity record by ID
-   */
-  async getEntityById(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'GET',
-      headers: this._getHeaders()
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to retrieve entity record');
-    }
-
-    return data;
-  }
-
-  /**
-   * UPDATE: Modify an existing entity record by ID
-   */
-  async updateEntity(id, entityData) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: this._getHeaders(),
-      body: JSON.stringify(entityData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to update entity record');
-    }
-
-    return data;
-  }
-
-  /**
-   * DELETE: Remove an entity record by ID
-   */
-  async deleteEntity(id) {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'DELETE',
-      headers: this._getHeaders()
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to delete entity record');
-    }
-
-    return data;
-  }
-}
-
-export default new EntityClientService();
-
-For API Reference for the lookup:
-Here is the route:
-/**
- * ------------------------------------------------------------------------
- * Copyright (C) 2026 Lalulla OPC. All rights reserved.
- *
- * PRODUCT NAME : Lalulla Nodejs Framework
- * AUTHOR       : Jammi Dee (Joel M. Damaso)
- * LOCATION     : Manila, Philippines
- * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : September 17, 2026 07:25 PM
- * ------------------------------------------------------------------------
- * DESCRIPTION  : Express routing definitions for Lookup API endpoints.
- * ------------------------------------------------------------------------
- */
-
-const express          = require('express');
-const router           = express.Router();
-
-const LookupController = require('./lookup.controller');
-const LookupService    = require('./lookup.service');
-const validateToken    = require('../../../../../middlewares/jwt.middleware');
-const ipWhitelist      = require('../../../../../middlewares/ipWhitelist.middleware');
-const domainWhitelist  = require('../../../../../middlewares/domainWhitelist.middleware');
-
-const controller = new LookupController(new LookupService());
-
-/**
- * POST /api/v1/modules/lookup
- * Create a new lookup record
- */
-router.post('/', domainWhitelist, ipWhitelist, validateToken, controller.createLookup);
-
-/**
- * GET /api/v1/modules/lookup
- * Fetch paginated list of lookups
- */
-router.get('/', domainWhitelist, ipWhitelist, validateToken, controller.getLookups);
-
-/**
- * GET /api/v1/modules/lookup/:id
- * Fetch a single lookup record by ID
- */
-router.get('/:id', domainWhitelist, ipWhitelist, validateToken, controller.getLookupById);
-
-/**
- * PUT /api/v1/modules/lookup/:id
- * Update a lookup record by ID
- */
-router.put('/:id', domainWhitelist, ipWhitelist, validateToken, controller.updateLookup);
-
-/**
- * DELETE /api/v1/modules/lookup/:id
- * Delete a lookup record by ID
- */
-router.delete('/:id', domainWhitelist, ipWhitelist, validateToken, controller.deleteLookup);
-
-module.exports = router;
-
-and here is the controller:
-/**
- * ------------------------------------------------------------------------
- * Copyright (C) 2026 Lalulla OPC. All rights reserved.
- *
- * PRODUCT NAME : Lalulla Nodejs Framework
- * AUTHOR       : Jammi Dee (Joel M. Damaso)
- * LOCATION     : Manila, Philippines
- * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : August 23, 2026 04:21 PM
- * ------------------------------------------------------------------------
- * DESCRIPTION  : Controller routing incoming HTTP requests to EntityService.
- * ------------------------------------------------------------------------
- */
-
-class EntityController {
-  constructor(entityService) {
-    this.entityService = entityService;
-    this.createEntity  = this.createEntity.bind(this);
-    this.getEntities   = this.getEntities.bind(this);
-    this.getEntityById = this.getEntityById.bind(this);
-    this.updateEntity  = this.updateEntity.bind(this);
-    this.deleteEntity  = this.deleteEntity.bind(this);
-  }
-
-  /**
-   * Create a new entity record
-   */
-  async createEntity(req, res) {
-    try {
-      const data = await this.entityService.createEntity(req.body);
-
-      return res.status(201).json({
-        success: true,
-        message: 'Entity created successfully',
-        data
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message || 'Failed to create entity record'
-      });
-    }
-  }
-
-  /**
-   * Fetch paginated list of entities
-   */
-  async getEntities(req, res) {
-    try {
-      const { page, limit, search, sortBy, sortOrder } = req.query;
-
-      const result = await this.entityService.getPaginatedEntities({
-        page,
-        limit,
-        search,
-        sortBy,
-        sortOrder
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: 'Entities retrieved successfully',
-        ...result
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message || 'Failed to fetch entity records'
-      });
-    }
-  }
-
-  /**
-   * Fetch a single entity record by ID
-   */
-  async getEntityById(req, res) {
-    try {
-      const { id } = req.params;
-      const data = await this.entityService.getEntityById(id);
-
-      if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: 'Entity record not found'
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        message: 'Entity retrieved successfully',
-        data
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message || 'Failed to fetch entity record'
-      });
-    }
-  }
-
-  /**
-   * Update an existing entity record by ID
-   */
-  async updateEntity(req, res) {
-    try {
-      const { id } = req.params;
-      const data = await this.entityService.updateEntity(id, req.body);
-
-      return res.status(200).json({
-        success: true,
-        message: 'Entity updated successfully',
-        data
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message || 'Failed to update entity record'
-      });
-    }
-  }
-
-  /**
-   * Delete an entity record by ID
-   */
-  async deleteEntity(req, res) {
-    try {
-      const { id } = req.params;
-      await this.entityService.deleteEntity(id);
-
-      return res.status(200).json({
-        success: true,
-        message: 'Entity deleted successfully'
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message || 'Failed to delete entity record'
-      });
-    }
-  }
-}
-
-module.exports = EntityController;
-
-
-For the service, make sure the entityid is being passed as parameter, if none default to "CGONE"
-Maintain coding style using 4 spaces for tab.
-Maintain header comment from the template and adjust the timestamp in the header
-Maintain comments and comment your code.
-All the generated file will be placed in one folder unlike the example/template

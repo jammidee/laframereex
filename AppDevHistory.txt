@@ -13,7 +13,10 @@ Tested / QA by:				Jammi Dee
 
 09/26/2026      - Added About page
                 - Added About Rights
-                -
+                - Added listing of items in the lookup management
+                - Fixed the seeder to reflect CGONE instead of GCONE
+                - added filtering by entityid in lookup module
+                - Adjusted Seeders to use CGONE as default entityid
 
 09/25/2026      - Added toggle switch for sql_sync_log
                 - Added toggle switch for logAction

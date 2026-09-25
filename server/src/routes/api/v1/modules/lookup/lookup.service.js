@@ -39,10 +39,12 @@ class LookupService {
   }
 
   /**
-   * Fetch paginated lookup records matching search & sorting requirements
+   * Fetch paginated lookup records matching search, entity, key, & sorting requirements
    */
   async getPaginatedLookups(params = {}) {
     const {
+      entityid = 'CGONE',
+      keyid,
       page = 1,
       limit = 10,
       search = '',
@@ -55,6 +57,16 @@ class LookupService {
     const whereClause = {
       deleted: 0
     };
+
+    // Filter by entityid if provided
+    if (entityid) {
+      whereClause.entityid = entityid;
+    }
+
+    // Filter by keyid if provided from the dropdown filter
+    if (keyid && keyid.trim() !== '') {
+      whereClause.keyid = keyid;
+    }
 
     if (search && search.trim() !== '') {
       const query = `%${search.trim()}%`;

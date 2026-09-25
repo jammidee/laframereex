@@ -45,11 +45,16 @@ class LookupController {
   /**
    * Fetch paginated list of lookups
    */
+  /**
+   * Fetch paginated list of lookups with entityid and keyid filtering
+   */
   async getLookups(req, res) {
     try {
-      const { page, limit, search, sortBy, sortOrder } = req.query;
+      const { entityid = 'CGONE', keyid, page, limit, search, sortBy, sortOrder } = req.query;
 
       const result = await this.lookupService.getPaginatedLookups({
+        entityid,
+        keyid,
         page,
         limit,
         search,

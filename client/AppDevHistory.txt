@@ -13,7 +13,7 @@ Tested / QA by:				Jammi Dee
 
 09/25/2026      - Added the about page
                 - Added Lookup and About page to the global menu
-                -
+                - Adjust page template settings
 
 09/16/2026      - Factor injection to another page from App.js.
                 -

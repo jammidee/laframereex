@@ -42,7 +42,7 @@ function LaRightBar() {
 /**
  * HELLO COMPONENT
  */
-function About({ user, onLogout }) {
+function Lookup({ user, onLogout }) {
   
     return (
 
@@ -53,7 +53,7 @@ function About({ user, onLogout }) {
 
             {/* Left Main Sidebar Menu */}
             {/* <LaSideBar /> */}
-            <LaSideBar user={user} activePage="about" onLogout={onLogout} />
+            <LaSideBar user={user} activePage="dashboard" onLogout={onLogout} />
 
             {/* Right Secondary Control Sidebar */}
             {/* <LaRightBar /> */}
@@ -65,14 +65,14 @@ function About({ user, onLogout }) {
                     <div className="container-fluid">
                         <div className="row mb-2">
                             <div className="col-sm-6">
-                                <h4 className="m-0">About</h4>
+                                <h4 className="m-0">Lookup</h4>
                             </div>
                             <div className="col-sm-6">
                                 <ol className="breadcrumb float-sm-right d-flex justify-content-sm-end list-inline">
                                     <li className="breadcrumb-item list-inline-item">
                                         <a href="#">Home</a>
                                     </li>
-                                    <li className="breadcrumb-item active list-inline-item">About</li>
+                                    <li className="breadcrumb-item active list-inline-item">Lookup</li>
                                 </ol>
                             </div>
                         </div>
@@ -87,7 +87,7 @@ function About({ user, onLogout }) {
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-body">
-                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. About page.
+                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. Lookup page.
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@ function About({ user, onLogout }) {
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-body">
-                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. About page.
+                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. Lookup page.
                                     </div>
                                 </div>
                             </div>
@@ -117,4 +117,4 @@ function About({ user, onLogout }) {
     );
 }
 
-export default About;
+export default Lookup;

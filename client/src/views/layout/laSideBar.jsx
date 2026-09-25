@@ -143,19 +143,6 @@ function LaSideBar({ user, activePage, onLogout }) {
 
                         <li className="nav-header">Administration</li>
 
-                        {hasPermission('template_manage') && (
-                            <li className="nav-item">
-                                <a 
-                                    href="#" 
-                                    className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
-                                    onClick={(e) => handleNavigation(e, '/system/entity')}
-                                >
-                                    <i className="nav-icon fas fa-building" />
-                                    <p>Entity</p>
-                                </a>
-                            </li>
-                        )}
-
                         {hasPermission('lookup_manage') && (
                             <li className="nav-item">
                                 <a 
@@ -169,6 +156,19 @@ function LaSideBar({ user, activePage, onLogout }) {
                             </li>
                         )}
 
+                        {hasPermission('template_manage') && (
+                            <li className="nav-item">
+                                <a 
+                                    href="#" 
+                                    className={`nav-link ${activePage === 'entity' ? 'active' : ''}`}
+                                    onClick={(e) => handleNavigation(e, '/system/entity')}
+                                >
+                                    <i className="nav-icon fas fa-building" />
+                                    <p>Entity</p>
+                                </a>
+                            </li>
+                        )}
+                        
                         {hasPermission('about_manage') && (
                             <li className="nav-item">
                                 <a 

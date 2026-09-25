@@ -32,8 +32,8 @@ module.exports = {
     await queryInterface.bulkInsert('configdb', [
       // ----------------- App Info -----------------
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'APP_NAME',
         var_value: 'Lalulla System',
         var_type: 'string',
@@ -45,8 +45,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'APP_DESC',
         var_value: 'Lalulla Application Template',
         var_type: 'string',
@@ -58,8 +58,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'APP_PREFIX',
         var_value: 'FEA',
         var_type: 'string',
@@ -71,8 +71,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'APP_VERSION',
         var_value: '1.07.1972',
         var_type: 'string',
@@ -84,8 +84,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'APP_COPYRIGHT',
         var_value: 'Lalulla OPC',
         var_type: 'string',
@@ -99,8 +99,8 @@ module.exports = {
 
       // ----------------- Core System Info -----------------
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'CG_VERSION',
         var_value: '1.19.72',
         var_type: 'string',
@@ -112,8 +112,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'ALLOW_LOGIN',
         var_value: 'true',
         var_type: 'bool',
@@ -125,8 +125,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'AUTO_REG',
         var_value: 'false',
         var_type: 'bool',
@@ -138,8 +138,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'CG_LANDINGPAGE',
         var_value: 'true',
         var_type: 'bool',
@@ -153,8 +153,8 @@ module.exports = {
 
       // ----------------- Admin/Config Contact Info -----------------
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'CFG_NAME',
         var_value: 'Jammi Dee',
         var_type: 'string',
@@ -166,8 +166,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'CFG_PHONE',
         var_value: '0917-580-9483',
         var_type: 'string',
@@ -179,8 +179,8 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        entityid: 'LALULLA',
-        appid: 'CGONE',
+        entityid: 'CGONE',
+        appid: 'LALLULA',
         var_key: 'CFG_EMAIL',
         var_value: 'jammi_dee@yahoo.com',
         var_type: 'string',
