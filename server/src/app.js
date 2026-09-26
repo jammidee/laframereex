@@ -177,6 +177,7 @@ app.use('/api/v1/systems/auth',             require('./routes/api/v1/systems/aut
 app.use('/api/v1/systems/rbac',             require('./routes/api/v1/systems/rbac.routes'));
 app.use('/api/v1/systems/config',           require('./routes/api/v1/systems/configdb.routes'));
 // app.use('/site',                         require('./src/modules/site/site.routes'));
+app.use('/api/v1/systems/user',             require('./routes/api/v1/systems/user.routes'));
 // app.use('/users',                        require('./src/modules/user/user.routes'));
 // app.use('/welcome',                      require('./src/modules/welcome/welcome.routes'));
 // app.use('/system/hello',                 require('./src/routes/systems/hello.routes'));

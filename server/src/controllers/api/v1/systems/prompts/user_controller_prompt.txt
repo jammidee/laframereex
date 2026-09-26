@@ -1,0 +1,370 @@
+// Create by Jammi Dee
+// 09/27/2026
+
+Your task is to create a controller for the user. The filename is user.controller.js
+
+Below is the service where the controller will be created from:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 27, 2026
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Service layer handling business logic and query execution
+ * for user management.
+ * ------------------------------------------------------------------------
+ */
+
+'use strict';
+
+const crypto = require('crypto');
+const { Op } = require('sequelize');
+const User   = require('../../../../models/systems/user.model');
+
+class UserService {
+
+    /**
+     * Create a new user record
+     */
+    async createUser(payload) {
+        const userData = {
+            ...payload,
+            juid: payload.juid || crypto.randomUUID()
+        };
+
+        const newUser = await User.create(userData);
+        return newUser;
+    }
+
+    /**
+     * Fetch paginated user records matching DataTable search & sorting requirements
+     */
+    async getPaginatedUsers(params = {}) {
+        const {
+            page = 1,
+            limit = 10,
+            search = '',
+            sortBy = 'created_at',
+            sortOrder = 'DESC'
+        } = params;
+
+        const offset = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+
+        // Build search predicate
+        const whereClause = {};
+
+        if (search && search.trim() !== '') {
+            const query = `%${search.trim()}%`;
+            whereClause[Op.or] = [
+                { username: { [Op.iLike]: query } },
+                { email: { [Op.iLike]: query } },
+                { firstname: { [Op.iLike]: query } },
+                { lastname: { [Op.iLike]: query } },
+                { status: { [Op.iLike]: query } }
+            ];
+        }
+
+        // Execute query with count
+        const { count, rows } = await User.findAndCountAll({
+            where: whereClause,
+            limit: parseInt(limit, 10),
+            offset: parseInt(offset, 10),
+            order: [[sortBy, sortOrder.toUpperCase()]]
+        });
+
+        return {
+            totalRecords: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: parseInt(page, 10),
+            data: rows
+        };
+    }
+
+    /**
+     * Fetch single user by ID
+     */
+    async getUserById(id) {
+        return await User.findOne({
+            where: { id }
+        });
+    }
+
+    /**
+     * Update an existing user record by ID
+     */
+    async updateUser(id, payload) {
+        const user = await this.getUserById(id);
+
+        if (!user) {
+            throw new Error('User record not found');
+        }
+
+        await user.update(payload);
+        return user;
+    }
+
+    /**
+     * Soft delete a user record using paranoid/deleted_at
+     */
+    async deleteUser(id) {
+        const user = await this.getUserById(id);
+
+        if (!user) {
+            throw new Error('User record not found');
+        }
+
+        await user.destroy();
+        return true;
+    }
+}
+
+module.exports = UserService;
+
+Use the script below as reference:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026 04:21 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Controller routing incoming HTTP requests to EntityService.
+ * ------------------------------------------------------------------------
+ */
+
+'use strict';
+
+const { logAction } = require('../../../../helpers/system_logger.helper');
+
+class EntityController {
+    constructor(entityService) {
+        this.entityService = entityService;
+        this.createEntity  = this.createEntity.bind(this);
+        this.getEntities   = this.getEntities.bind(this);
+        this.getEntityById = this.getEntityById.bind(this);
+        this.updateEntity  = this.updateEntity.bind(this);
+        this.deleteEntity  = this.deleteEntity.bind(this);
+    }
+
+    /**
+     * Create a new entity record
+     */
+    async createEntity(req, res) {
+        try {
+            const data = await this.entityService.createEntity(req.body);
+
+            await logAction(
+                req,
+                'ENTITY_CREATE',
+                `Created entity record: ${data.name} (ID: ${data.id})`,
+                'INFO',
+                data.display_id || data.id
+            );
+
+            return res.status(201).json({
+                success: true,
+                message: 'Entity created successfully',
+                data
+            });
+        } catch (error) {
+            await logAction(
+                req,
+                'ENTITY_CREATE_ERROR',
+                `Failed to create entity record: ${error.message}`,
+                'ERROR'
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to create entity record'
+            });
+        }
+    }
+
+    /**
+     * Fetch paginated list of entities
+     */
+    async getEntities(req, res) {
+        try {
+            const { page, limit, search, sortBy, sortOrder } = req.query;
+
+            const result = await this.entityService.getPaginatedEntities({
+                page,
+                limit,
+                search,
+                sortBy,
+                sortOrder
+            });
+
+            await logAction(
+                req,
+                'ENTITIES_FETCH',
+                `Retrieved paginated entity list (page: ${page || 1}, limit: ${limit || 10})`,
+                'INFO',
+                '_NA_'
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Entities retrieved successfully',
+                ...result
+            });
+        } catch (error) {
+            await logAction(
+                req,
+                'ENTITIES_FETCH_ERROR',
+                `Failed to fetch entity records: ${error.message}`,
+                'ERROR'
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to fetch entity records'
+            });
+        }
+    }
+
+    /**
+     * Fetch a single entity record by ID
+     */
+    async getEntityById(req, res) {
+        try {
+            const { id } = req.params;
+            const data = await this.entityService.getEntityById(id);
+
+            if (!data) {
+                await logAction(
+                    req,
+                    'ENTITY_FETCH_NOT_FOUND',
+                    `Entity record not found for ID: ${id}`,
+                    'WARNING',
+                    id
+                );
+
+                return res.status(404).json({
+                    success: false,
+                    message: 'Entity record not found'
+                });
+            }
+
+            await logAction(
+                req,
+                'ENTITY_FETCH',
+                `Retrieved entity record for ID: ${id}`,
+                'INFO',
+                data.display_id || id
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Entity retrieved successfully',
+                data
+            });
+        } catch (error) {
+            await logAction(
+                req,
+                'ENTITY_FETCH_ERROR',
+                `Failed to fetch entity record ID ${req.params.id}: ${error.message}`,
+                'ERROR',
+                req.params.id
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to fetch entity record'
+            });
+        }
+    }
+
+    /**
+     * Update an existing entity record by ID
+     */
+    async updateEntity(req, res) {
+        try {
+            const { id } = req.params;
+            const data = await this.entityService.updateEntity(id, req.body);
+
+            await logAction(
+                req,
+                'ENTITY_UPDATE',
+                `Updated entity record ID: ${id}`,
+                'INFO',
+                data.display_id || id
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Entity updated successfully',
+                data
+            });
+        } catch (error) {
+            await logAction(
+                req,
+                'ENTITY_UPDATE_ERROR',
+                `Failed to update entity record ID ${req.params.id}: ${error.message}`,
+                'ERROR',
+                req.params.id
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to update entity record'
+            });
+        }
+    }
+
+    /**
+     * Delete an entity record by ID
+     */
+    async deleteEntity(req, res) {
+        try {
+            const { id } = req.params;
+            await this.entityService.deleteEntity(id);
+
+            await logAction(
+                req,
+                'ENTITY_DELETE',
+                `Soft-deleted entity record ID: ${id}`,
+                'WARNING',
+                id
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Entity deleted successfully'
+            });
+        } catch (error) {
+            await logAction(
+                req,
+                'ENTITY_DELETE_ERROR',
+                `Failed to delete entity record ID ${req.params.id}: ${error.message}`,
+                'ERROR',
+                req.params.id
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Failed to delete entity record'
+            });
+        }
+    }
+}
+
+module.exports = EntityController;
+
+Maintain the coding style, including comments
+Adjust the timestamp in the header comment
+Make sure the tab/indent is presented in 4 spaces.

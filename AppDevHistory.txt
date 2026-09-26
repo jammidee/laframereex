@@ -12,6 +12,9 @@ Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
 09/27/2026      - Added the model for user
+                - Added service for user
+                - Added controller for user
+                - Added routes for the user
                 -
 
 09/26/2026      - Added About page

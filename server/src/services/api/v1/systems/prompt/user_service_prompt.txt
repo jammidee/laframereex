@@ -1,0 +1,283 @@
+// Create by Jammi Dee
+// 09/24/2026
+
+You are task to create a service of the sql table.
+The filename is user.service.js
+
+The user model script is below:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : September 27, 2026 01:12 PM
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Sequelize model definition for public.users table.
+ * ------------------------------------------------------------------------
+ */
+
+const { DataTypes } = require('sequelize');
+const sequelize     = require('../../config/db');
+
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    juid: {
+        type: DataTypes.CHAR(36),
+        allowNull: false,
+        unique: true,
+    },
+    username: {
+        type: DataTypes.STRING(150),
+        allowNull: false,
+        unique: true,
+    },
+    password: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING(150),
+        allowNull: false,
+        unique: true,
+    },
+    firstname: {
+        type: DataTypes.STRING(150),
+        allowNull: false,
+    },
+    lastname: {
+        type: DataTypes.STRING(150),
+        allowNull: false,
+    },
+    phone: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+    },
+    gender: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: '1=Male, 2=Female, 3=Other',
+    },
+    store_id: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+    },
+    region: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
+    regiondesc: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    province: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
+    provincedesc: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    municipal: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
+    municipaldesc: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    brgy: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
+    brgydesc: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    status: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        defaultValue: 'ACTIVE',
+    },
+    roleid: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        defaultValue: 'USER',
+    },
+    entityid: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        defaultValue: 'CGONE',
+    },
+    last_login_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
+    deleted_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    }
+}, {
+    tableName: 'users',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
+    paranoid: true,
+});
+
+module.exports = User;
+
+Use the reference below to generate your service:
+
+/**
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2026 Lalulla OPC. All rights reserved.
+ *
+ * Copyright (c) 2017 - Jammi Dee (Joel M. Damaso) <jammi_dee@yahoo.com>
+ * This file is part of the Lalulla System.
+ *
+ * ------------------------------------------------------------------------
+ * PRODUCT NAME : Lalulla Nodejs Framework
+ * AUTHOR       : Jammi Dee (Joel M. Damaso)
+ * LOCATION     : Manila, Philippines
+ * EMAIL        : jammi_dee@yahoo.com
+ * CREATED DATE : August 23, 2026
+ * ------------------------------------------------------------------------
+ * DESCRIPTION  : Service layer handling business logic and query execution
+ * for entity management.
+ * ------------------------------------------------------------------------
+ */
+
+'use strict';
+
+const { Op } = require('sequelize');
+const Entity = require('../../../../models/systems/entity.model');
+
+class EntityService {
+
+  /**
+   * Create a new entity record
+   */
+    async createEntity(payload) {
+        const entityData = {
+        ...payload,
+        juid: payload.juid || crypto.randomUUID()
+        };
+
+        const newEntity = await Entity.create(entityData);
+        return newEntity;
+    }
+
+  /**
+   * Fetch paginated entity records matching DataTable search & sorting requirements
+   */
+  async getPaginatedEntities(params = {}) {
+    const {
+      page = 1,
+      limit = 10,
+      search = '',
+      sortBy = 'created_at',
+      sortOrder = 'DESC'
+    } = params;
+
+    const offset = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+
+    // Build search predicate
+    const whereClause = {
+      is_deleted: 0
+    };
+
+    if (search && search.trim() !== '') {
+      const query = `%${search.trim()}%`;
+      whereClause[Op.or] = [
+        { display_id: { [Op.iLike]: query } },
+        { name: { [Op.iLike]: query } },
+        { city: { [Op.iLike]: query } },
+        { status: { [Op.iLike]: query } }
+      ];
+    }
+
+    // Execute query with count
+    const { count, rows } = await Entity.findAndCountAll({
+      where: whereClause,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      order: [[sortBy, sortOrder.toUpperCase()]]
+    });
+
+    return {
+      totalRecords: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page, 10),
+      data: rows
+    };
+  }
+
+  /**
+   * Fetch single entity by ID
+   */
+  async getEntityById(id) {
+    return await Entity.findOne({
+      where: { id, is_deleted: 0 }
+    });
+  }
+
+  /**
+   * Update an existing entity record by ID
+   */
+  async updateEntity(id, payload) {
+    const entity = await this.getEntityById(id);
+
+    if (!entity) {
+      throw new Error('Entity record not found');
+    }
+
+    await entity.update(payload);
+    return entity;
+  }
+
+  /**
+   * Soft delete an entity record by setting is_deleted flag to 1
+   */
+  async deleteEntity(id) {
+    const entity = await this.getEntityById(id);
+
+    if (!entity) {
+      throw new Error('Entity record not found');
+    }
+
+    await entity.update({ is_deleted: 1 });
+    return true;
+  }
+}
+
+module.exports = EntityService;
+
+Maintain the coding style, including comments
+Adjust the timestamp in the header comment
+Make sure the tab/indent is presented in 4 spaces.
+
+
