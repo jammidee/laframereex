@@ -86,21 +86,14 @@ function About({ user, onLogout }) {
                         <div className="row">
                             <div className="col-12">
                                 <div className="card">
-                                    <div className="card-body text-center">
-                                        {/* Added Logo Image */}
-                                        <img 
-                                            src="/resources/images/logos/logonlogo.png" 
-                                            alt="Lalulla Logo" 
-                                            className="img-fluid mb-3" 
-                                            style={{ maxHeight: '400px' }}
-                                        />
-                                        <p className="m-0">Welcome to Lalulla Secure Hub. Authenticated Session Validated. About page.</p>
+                                    <div className="card-body">
+                                        Welcome to Lalulla Secure Hub. Authenticated Session Validated. About page.
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* <div className="row">
+                        <div className="row">
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-body">
@@ -108,7 +101,7 @@ function About({ user, onLogout }) {
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
 
                     </div>
                 </div>

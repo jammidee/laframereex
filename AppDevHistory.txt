@@ -11,6 +11,9 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
+09/27/2026      - Added the model for user
+                -
+
 09/26/2026      - Added About page
                 - Added About Rights
                 - Added listing of items in the lookup management
