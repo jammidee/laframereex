@@ -9,7 +9,7 @@
  * AUTHOR       : Jammi Dee (Joel M. Damaso)
  * LOCATION     : Manila, Philippines
  * EMAIL        : jammi_dee@yahoo.com
- * CREATED DATE : June 30, 2026 2:15 AM
+ * CREATED DATE : July 04, 2026 03:05 PM
  * ------------------------------------------------------------------------
  * DESCRIPTION  : Refactored AdminLTE Sidebar Navigation Component.
  * ------------------------------------------------------------------------
@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
 // Maintained original path since file lives in src/views/layout/laSideBar.jsx
-import { useRbac } from '../../context/RbacContext';
+import { useRbac } from '../../../../context/RbacContext';
 
 function LaSideBar({ user, activePage, onLogout }) {
     
@@ -143,12 +143,25 @@ function LaSideBar({ user, activePage, onLogout }) {
 
                         <li className="nav-header">Administration</li>
 
-                        {hasPermission('lookup_manage') && (
+                        {hasPermission('template_manage') && (
                             <li className="nav-item">
                                 <a 
                                     href="#" 
-                                    className={`nav-link ${activePage === 'lookup' ? 'active' : ''}`}
-                                    onClick={(e) => handleNavigation(e, '/modules/lookup')}
+                                    className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                                    onClick={(e) => handleNavigation(e, '/system/entity')}
+                                >
+                                    <i className="nav-icon fas fa-building" />
+                                    <p>Entity</p>
+                                </a>
+                            </li>
+                        )}
+
+                        {hasPermission('template_manage') && (
+                            <li className="nav-item">
+                                <a 
+                                    href="#" 
+                                    className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                                    onClick={(e) => handleNavigation(e, '/module/template')}
                                 >
                                     <i className="nav-icon fas fa-list-ul" />
                                     <p>Lookup</p>
@@ -160,34 +173,8 @@ function LaSideBar({ user, activePage, onLogout }) {
                             <li className="nav-item">
                                 <a 
                                     href="#" 
-                                    className={`nav-link ${activePage === 'user' ? 'active' : ''}`}
-                                    onClick={(e) => handleNavigation(e, '/system/user')}
-                                >
-                                    <i className="nav-icon fas fa-building" />
-                                    <p>User</p>
-                                </a>
-                            </li>
-                        )}
-
-                        {hasPermission('template_manage') && (
-                            <li className="nav-item">
-                                <a 
-                                    href="#" 
-                                    className={`nav-link ${activePage === 'entity' ? 'active' : ''}`}
-                                    onClick={(e) => handleNavigation(e, '/system/entity')}
-                                >
-                                    <i className="nav-icon fas fa-building" />
-                                    <p>Entity</p>
-                                </a>
-                            </li>
-                        )}
-
-                        {hasPermission('about_manage') && (
-                            <li className="nav-item">
-                                <a 
-                                    href="#" 
-                                    className={`nav-link ${activePage === 'about' ? 'active' : ''}`}
-                                    onClick={(e) => handleNavigation(e, '/modules/about')}
+                                    className={`nav-link ${activePage === 'template' ? 'active' : ''}`}
+                                    onClick={(e) => handleNavigation(e, '/system/hello')}
                                 >
                                     <i className="nav-icon fas fa-info-circle" />
                                     <p>About</p>

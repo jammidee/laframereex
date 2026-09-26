@@ -33,6 +33,7 @@ import authService  from './services/auth.service';
 
 //Other System Module Pages
 import EntityAll    from './views/systems/entity/EntityAll';
+import UserAll      from './views/systems/user/UserAll';
 
 //================================
 // Other User Modules Declaration
@@ -226,7 +227,10 @@ function App() {
 
 
                             {/* =========== System Modules =========== */}
-                            {/* Additional secured routing destinations match your layout paths */}
+                            {/* Additional secured routing destinations match your layout paths */}4
+
+                            <Route path="/system/user" element={<UserAll onLogout={handleLogout} user={user} activePage="user" />} />
+
                             <Route path="/system/entity" element={<EntityAll onLogout={handleLogout} user={user} activePage="entity" />} />
 
                             <Route path="/modules/template" element={<Dashboard onLogout={handleLogout} user={user} activePage="template" />} />

@@ -11,8 +11,10 @@ Framework Design: 			Jammi Dee
 Developed / Programmed by : Joel Margate Damaso aka Jammi Dee
 Tested / QA by:				Jammi Dee
 
-09/27/2026      - Added image in the aboout page.
-                -
+09/27/2026      - Added image in the about page.
+                - Added user service
+                - Added user CRUD page
+                
 
 09/25/2026      - Added the about page
                 - Added Lookup and About page to the global menu
